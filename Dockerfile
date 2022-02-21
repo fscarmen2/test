@@ -4,7 +4,7 @@ ENV DIR=/unlock
 
 WORKDIR ${DIR}
 
-RUN      apk add --no-cache tzdata net-tools iproute2 openresolv wireguard-tools iptables curl \
+RUN      apk add --no-cache tzdata net-tools wireguard-tools iptables curl \
       && rm -rf /var/cache/apk/* \
       && ln -sf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
       && echo "Asia/Shanghai" > /etc/timezone \
