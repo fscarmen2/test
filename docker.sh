@@ -92,6 +92,7 @@ export_unlock_file(){
 
 # 生成 warp_unlock.sh 文件，判断当前流媒体解锁状态，遇到不解锁时更换 WARP IP，直至刷成功。5分钟后还没有刷成功，将不会重复该进程而浪费系统资源
 cat <<EOF > $WGCF_DIR/warp_unlock.sh
+#!/bin/bash
 EXPECT="$EXPECT"
 TOKEN="$TOKEN"
 USERID="$USERID"
