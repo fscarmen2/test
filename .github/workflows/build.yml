@@ -45,5 +45,6 @@ jobs:
             -v /lib/modules:/lib/modules \
             -v /etc/wireguard:/etc/wireguard \
             ${DOCKERHUB_REPOSITORY}
-            docker exec -d ${{ secrets.DOCKER_REPO }} ss -nltp
+            
+            docker exec -i ${{ secrets.DOCKER_REPO }} ss -nltp
             docker stop ${{ secrets.DOCKER_REPO }}
