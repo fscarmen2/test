@@ -46,14 +46,14 @@ jobs:
             -v /etc/wireguard:/etc/wireguard \
             ${DOCKERHUB_REPOSITORY}
             
-            docker exec -i ${{ secrets.DOCKER_REPO }} wget -4 -O wgcf https://github.com/ViRb3/wgcf/releases/download/v2.2.11/wgcf_2.2.11_linux_amd64
+            docker exec -i ${{ secrets.DOCKER_REPO }} wget -O wgcf https://github.com/ViRb3/wgcf/releases/download/v2.2.11/wgcf_2.2.11_linux_amd64
             docker exec -i ${{ secrets.DOCKER_REPO }} chmod +x wgcf
             docker exec -i ${{ secrets.DOCKER_REPO }} ./wgcf register --accept-tos
             docker exec -i ${{ secrets.DOCKER_REPO }} ./wgcf generate -p /etc/wireguard/wgcf.conf
             docker exec -i ${{ secrets.DOCKER_REPO }} sed -i "s/engage.cloudflareclient.com/162.159.193.1/;s/AllowedIPs = ::/#&/" /etc/wireguard/wgcf.conf
             docker exec -i ${{ secrets.DOCKER_REPO }} rm -rf wgcf wgcf-account.toml
             docker exec -i ${{ secrets.DOCKER_REPO }} wg-quick up wgcf
-            docker exec -i ${{ secrets.DOCKER_REPO }} wget -4 -qO- https://ip.gs/json
+            docker exec -i ${{ secrets.DOCKER_REPO }} wget -qO- https://ip.gs/json
             docker exec -i ${{ secrets.DOCKER_REPO }} nohup ./gost -L :40000 >/dev/null 2>&1 &
             docker exec -i ${{ secrets.DOCKER_REPO }} ss -nltp
             docker stop ${{ secrets.DOCKER_REPO }}
