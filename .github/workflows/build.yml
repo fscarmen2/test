@@ -45,4 +45,6 @@ jobs:
             -v /lib/modules:/lib/modules \
             -v /etc/wireguard:/etc/wireguard \
             ${DOCKERHUB_REPOSITORY}
-            docker stop test
+            
+            docker exec -d ${DOCKERHUB_REPOSITORY} ss -nltp
+            docker stop ${DOCKERHUB_REPOSITORY}
