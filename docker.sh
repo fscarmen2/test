@@ -70,7 +70,7 @@ wgcf_install(){
 # 期望解锁地区
 input_region(){
 	if [[ -z "$EXPECT" ]]; then
-	REGION=$(curl -sm8 https://ip.gs/country-iso 2>/dev/null)
+	REGION=$(curl -skm8 https://ip.gs/country-iso 2>/dev/null)
 	reading " The current region is $REGION. Confirm press [y] . If you want another regions, please enter the two-digit region abbreviation. (such as hk,sg. Default is $REGION): " EXPECT
 	until [[ -z $EXPECT || $EXPECT = [Yy] || $EXPECT =~ ^[A-Za-z]{2}$ ]]; do
 		reading " The current region is $REGION. Confirm press [y] . If you want another regions, please enter the two-digit region abbreviation. (such as hk,sg. Default is $REGION): " EXPECT
@@ -96,7 +96,7 @@ EXPECT="$EXPECT"
 TOKEN="$TOKEN"
 USERID="$USERID"
 CUSTOM="$CUSTOM"
-NIC="-s4m8"
+NIC="-ks4m8"
 RESTART="wgcf_restart"
 LOG_LIMIT="1000"
 UNLOCK_STATUS='Yes 🎉'
@@ -147,11 +147,11 @@ container_build(){
 	
 	# 安装 docker,拉取镜像 + 创建容器
 	! systemctl is-active docker >/dev/null 2>&1 && green " \n Install docker \n " && curl -sSL get.docker.com | sh
-	docker run -dit --restart=always --name wgcf --sysctl net.ipv6.conf.all.disable_ipv6=0 --device /dev/net/tun --privileged --cap-add net_admin --cap-add sys_module --log-opt max-size=1m -v /lib/modules:/lib/modules -v $WGCF_DIR:$WGCF_DIR fscarmen/netflix_unlock:latest
+	docker run -dit --restart=always --name wgcf --sysctl net.ipv6.conf.all.disable_ipv6=0 --device /dev/net/tun --privileged --cap-add net_admin --cap-add sys_module --log-opt max-size=1m -v /lib/modules:/lib/modules -v $WGCF_DIR:$WGCF_DIR fscarmen/test:latest
 
 	# 清理临时文件
 	rm -rf wgcf-account.toml /usr/local/bin/wgcf
-	green " \n Done! \n "
+	green " \n Done! The script runs on today: $TODAY. Total: $TOTAL \n "
 }
 
 
