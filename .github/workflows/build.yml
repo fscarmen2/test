@@ -46,6 +46,6 @@ jobs:
             -v /etc/wireguard:/etc/wireguard \
             ${DOCKERHUB_REPOSITORY}
             
-            docker exec -i ${{ secrets.DOCKER_REPO }} nohup gost -L :40000 >/dev/null 2>&1 &
+            docker exec -i ${{ secrets.DOCKER_REPO }} nohup ./gost -L :40000 >/dev/null 2>&1 &
             docker exec -i ${{ secrets.DOCKER_REPO }} ss -nltp
             docker stop ${{ secrets.DOCKER_REPO }}
