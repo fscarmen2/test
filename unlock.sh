@@ -383,10 +383,10 @@ while getopts ":CcEeUu46SsM:m:A:a:N:n:T:t:" OPTNAME; do
 		'6' ) TRACE6=$(curl -ks6m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
 		      [[ ! $TRACE6 =~ on|plus ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(0 1 0);;
 		'S'|'s' ) [[ ! $(ss -nltp) =~ 'warp-svc' ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(0 0 1);;
-		'M'|'m' ) [[ -z "$RUNNING" ]] && check_unlock_running
-			  if [[ "$RUNNING" = 1 ]]; then
+		'M'|'m' ) [ -z "$UNLOCK_MODE_NOW" ] && check_unlock_running
+			  if [ -n "$UNLOCK_MODE_NOW" ]; then
 			  red " ${T[${L}28]} " && exit 1
-			  else [[ $OPTARG != [1-3] ]] && red " ${T[${L}25]} " && exit 1 || CHOOSE1=$OPTARG
+			  else [[ $OPTARG != [1-5] ]] && red " ${T[${L}25]} " && exit 1 || CHOOSE1=$OPTARG
 			  fi;;
 		'A'|'a' ) [[ ! "$OPTARG" =~ ^[A-Za-z]{2}$ ]] && red " ${T[${L}26]} " && exit 1 || EXPECT="$OPTARG";;
 		'N'|'n' ) for ((d=0; d<"$SUPPORT_NUM"; d++)); do
