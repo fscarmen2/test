@@ -36,8 +36,8 @@ T[E10]="\n Media unlock daemon installed successfully. The running log of the sc
 T[C10]="\n 媒体解锁守护进程已安装成功。定时任务运行日志将保存在 /root/result.log\n"
 T[E11]="\n The media unlock daemon is completely uninstalled.\n"
 T[C11]="\n 媒体解锁守护进程已彻底卸载\n"
-T[E12]="\n 1. Mode 1: Check it every 5 minutes.\n 2. Mode 2: Create a screen named [u] and run. The process runs in the background. When the unlock is all successful, it will be checked every 1 hour.\n 3. Mode 3: Create a jobs with nohup to run. The process runs in the background. When the unlock is all successful, it will be checked every 1 hour.\n 4. Mode 4: Create a jobs with systemd service. The process runs in the background. When the unlock is all successful, it will be checked every 1 hour.\n 0. Exit\n"
-T[C12]="\n 1. 模式1: 定时5分钟检查一次,遇到不解锁时更换 WARP IP，直至刷成功\n 2. 模式2: 创建一个名为 [u] 的 Screen 会话。进程一直在后台，当刷成功后，每隔1小时检查一次\n 3. 模式3: 用 nohup 创建一个 jobs。进程一直在后台，当刷成功后，每隔1小时检查一次\n 4. 模式4: 创建 systemd 服务。进程一直在后台，当刷成功后，每隔1小时检查一次\n 0. 退出\n"
+T[E12]="\n 1. Mode 1: Check it every 5 minutes.\n 2. Mode 2: Create a screen named [u] and run. The process runs in the background. When the unlock is all successful, it will be checked every 1 hour.\n 3. Mode 3: Create a jobs with nohup to run. The process runs in the background. When the unlock is all successful, it will be checked every 1 hour.\n 4. Mode 4: Create a jobs with systemd service. The process runs in the background. When the unlock is all successful, it will be checked every 1 hour.\n 5. Mode 5: Install pm2 daemon. The process runs in the background. When the unlock is all successful, it will be checked every 1 hour.\n 0. Exit\n"
+T[C12]="\n 1. 模式1: 定时5分钟检查一次,遇到不解锁时更换 WARP IP，直至刷成功\n 2. 模式2: 创建一个名为 [u] 的 Screen 会话。进程一直在后台，当刷成功后，每隔1小时检查一次\n 3. 模式3: 用 nohup 创建一个 jobs。进程一直在后台，当刷成功后，每隔1小时检查一次\n 4. 模式4: 创建 systemd 服务。进程一直在后台，当刷成功后，每隔1小时检查一次\n 5. 模式5: 安装 pm2 守护进程，安装依赖需较长时间。进程一直在后台，当刷成功后，每隔1小时检查一次\n 0. 退出\n"
 T[E13]="\\\n The current region is \$REGION. Confirm press [y] . If you want another regions, please enter the two-digit region abbreviation. \(such as hk,sg. Default is \$REGION\):"
 T[C13]="\\\n 当前地区是:\$REGION，需要解锁当前地区请按 y , 如需其他地址请输入两位地区简写 \(如 hk,sg，默认:\$REGION\):"
 T[E14]="Wrong input."
@@ -84,8 +84,8 @@ T[E42]="Mode 3: Create a jobs with nohup to run in the background"
 T[C42]="模式3: 用 nohup 创建一个 jobs 在后台刷"
 T[E43]="Media unlock daemon installed successfully. A systemd service has been created, check [systemctl status warp_unlock] and close [systemctl disable --now warp_unlock]. The VPS restart will still take effect. The running log of the scheduled task will be saved in /root/result.log\n"
 T[C43]="\n 媒体解锁守护进程已安装成功，已创建一个 systemd 服务，查看 [systemctl status warp_unlock]，关闭 [systemctl disable --now warp_unlock]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log\n"
-T[E44]=""
-T[C44]=""
+T[E44]="Media unlock daemon installed successfully. pm2 daemon is running, check pm2 [list] and close [pm2 delete warp_unlock]. The VPS restart will still take effect. The running log of the scheduled task will be saved in /root/result.log\n"
+T[C44]="\n 媒体解锁守护进程已安装成功，pm2 守护进程正在工作中，查看 [pm2 list]，关闭 [pm2 delete warp_unlock]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log\n"
 T[E45]=""
 T[C45]=""
 
@@ -389,6 +389,8 @@ ${MODE2[1]}
 fi
 EOF
 
+chmod +x /etc/wireguard/warp_unlock.sh
+
 # 输出执行结果
 green " $RESULT_OUTPUT "
 green " $(eval echo "${T[${L}22]}") "
@@ -475,6 +477,7 @@ TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 * * * * root bash /e
 RESULT_OUTPUT="${T[${L}10]}"
 export_unlock_file
 	}
+
 action2(){
 MODE2=("while true; do" "sleep 1h; done")
 TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh\" >> /etc/crontab"
@@ -483,6 +486,7 @@ check_dependencies screen
 export_unlock_file
 screen -USdm u bash /etc/wireguard/warp_unlock.sh
 	}
+
 action3(){
 MODE2[0]="while true; do"
 MODE2[1]="sleep 1h; done"
@@ -491,25 +495,37 @@ RESULT_OUTPUT="${T[${L}21]}"
 export_unlock_file
 nohup bash /etc/wireguard/warp_unlock.sh >/dev/null 2>&1 &
 	}
+
 action4(){
 MODE2[0]="while true; do"
 MODE2[1]="sleep 1h; done"
 TASK="cat <<EOF > /etc/systemd/system/warp_unlock.service
 [Unit]
-Description=WARP unlock
-After=network.target
+Description = WARP unlock
+After = network.target
 
 [Service]
-ExecStart=/etc/wireguard/warp_unlock.sh
-Restart=always
-Type=simple
+ExecStart = /etc/wireguard/warp_unlock.sh
+Restart = always
+Type = simple
 
 [Install]
-WantedBy=multi-user.target
+WantedBy = multi-user.target
 EOF"
 RESULT_OUTPUT="${T[${L}43]}"
 export_unlock_file
-systemctl enable --now warp_unlock
+systemctl enable --now warp_unlock >/dev/null 2>&1
+	}
+
+action5(){
+MODE2=("while true; do" "sleep 1h; done")
+TASK=""
+RESULT_OUTPUT="${T[${L}44]}"
+check_dependencies npm nodejs
+npm install -g pm2
+export_unlock_file
+pm2 start /etc/wireguard/warp_unlock.sh
+pm2 save; pm2 startup
 	}
 action0(){ exit 0; }
 fi
@@ -523,7 +539,7 @@ green " ${T[${L}17]}：$VERSION  ${T[${L}18]}：${T[${L}1]}\n "
 red "======================================================================================================================\n"
 [[ -z "$CHOOSE1" ]] && yellow " $MENU_SHOW " && reading " ${T[${L}3]} " CHOOSE1
 case "$CHOOSE1" in
-[0-4] ) action$CHOOSE1;;
+[0-5] ) action$CHOOSE1;;
 * ) red " ${T[${L}14]} "; sleep 1; menu;;
 esac
 }
