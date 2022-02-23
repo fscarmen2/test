@@ -20,8 +20,8 @@ T[E2]="The script must be run as root, you can enter sudo -i and then download a
 T[C2]="必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp_unlock/issues]"
 T[E3]="Choose:"
 T[C3]="请选择:"
-T[E4]="\n Neither the WARP network interface nor Socks5 are installed, please select the installation script:\n 1. fscarmen (Default)\n 2. yyykg\n 3. P3terx\n 0. Exit\n"
-T[C4]="\n WARP 网络接口和 Socks5 都没有安装，请选择安装脚本:\n 1. fscarmen (默认)\n 2. yyykg\n 3. P3terx\n 0. 退出\n"
+T[E4]="\n Neither the WARP network interface nor Socks5 are installed, please select the installation script:\n 1. fscarmen (Default)\n 2. kkkyg\n 3. P3terx\n 0. Exit\n"
+T[C4]="\n WARP 网络接口和 Socks5 都没有安装，请选择安装脚本:\n 1. fscarmen (默认)\n 2. kkkyg\n 3. P3terx\n 0. 退出\n"
 T[E5]="The script supports Debian, Ubuntu, CentOS or Alpine systems only. Feedback: [https://github.com/fscarmen/warp_unlock/issues]"
 T[C5]="本脚本只支持 Debian、Ubuntu、CentOS 或 Alpine 系统,问题反馈:[https://github.com/fscarmen/warp_unlock/issues]"
 T[E6]="Please choose to brush WARP IP:\n 1. WARP Socks5 Proxy (Default)\n 2. WARP IPv6 Interface\n"
@@ -36,8 +36,8 @@ T[E10]="\n Media unlock daemon installed successfully. The running log of the sc
 T[C10]="\n 媒体解锁守护进程已安装成功。定时任务运行日志将保存在 /root/result.log\n"
 T[E11]="\n The media unlock daemon is completely uninstalled.\n"
 T[C11]="\n 媒体解锁守护进程已彻底卸载\n"
-T[E12]="\n 1. Mode 1: Check it every 5 minutes.\n 2. Mode 2: Create a screen named [u] and run. The process runs in the background. When the unlock is all successful, it will be checked every 1 hour.\n 3. Mode 3: Create a jobs with nohup to run. The process runs in the background. When the unlock is all successful, it will be checked every 1 hour.\n 0. Exit\n"
-T[C12]="\n 1. 模式1: 定时5分钟检查一次,遇到不解锁时更换 WARP IP，直至刷成功\n 2. 模式2: 创建一个名为 [u] 的 Screen 会话。进程一直在后台，当刷成功后，每隔1小时检查一次\n 3. 模式3: 用 nohup 创建一个 jobs。进程一直在后台，当刷成功后，每隔1小时检查一次\n 0. 退出\n"
+T[E12]="\n 1. Mode 1: Check it every 5 minutes.\n 2. Mode 2: Create a screen named [u] and run. The process runs in the background. When the unlock is all successful, it will be checked every 1 hour.\n 3. Mode 3: Create a jobs with nohup to run. The process runs in the background. When the unlock is all successful, it will be checked every 1 hour.\n Mode 4: Create a jobs with systemd service. The process runs in the background. When the unlock is all successful, it will be checked every 1 hour.\n 0. Exit\n"
+T[C12]="\n 1. 模式1: 定时5分钟检查一次,遇到不解锁时更换 WARP IP，直至刷成功\n 2. 模式2: 创建一个名为 [u] 的 Screen 会话。进程一直在后台，当刷成功后，每隔1小时检查一次\n 3. 模式3: 用 nohup 创建一个 jobs。进程一直在后台，当刷成功后，每隔1小时检查一次\n 4. 模式4: 创建 systemd 服务。进程一直在后台，当刷成功后，每隔1小时检查一次\n 0. 退出\n"
 T[E13]="\\\n The current region is \$REGION. Confirm press [y] . If you want another regions, please enter the two-digit region abbreviation. \(such as hk,sg. Default is \$REGION\):"
 T[C13]="\\\n 当前地区是:\$REGION，需要解锁当前地区请按 y , 如需其他地址请输入两位地区简写 \(如 hk,sg，默认:\$REGION\):"
 T[E14]="Wrong input."
@@ -82,8 +82,8 @@ T[E41]="Mode 2: Create a screen named [u] and run"
 T[C41]="模式2: 创建一个名为 [u] 的 Screen 在后台刷"
 T[E42]="Mode 3: Create a jobs with nohup to run in the background"
 T[C42]="模式3: 用 nohup 创建一个 jobs 在后台刷"
-T[E43]=""
-T[C43]=""
+T[E43]="Media unlock daemon installed successfully. A systemd service has been created, check [systemctl status warp_unlock] and close [systemctl disable --now warp_unlock]. The VPS restart will still take effect. The running log of the scheduled task will be saved in /root/result.log\n"
+T[C43]="\n 媒体解锁守护进程已安装成功，已创建一个 systemd 服务，查看 [systemctl status warp_unlock]，关闭 [systemctl disable --now warp_unlock]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log\n"
 T[E44]=""
 T[C44]=""
 T[E45]=""
@@ -95,14 +95,14 @@ red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
 green(){ echo -e "\033[32m\033[01m$1\033[0m"; }
 yellow(){ echo -e "\033[33m\033[01m$1\033[0m"; }
 reading(){ read -rp "$(green "$1")" "$2"; }
-translate(){ [[ -n "$1" ]] && curl -sm8 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$1" | cut -d \" -f18 2>/dev/null; }
+translate(){ [[ -n "$1" ]] && curl -ksm8 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=$1" | cut -d \" -f18 2>/dev/null; }
 check_dependencies(){ for c in $@; do
 type -P $c >/dev/null 2>&1 || (yellow " $(eval echo "${T[${L}7]}") " && ${PACKAGE_INSTALL[b]} "$c") || (yellow " $(eval echo "${T[${L}8]}") " && ${PACKAGE_UPDATE[b]} && ${PACKAGE_INSTALL[b]} "$c")
 ! type -P $c >/dev/null 2>&1 && yellow " $(eval echo "${T[${L}9]}") " && exit 1; done;	 }
 
 # 脚本当天及累计运行次数统计
 statistics_of_run-times(){
-COUNT=$(curl -sm1 "https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2Ffscarmen%2Fwarp_unlock%2Fmain%2Funlock.sh&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false" 2>&1) &&
+COUNT=$(curl -ksm1 "https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2Ffscarmen%2Fwarp_unlock%2Fmain%2Funlock.sh&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false" 2>&1) &&
 TODAY=$(expr "$COUNT" : '.*\s\([0-9]\{1,\}\)\s/.*') && TOTAL=$(expr "$COUNT" : '.*/\s\([0-9]\{1,\}\)\s.*')
 	}
 
@@ -207,8 +207,8 @@ check_warp(){
 if [[ -z "${STATUS[@]}" ]]; then
 	if type -P wg-quick >/dev/null 2>&1; then
 		[[ -z $(wg 2>/dev/null) ]] && wg-quick up wgcf >/dev/null 2>&1
-		TRACE4=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
-		TRACE6=$(curl -s6m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
+		TRACE4=$(curl -ks4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
+		TRACE6=$(curl -ks6m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
 		[[ $TRACE4 =~ on|plus ]] && STATUS[0]=1 || STATUS[0]=0
 		[[ $TRACE6 =~ on|plus ]] && STATUS[1]=1 || STATUS[1]=0
 	else STATUS=(0 0)
@@ -227,20 +227,20 @@ case "${STATUS[@]}" in
       * ) wget -N https://cdn.jsdelivr.net/gh/fscarmen/warp/menu.sh && bash menu.sh; exit;;
      esac;;
 '0 0 1' ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
-     NIC="-s4m8 --socks5 $PROXYSOCKS5"
+     NIC="-ks4m8 --socks5 $PROXYSOCKS5"
      RESTART="socks5_restart";;
-'0 1 0' ) NIC='-s6m8'; RESTART="wgcf_restart";;
-'1 0 0' ) NIC='-s4m8'; RESTART="wgcf_restart";;
+'0 1 0' ) NIC='-ks6m8'; RESTART="wgcf_restart";;
+'1 0 0' ) NIC='-ks4m8'; RESTART="wgcf_restart";;
 '1 1 0' ) yellow " ${T[${L}23]} " && reading " ${T[${L}3]} " CHOOSE3
       case "$CHOOSE3" in
-      2 ) NIC='-s6m8'; RESTART="wgcf_restart";;
-      * ) NIC='-s4m8'; RESTART="wgcf_restart";;
+      2 ) NIC='-ks6m8'; RESTART="wgcf_restart";;
+      * ) NIC='-ks4m8'; RESTART="wgcf_restart";;
       esac;;
 '0 1 1' ) yellow " ${T[${L}6]} " && reading " ${T[${L}3]} " CHOOSE3
       case "$CHOOSE3" in
-      2 ) NIC='-s6m8'; RESTART="wgcf_restart";;
+      2 ) NIC='-ks6m8'; RESTART="wgcf_restart";;
       * ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
-          NIC="-s4m8 --socks5 $PROXYSOCKS5"
+          NIC="-ks4m8 --socks5 $PROXYSOCKS5"
 	  RESTART="socks5_restart";;
       esac;;
  esac
@@ -263,7 +263,7 @@ UNLOCK_SELECT=$(for ((e=0; e<"$SUPPORT_NUM"; e++)); do
 # 期望解锁地区
 input_region(){
 	if [[ -z "$EXPECT" ]]; then
-	REGION=$(curl -sm8 https://ip.gs/country-iso 2>/dev/null)
+	REGION=$(curl -ksm8 https://ip.gs/country-iso 2>/dev/null)
 	reading " $(eval echo "${T[${L}13]}") " EXPECT
 	until [[ -z $EXPECT || $EXPECT = [Yy] || $EXPECT =~ ^[A-Za-z]{2}$ ]]; do
 		reading " $(eval echo "${T[${L}13]}") " EXPECT
@@ -287,13 +287,12 @@ input_region
 
 input_tg
 
-# 根据解锁模式写入定时任务
+# 根据解锁模式写入定时任务或systemd
 sh -c "$TASK"
 
 # 生成 warp_unlock.sh 文件，判断当前流媒体解锁状态，遇到不解锁时更换 WARP IP，直至刷成功。5分钟后还没有刷成功，将不会重复该进程而浪费系统资源
 # 感谢以下两位作者: lmc999 [https://github.com/lmc999/RegionRestrictionCheck] 和 luoxue-bot [https://github.com/luoxue-bot/warp_auto_change_ip]
 cat <<EOF >/etc/wireguard/warp_unlock.sh
-#!/bin/bash
 EXPECT="$EXPECT"
 TOKEN="$TOKEN"
 USERID="$USERID"
@@ -422,9 +421,9 @@ while getopts ":CcEeUu46SsM:m:A:a:N:n:T:t:" OPTNAME; do
 		'C'|'c' ) L='C';;
 		'E'|'e' ) L='E';;
 		'U'|'u' ) [[ -z "$f" ]] && check_unlock_running; [[ "$f" -ge "$UNLOCK_NUM" ]] && red " ${T[${L}27]} " && exit 1 || CHOOSE1=4;;
-		'4' ) TRACE4=$(curl -s4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
+		'4' ) TRACE4=$(curl -ks4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
 		      [[ ! $TRACE4 =~ on|plus ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(1 0 0);;
-		'6' ) TRACE6=$(curl -s6m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
+		'6' ) TRACE6=$(curl -ks6m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
 		      [[ ! $TRACE6 =~ on|plus ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(0 1 0);;
 		'S'|'s' ) [[ ! $(ss -nltp) =~ 'warp-svc' ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(0 0 1);;
 		'M'|'m' ) [[ -z "$RUNNING" ]] && check_unlock_running
@@ -491,7 +490,26 @@ RESULT_OUTPUT="${T[${L}21]}"
 export_unlock_file
 nohup bash /etc/wireguard/warp_unlock.sh >/dev/null 2>&1 &
 	}
+action4(){
+MODE2[0]="while true; do"
+MODE2[1]="sleep 1h; done"
+TASK="cat <<EOF > /etc/systemd/system/warp_unlock.service
+[Unit]
+Description=WARP unlock
+After=network.target
 
+[Service]
+ExecStart=/etc/wireguard/warp_unlock.sh
+Restart=always
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
+EOF"
+RESULT_OUTPUT="${T[${L}43]}"
+export_unlock_file
+systemctl enable --now warp_unlock
+	}
 action0(){ exit 0; }
 fi
 
