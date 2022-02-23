@@ -142,12 +142,13 @@ done
 
 # 检查解锁是否已运行，如果是则判断模式，以前给更换模式赋值
 check_unlock_running(){
-	UNLOCK_MODE_NOW=$(grep -s "MODE=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
-	EXPECT=$(grep -s "EXPECT=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
-	TOKEN=$(grep -s "TOKEN=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
-	USERID=$(grep -s "USERID=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
-	CUSTOM=$(grep -s "CUSTOM=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
-	NIC=$(grep -s "NIC=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
+	[ -e /etc/wireguard/warp_unlock.sh ] &&
+	UNLOCK_MODE_NOW=$(grep -s "MODE=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2) &&
+	EXPECT=$(grep -s "EXPECT=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2) &&
+	TOKEN=$(grep -s "TOKEN=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2) &&
+	USERID=$(grep -s "USERID=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2) &&
+	CUSTOM=$(grep -s "CUSTOM=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2) &&
+	NIC=$(grep -s "NIC=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2) &&
 	RESTART=$(grep -s "RESTART=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
 }
 
