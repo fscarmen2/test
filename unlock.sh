@@ -404,7 +404,10 @@ type -P wg-quick >/dev/null 2>&1 && wg-quick down wgcf >/dev/null 2>&1
 type -P warp-cli >/dev/null 2>&1 && warp-cli --accept-tos delete >/dev/null 2>&1 && sleep 1
 sed -i '/warp_unlock.sh/d' /etc/crontab
 kill -9 $(pgrep -f warp_unlock.sh) >/dev/null 2>&1
-rm -f /etc/wireguard/warp_unlock.sh /root/result.log /etc/wireguard/status.log
+rm -f /etc/wireguard/warp_unlock.sh /root/result.log /etc/wireguard/status.log /etc/systemd/system/warp_unlock.service
+systemctl disable --now warp_unlock >/dev/null 2>&1
+pm2 delete warp_unlock >/dev/null 2>&1
+pm2 unstartup systemd >/dev/null 2>&1
 type -P wg-quick >/dev/null 2>&1 && wg-quick up wgcf >/dev/null 2>&1
 type -P warp-cli >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1
 
