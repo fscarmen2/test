@@ -36,7 +36,7 @@ T[E10]="\n Media unlock daemon installed successfully. The running log of the sc
 T[C10]="\n 媒体解锁守护进程已安装成功。定时任务运行日志将保存在 /root/result.log\n"
 T[E11]="\n The media unlock daemon is completely uninstalled.\n"
 T[C11]="\n 媒体解锁守护进程已彻底卸载\n"
-T[E12]="\n 1. Mode 1: Check it every 5 minutes.\n 2. Mode 2: Create a screen named [u] and run. The process runs in the background. When the unlock is all successful, it will be checked every 1 hour.\n 3. Mode 3: Create a jobs with nohup to run. The process runs in the background. When the unlock is all successful, it will be checked every 1 hour.\n Mode 4: Create a jobs with systemd service. The process runs in the background. When the unlock is all successful, it will be checked every 1 hour.\n 0. Exit\n"
+T[E12]="\n 1. Mode 1: Check it every 5 minutes.\n 2. Mode 2: Create a screen named [u] and run. The process runs in the background. When the unlock is all successful, it will be checked every 1 hour.\n 3. Mode 3: Create a jobs with nohup to run. The process runs in the background. When the unlock is all successful, it will be checked every 1 hour.\n 4. Mode 4: Create a jobs with systemd service. The process runs in the background. When the unlock is all successful, it will be checked every 1 hour.\n 0. Exit\n"
 T[C12]="\n 1. 模式1: 定时5分钟检查一次,遇到不解锁时更换 WARP IP，直至刷成功\n 2. 模式2: 创建一个名为 [u] 的 Screen 会话。进程一直在后台，当刷成功后，每隔1小时检查一次\n 3. 模式3: 用 nohup 创建一个 jobs。进程一直在后台，当刷成功后，每隔1小时检查一次\n 4. 模式4: 创建 systemd 服务。进程一直在后台，当刷成功后，每隔1小时检查一次\n 0. 退出\n"
 T[E13]="\\\n The current region is \$REGION. Confirm press [y] . If you want another regions, please enter the two-digit region abbreviation. \(such as hk,sg. Default is \$REGION\):"
 T[C13]="\\\n 当前地区是:\$REGION，需要解锁当前地区请按 y , 如需其他地址请输入两位地区简写 \(如 hk,sg，默认:\$REGION\):"
@@ -293,6 +293,7 @@ sh -c "$TASK"
 # 生成 warp_unlock.sh 文件，判断当前流媒体解锁状态，遇到不解锁时更换 WARP IP，直至刷成功。5分钟后还没有刷成功，将不会重复该进程而浪费系统资源
 # 感谢以下两位作者: lmc999 [https://github.com/lmc999/RegionRestrictionCheck] 和 luoxue-bot [https://github.com/luoxue-bot/warp_auto_change_ip]
 cat <<EOF >/etc/wireguard/warp_unlock.sh
+#!/bin/bash
 EXPECT="$EXPECT"
 TOKEN="$TOKEN"
 USERID="$USERID"
