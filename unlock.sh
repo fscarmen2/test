@@ -451,7 +451,7 @@ WantedBy = multi-user.target
 EOF"
 RESULT_OUTPUT="${T[${L}43]}"
 export_unlock_file
-systemctl enable --now warp_unlock >/dev/null 2>&1
+systemctl enable --now warp_unlock
 result_output
 }
 
