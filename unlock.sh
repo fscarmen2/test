@@ -84,8 +84,8 @@ T[E42]="Mode 3: Create a jobs with nohup to run in the background"
 T[C42]="模式3: 用 nohup 创建一个 jobs 在后台刷"
 T[E43]="Media unlock daemon installed successfully. A systemd service has been created, check [systemctl status warp_unlock] and close [systemctl disable --now warp_unlock]. The VPS restart will still take effect. The running log of the scheduled task will be saved in /root/result.log\n"
 T[C43]="\n 媒体解锁守护进程已安装成功，已创建一个 systemd 服务，查看 [systemctl status warp_unlock]，关闭 [systemctl disable --now warp_unlock]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log\n"
-T[E44]="Media unlock daemon installed successfully. pm2 daemon is running, check pm2 [list] and close [pm2 delete warp_unlock]. The VPS restart will still take effect. The running log of the scheduled task will be saved in /root/result.log\n"
-T[C44]="\n 媒体解锁守护进程已安装成功，pm2 守护进程正在工作中，查看 [pm2 list]，关闭 [pm2 delete warp_unlock]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log\n"
+T[E44]="Media unlock daemon installed successfully. pm2 daemon is running, check pm2 [list] and close [pm2 delete warp_unlock; pm2 unstartup systemd;]. The VPS restart will still take effect. The running log of the scheduled task will be saved in /root/result.log\n"
+T[C44]="\n 媒体解锁守护进程已安装成功，pm2 守护进程正在工作中，查看 [pm2 list]，关闭 [pm2 delete warp_unlock; pm2 unstartup systemd; ]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log\n"
 T[E45]=""
 T[C45]=""
 
@@ -390,8 +390,10 @@ fi
 EOF
 
 chmod +x /etc/wireguard/warp_unlock.sh
+}
 
 # 输出执行结果
+result_output(){
 green " $RESULT_OUTPUT "
 green " $(eval echo "${T[${L}22]}") "
 }
@@ -476,7 +478,8 @@ action1(){
 TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 * * * * root bash /etc/wireguard/warp_unlock.sh\" >> /etc/crontab"
 RESULT_OUTPUT="${T[${L}10]}"
 export_unlock_file
-	}
+result_output
+}
 
 action2(){
 MODE2=("while true; do" "sleep 1h; done")
@@ -485,7 +488,8 @@ RESULT_OUTPUT="${T[${L}20]}"
 check_dependencies screen
 export_unlock_file
 screen -USdm u bash /etc/wireguard/warp_unlock.sh
-	}
+result_output
+}
 
 action3(){
 MODE2[0]="while true; do"
@@ -494,7 +498,8 @@ TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root nohup bash 
 RESULT_OUTPUT="${T[${L}21]}"
 export_unlock_file
 nohup bash /etc/wireguard/warp_unlock.sh >/dev/null 2>&1 &
-	}
+result_output
+}
 
 action4(){
 MODE2[0]="while true; do"
@@ -515,7 +520,8 @@ EOF"
 RESULT_OUTPUT="${T[${L}43]}"
 export_unlock_file
 systemctl enable --now warp_unlock >/dev/null 2>&1
-	}
+result_output
+}
 
 action5(){
 MODE2=("while true; do" "sleep 1h; done")
@@ -526,7 +532,8 @@ npm install -g pm2
 export_unlock_file
 pm2 start /etc/wireguard/warp_unlock.sh
 pm2 save; pm2 startup
-	}
+result_output
+}
 action0(){ exit 0; }
 fi
 
