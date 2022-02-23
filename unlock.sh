@@ -459,8 +459,8 @@ action5(){
 [ -n "$UNLOCK_MODE_NOW" ] && uninstall
 TASK=""
 RESULT_OUTPUT="${T[${L}44]}"
-node -v >/dev/null 2>&1 && check_dependencies nodejs
-node -v >/dev/null 2>&1 && check_dependencies npm
+node -v >/dev/null 2>&1 || check_dependencies nodejs
+node -v >/dev/null 2>&1 || check_dependencies npm
 npm install -g pm2
 export_unlock_file
 pm2 start /etc/wireguard/warp_unlock.sh
