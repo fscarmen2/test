@@ -50,8 +50,8 @@ T[E17]="Version"
 T[C17]="脚本版本"
 T[E18]="New features"
 T[C18]="功能新增"
-T[E19]="\\\n Stream media unlock daemon is running in \$UNLOCK_MODE_NOW.\\\n"
-T[C19]="\\\n 流媒体解锁守护正在以 \$UNLOCK_MODE_NOW 运行中\\\n"
+T[E19]="\\\n Stream media unlock daemon is running in mode: \$UNLOCK_MODE_NOW.\\\n"
+T[C19]="\\\n 流媒体解锁守护正在以模式: \$UNLOCK_MODE_NOW 运行中\\\n"
 T[E20]="Media unlock daemon installed successfully. A session window u has been created, enter [screen -Udr u] and close [screen -SX u quit]. The VPS restart will still take effect. The running log of the scheduled task will be saved in /root/result.log\n"
 T[C20]="\n 媒体解锁守护进程已安装成功，已创建一个会话窗口 u ，进入 [screen -Udr u]，关闭 [screen -SX u quit]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log\n"
 T[E21]="Media unlock daemon installed successfully. A jobs has been created, check [pgrep -laf warp_unlock] and close [kill -9 \$(pgrep -f warp_unlock)]. The VPS restart will still take effect. The running log of the scheduled task will be saved in /root/result.log\n"
@@ -361,7 +361,7 @@ pm2 delete warp_unlock >/dev/null 2>&1
 pm2 unstartup systemd >/dev/null 2>&1
 
 # 输出执行结果
-green " ${T[${L}11]} "
+[ "$UN" = 1 ] && green " ${T[${L}11]} "
 }
 
 # 传参 1/2
@@ -467,6 +467,8 @@ pm2 save; pm2 startup
 result_output
 }
 
+action6(){ UN=1; uninstall; }
+
 action0(){ exit 0; }
 
 # 菜单显示
@@ -478,7 +480,7 @@ green " ${T[${L}17]}：$VERSION  ${T[${L}18]}：${T[${L}1]}\n "
 red "======================================================================================================================\n"
 [[ -z "$CHOOSE1" ]] && yellow " $MENU_SHOW " && reading " ${T[${L}3]} " CHOOSE1
 case "$CHOOSE1" in
-[0-5] ) action$CHOOSE1;;
+[0-6] ) action$CHOOSE1;;
 * ) red " ${T[${L}14]} "; sleep 1; menu;;
 esac
 }
