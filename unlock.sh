@@ -3,7 +3,7 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/sbin:/b
 export LANG=en_US.UTF-8
 
 # 当前脚本版本号和新增功能
-VERSION='1.05'
+VERSION='1.06'
 
 # 最大支持流媒体，最大支持解锁方法
 SUPPORT_NUM='2'
@@ -14,8 +14,8 @@ declare -A T
 
 T[E0]="\n Language:\n  1.English (default) \n  2.简体中文\n"
 T[C0]="${T[E0]}"
-T[E1]="1. Suppport pass parameter. You can run like this:bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/warp_unlock/main/unlock.sh) -E -A us -4 -N nd -M 2; 2. Support logs push to Telegram; 3. Support switch unlock modes freely; 4. Log limit is 1000 lines"
-T[C1]="支持传参，你可以这样运行脚本: bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/warp_unlock/main/unlock.sh) -E -A us -4 -N nd -M 2; 2. 把日志输出到 Telegram; 3. 自由地切换解锁模式; 4. 日志限制1000行"
+T[E1]="1. Add two modes to unlock: systemd service and pm2 daemon"
+T[C1]="1. 增加两个解锁模式: systemd 服务和 pm2 进程守护"
 T[E2]="The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp_unlock/issues]"
 T[C2]="必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp_unlock/issues]"
 T[E3]="Choose:"
