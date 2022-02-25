@@ -1,8 +1,8 @@
 name: Build Wireguard-go
+
 on:
-  push:
-    branches:
-      - master
+  workflow_dispatch:
+
 jobs:
   Build:
     name: Build Linux Version
@@ -13,7 +13,7 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: 1.17
-      - name: Building wireguard-go
+      - name: Build wireguard-go
         run: |
           git clone https://git.zx2c4.com/wireguard-go
           cd wireguard-go
