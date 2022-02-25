@@ -19,9 +19,9 @@ jobs:
           cd wireguard-go
           go build -v -o "wireguard-go"
           mkdir /opt/release
-          cp wireguard-go /release
+          cp wireguard-go /opt/release
       - name: Uploading
         uses: actions/upload-artifact@v1
         with:
           name: wireguard-go # 生成的压缩包名称
-          path: /release # 需要打包的路径
+          path: /opt/release # 需要打包的路径
