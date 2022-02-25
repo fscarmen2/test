@@ -13,15 +13,15 @@ jobs:
         uses: actions/setup-go@v2
         with:
           go-version: 1.17
-      - name: Build wireguard-go
+      - name: Building wireguard-go
         run: |
           git clone https://git.zx2c4.com/wireguard-go
           cd wireguard-go
           go build -v -o "wireguard-go"
-          mkdir release
-          cp wireguard-go release/
+          mkdir /opt/release
+          cp wireguard-go /opt/release
       - name: Uploading
         uses: actions/upload-artifact@v1
         with:
           name: wireguard-go # 生成的压缩包名称
-          path: ./release/wireguard-go # 需要打包的路径
+          path: /opt/release # 需要打包的路径
