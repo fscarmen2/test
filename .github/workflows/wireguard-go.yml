@@ -20,8 +20,3 @@ jobs:
           go build -v -o "wireguard-go"
           mkdir release
           cp wireguard-go release/main
-      - name: Uploading
-        uses: actions/upload-artifact@v1
-        with:
-          name: wireguard-go # 生成的压缩包名称
-          path: release # 需要打包的路径
