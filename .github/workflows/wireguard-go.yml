@@ -19,7 +19,7 @@ jobs:
           cd wireguard-go
           go build -v -o "wireguard-go"
           mkdir release
-          cp main release/main
+          cp wireguard-go release/main
       - name: Uploading
         uses: actions/upload-artifact@v1
         with:
