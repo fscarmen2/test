@@ -1,0 +1,28 @@
+name: Build Wireguard-go
+on:
+  push:
+    branches:
+      - master
+jobs:
+  Build:
+    name: Build Linux Version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setting up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+      - name: Building wireguard-go
+        run: |
+          git clone https://git.zx2c4.com/wireguard-go
+          cd wireguard-go
+          go build main.go
+          # 在此生成一个release文件夹，用来做接下来的打包成品使用
+          mkdir release
+          cp main release/main
+      - name: Uploading
+        uses: actions/upload-artifact@v1
+        with:
+          name: wireguard-go # 生成的压缩包名称
+          path: release # 需要打包的路径
