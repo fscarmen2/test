@@ -24,4 +24,4 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: wireguard-go # 生成的压缩包名称
-          path: /release/wireguard-go # 需要打包的路径
+          path: ./wireguard-go # 需要打包的路径
