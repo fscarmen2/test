@@ -494,7 +494,6 @@ input_region(){
 
 # 更换支持 Netflix WARP IP 改编自 [luoxue-bot] 的成熟作品，地址[https://github.com/luoxue-bot/warp_auto_change_ip]
 change_ip(){
-	
 	change_wgcf(){
 		wgcf_restart(){ red " $(eval echo "${T[${L}126]}") " && ${SYSTEMCTL_RESTART[int]}; ss -nltp | grep dnsmasq >/dev/null 2>&1 && systemctl restart dnsmasq >/dev/null 2>&1; sleep $j; }
 		unset T4 T6
