@@ -29,4 +29,5 @@ jobs:
         uses: actions/download-artifact@v2
         with: 
           name: wireguard-go
-          path: ./
+          path: /opt/release
+
