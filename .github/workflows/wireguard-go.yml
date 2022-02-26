@@ -34,13 +34,13 @@ jobs:
             # Required, if repo is private a Personal Access Token with `repo` scope is needed
             #github_token: ${{secrets.GITHUB_TOKEN}}
             # Required, workflow file name or ID
-            workflow: wireguard-go.yml
+            #workflow: wireguard-go.yml
             # Optional, the status or conclusion of a completed workflow to search for
             # Can be one of a workflow conclusion:
             #   "failure", "success", "neutral", "cancelled", "skipped", "timed_out", "action_required"
             # Or a workflow status:
             #   "completed", "in_progress", "queued"
-            workflow_conclusion: success
+            #workflow_conclusion: success
             # Optional, will get head commit SHA
             #pr: ${{github.event.pull_request.number}}
             # Optional, no need to specify if PR is
@@ -65,7 +65,7 @@ jobs:
             # Optional, check the workflow run whether it has an artifact
             # then will get the last available artifact from previous workflow
             # default false, just try to download from the last one
-            check_artifacts:  false
+            #check_artifacts:  false
             # Optional, search for the last workflow run whose stored an artifact named as in `name` input
             # default false
-            search_artifacts: false
+            #search_artifacts: false
