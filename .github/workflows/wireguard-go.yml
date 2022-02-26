@@ -25,8 +25,3 @@ jobs:
         with:
           name: wireguard-go # 生成的压缩包名称
           path: /opt/release # 需要打包的路径
-          
-      - name: Downloading artifact
-        uses: actions/download-artifact@v2
-          with:
-            name: my-artifact
