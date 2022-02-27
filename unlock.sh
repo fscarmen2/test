@@ -374,7 +374,8 @@ while getopts ":CcEeUu46SsM:m:A:a:N:n:T:t:" OPTNAME; do
 	case "$OPTNAME" in
 		'C'|'c' ) L='C';;
 		'E'|'e' ) L='E';;
-		'U'|'u' ) [ ! -e /etc/wireguard/warp_unlock.sh ] && red " ${T[${L}27]} " && exit 1 || uninstall;;
+		'U'|'u' ) if [ ! -e /etc/wireguard/warp_unlock.sh ]; then red " ${T[${L}27]} " && exit 1
+			  else uninstall; exit 0; fi;;
 		'4' ) TRACE4=$(curl -ks4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
 		      [[ ! $TRACE4 =~ on|plus ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(1 0 0);;
 		'6' ) TRACE6=$(curl -ks6m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
