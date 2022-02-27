@@ -9,8 +9,8 @@ RUN apk add --no-cache tzdata wireguard-tools curl \
   && arch=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/) \
   && latest=$(wget -qO- "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/[ \"v,]//g') \
   && wget -O wgcf https://github.com/ViRb3/wgcf/releases/download/v$latest/wgcf_"$latest"_linux_$arch \
-  && echo -e "./wgcf register --accept-tos\n./wgcf generate -p wgcf.conf\nrm -rf wgcf wgcf-account.toml\nwg-quick up wgcf;" > wgcf.sh \
-  && chmod +x gost wgcf.sh
+  && echo -e "./wgcf register --accept-tos\n./wgcf generate -p wgcf.conf\nrm -rf wgcf wgcf-account.toml\nwg-quick up wgcf; top" > run.sh \
+  && chmod +x gost run.sh wgcf \
   && top
 
-ENTRYPOINT ./wgcf.sh
+ENTRYPOINT ./run.sh
