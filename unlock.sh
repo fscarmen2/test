@@ -279,7 +279,7 @@ check0(){
 RESULT[0]=""; REGION[0]=""; R[0]="";
 RESULT[0]=\$(curl --user-agent "\${UA_Browser}" \$NIC -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/81215567"  2>&1)
 if [[ \${RESULT[0]} = 200 ]]; then
-REGION[0]=\$(curl --user-agent "\${UA_Browser}" \$NIC -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g' | tr '[:lower:]' '[:upper:]')
+REGION[0]=\$(curl --user-agent "\${UA_Browser}" \$NIC -fs --max-time 10 --write-out %{red irect_url} --output /dev/null "https://www.netflix.com/title/80018499" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g' | tr '[:lower:]' '[:upper:]')
 REGION[0]=\${REGION[0]:-'US'}
 fi
 echo "\${REGION[0]}" | grep -qi "\$EXPECT" && R[0]="\$UNLOCK_STATUS" || R[0]="\$NOT_UNLOCK_STATUS"
@@ -374,7 +374,7 @@ while getopts ":CcEeUu46SsM:m:A:a:N:n:T:t:" OPTNAME; do
 	case "$OPTNAME" in
 		'C'|'c' ) L='C';;
 		'E'|'e' ) L='E';;
-		'U'|'u' ) [ !　-f /etc/wireguard/warp_unlock.sh ] && red " ${T[${L}27]} " && exit 1 || uninstall;;
+		'U'|'u' ) [ ! -e /etc/wireguard/warp_unlock.sh ] && red " ${T[${L}27]} " && exit 1 || uninstall;;
 		'4' ) TRACE4=$(curl -ks4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
 		      [[ ! $TRACE4 =~ on|plus ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(1 0 0);;
 		'6' ) TRACE6=$(curl -ks6m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
