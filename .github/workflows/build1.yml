@@ -1,4 +1,4 @@
-name: "Build and push images"
+name: "docker WARP"
 
 on:
   workflow_dispatch:
