@@ -10,7 +10,6 @@ RUN apk add --no-cache wireguard-tools \
   && latest=$(wget -qO- "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/[ \"v,]//g') \
   && wget -O wgcf https://github.com/ViRb3/wgcf/releases/download/v$latest/wgcf_"$latest"_linux_$arch \
   && echo -e "./wgcf register --accept-tos\n./wgcf generate -p wgcf.conf\nrm -rf wgcf wgcf-account.toml\nwg-quick up wgcf; top" > run.sh \
-  && chmod +x run.sh wgcf \
-  && top
+  && chmod +x run.sh wgcf
 
 ENTRYPOINT ./run.sh
