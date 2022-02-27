@@ -5,9 +5,8 @@ export LANG=en_US.UTF-8
 # 当前脚本版本号和新增功能
 VERSION='1.06'
 
-# 最大支持流媒体，最大支持解锁方法
+# 最大支持流媒体
 SUPPORT_NUM='2'
-UNLOCK_NUM='3'
 
 # 设置关联数组 T 用于中英文
 declare -A T
@@ -86,9 +85,6 @@ T[E43]="Media unlock daemon installed successfully. A systemd service has been c
 T[C43]="\n 媒体解锁守护进程已安装成功，已创建一个 systemd 服务，查看 [systemctl status warp_unlock]，关闭 [systemctl disable --now warp_unlock]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log\n"
 T[E44]="Media unlock daemon installed successfully. pm2 daemon is running, check pm2 [list] and close [pm2 delete warp_unlock; pm2 unstartup systemd;]. The VPS restart will still take effect. The running log of the scheduled task will be saved in /root/result.log\n"
 T[C44]="\n 媒体解锁守护进程已安装成功，pm2 守护进程正在工作中，查看 [pm2 list]，关闭 [pm2 delete warp_unlock; pm2 unstartup systemd; ]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log\n"
-T[E45]=""
-T[C45]=""
-
 
 # 自定义字体彩色，read 函数，友道翻译函数，安装依赖函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -378,7 +374,8 @@ while getopts ":CcEeUu46SsM:m:A:a:N:n:T:t:" OPTNAME; do
 	case "$OPTNAME" in
 		'C'|'c' ) L='C';;
 		'E'|'e' ) L='E';;
-		'U'|'u' ) [ -z "$UNLOCK_MODE_NOW" ] && check_unlock_running; [ -z "$UNLOCK_MODE_NOW" ]  && red " ${T[${L}27]} " && exit 1 || CHOOSE1=6;;
+		'U'|'u' ) if [ -f /etc/wireguard/warp_unlock.sh ]; then UN=1 && uninstall
+			  else red " ${T[${L}27]} " && exit 1; fi;;
 		'4' ) TRACE4=$(curl -ks4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
 		      [[ ! $TRACE4 =~ on|plus ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(1 0 0);;
 		'6' ) TRACE6=$(curl -ks6m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
