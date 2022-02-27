@@ -32,7 +32,7 @@ jobs:
 
             docker buildx inspect mybuilder --bootstrap
 
-            docker buildx build --tag ${DOCKERHUB_REPOSITORY} -f Dockerfile1 --platform=linux/arm64,linux/amd64 . --push
+            docker buildx build --tag ${DOCKERHUB_REPOSITORY} -f Dockerfile1 --platform=linux/arm64,linux/amd64,linux/s390x . --push
       
         - name: Test container
           run:  |
