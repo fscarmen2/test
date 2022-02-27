@@ -1,4 +1,4 @@
-name: "docker WARP"
+name: "WARP docker"
 
 on:
   workflow_dispatch:
@@ -6,7 +6,7 @@ on:
 jobs:
   Building:
       runs-on: ubuntu-latest
-      name: "Build Netflix unlock images"
+      name: "Build WARP docker"
       env:
         DOCKER_BUILDKIT: 1
         DOCKER_CLI_EXPERIMENTAL: enabled
@@ -43,7 +43,7 @@ jobs:
             --cap-add sys_module \
             --log-opt max-size=1m \
             -v /lib/modules:/lib/modules \
-            test:latest
+            fscarmen/test:latest
             
             docker exec -i ${{ secrets.DOCKER_REPO }} wget -qO- https://ip.gs/json
             docker stop ${{ secrets.DOCKER_REPO }}
