@@ -358,7 +358,7 @@ pm2 delete warp_unlock >/dev/null 2>&1
 pm2 unstartup systemd >/dev/null 2>&1
 
 # 输出执行结果，如是切换模式则不显示
-[ "$SWITCH" != 1 ] && green " ${T[${L}11]} "
+[ "$UN" = 1 ] && green " ${T[${L}11]} "
 }
 
 # 传参 1/2
@@ -375,7 +375,7 @@ while getopts ":CcEeUu46SsM:m:A:a:N:n:T:t:" OPTNAME; do
 		'C'|'c' ) L='C';;
 		'E'|'e' ) L='E';;
 		'U'|'u' ) if [ ! -e /etc/wireguard/warp_unlock.sh ]; then red " ${T[${L}27]} " && exit 1
-			  else uninstall; exit 0; fi;;
+			  else UN=1; uninstall; exit 0; fi;;
 		'4' ) TRACE4=$(curl -ks4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
 		      [[ ! $TRACE4 =~ on|plus ]] && red " ${T[${L}24]} " && exit 1 || STATUS=(1 0 0);;
 		'6' ) TRACE6=$(curl -ks6m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
@@ -408,7 +408,7 @@ MODE2=("while true; do" "sleep 1h; done")
 
 action1(){
 unset MODE2
-[ -n "$UNLOCK_MODE_NOW" ] && SWITCH=1 && uninstall
+[ -n "$UNLOCK_MODE_NOW" ] && uninstall
 TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 * * * * root bash /etc/wireguard/warp_unlock.sh\" >> /etc/crontab"
 RESULT_OUTPUT="${T[${L}10]}"
 export_unlock_file
@@ -416,7 +416,7 @@ result_output
 }
 
 action2(){
-[ -n "$UNLOCK_MODE_NOW" ] && SWITCH=1 && uninstall
+[ -n "$UNLOCK_MODE_NOW" ] && uninstall
 TASK="cat <<EOF > /etc/systemd/system/warp_unlock.service
 [Unit]
 Description = WARP unlock
@@ -437,7 +437,7 @@ result_output
 }
 
 action3(){
-[ -n "$UNLOCK_MODE_NOW" ] && SWITCH=1 && uninstall
+[ -n "$UNLOCK_MODE_NOW" ] && uninstall
 TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root nohup bash /etc/wireguard/warp_unlock.sh &\" >> /etc/crontab"
 RESULT_OUTPUT="${T[${L}21]}"
 export_unlock_file
@@ -446,7 +446,7 @@ result_output
 }
 
 action4(){
-[ -n "$UNLOCK_MODE_NOW" ] && SWITCH=1 && uninstall
+[ -n "$UNLOCK_MODE_NOW" ] && uninstall
 TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh\" >> /etc/crontab"
 RESULT_OUTPUT="${T[${L}20]}"
 check_dependencies screen
@@ -456,7 +456,7 @@ result_output
 }
 
 action5(){
-[ -n "$UNLOCK_MODE_NOW" ] && SWITCH=1 && uninstall
+[ -n "$UNLOCK_MODE_NOW" ] && uninstall
 TASK=""
 RESULT_OUTPUT="${T[${L}44]}"
 node -v >/dev/null 2>&1 || ${PACKAGE_INSTALL[b]} nodejs
