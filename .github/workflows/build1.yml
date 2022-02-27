@@ -43,7 +43,7 @@ jobs:
             --cap-add sys_module \
             --log-opt max-size=1m \
             -v /lib/modules:/lib/modules \
-            fscarmen/test:latest
+            ${DOCKERHUB_REPOSITORY}
             
             docker exec -i ${{ secrets.DOCKER_REPO }} wget -qO- https://ip.gs/json
             docker stop ${{ secrets.DOCKER_REPO }}
