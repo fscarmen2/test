@@ -1,0 +1,50 @@
+name: "Build and push images"
+
+on:
+  workflow_dispatch:
+
+jobs:
+  Building:
+      runs-on: ubuntu-latest
+      name: "Build Netflix unlock images"
+      env:
+        DOCKER_BUILDKIT: 1
+        DOCKER_CLI_EXPERIMENTAL: enabled
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        DOCKERHUB_REPOSITORY: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest
+
+      steps:
+        - name: Checkout
+          uses: actions/checkout@v2
+        
+        - name: Login to DockerHub
+          uses: docker/login-action@v1
+          with:
+            username: ${{ secrets.DOCKER_USERNAME }}
+            password: ${{ secrets.DOCKER_PASSWORD }}
+
+        - name: Build and push images to Docker hub
+          run: |
+            docker run --rm --privileged docker/binfmt:66f9012c56a8316f9244ffd7622d7c21c1f6f28d
+
+            docker buildx create --use --name mybuilder
+
+            docker buildx inspect mybuilder --bootstrap
+
+            docker buildx build --tag ${DOCKERHUB_REPOSITORY} -f Dockerfile1 --platform=linux/arm64,linux/amd64,linux/s390x . --push
+      
+        - name: Test container
+          run:  |
+            docker run --rm -id \
+            --name ${{ secrets.DOCKER_REPO }} \
+            --sysctl net.ipv6.conf.all.disable_ipv6=0 \
+            --privileged --cap-add net_admin \
+            --cap-add sys_module \
+            --log-opt max-size=1m \
+            -v /lib/modules:/lib/modules \
+            -v /etc/wireguard:/etc/wireguard \
+            ${DOCKERHUB_REPOSITORY}
+            
+            docker exec -i ${{ secrets.DOCKER_REPO }} wget -qO- https://ip.gs/json
+            docker stop ${{ secrets.DOCKER_REPO }}
