@@ -38,7 +38,6 @@ jobs:
           run:  |
             docker run --rm -id \
             --name ${{ secrets.DOCKER_REPO }} \
-            --restart=always \
             --network=host \
             --sysctl net.ipv6.conf.all.disable_ipv6=0 \
             --privileged --cap-add net_admin \
