@@ -44,11 +44,11 @@ wgcf_install(){
 	# 反复测试最佳 MTU。 Wireguard Header：IPv4=60 bytes,IPv6=80 bytes，1280 ≤1 MTU ≤ 1420。 ping = 8(ICMP回显示请求和回显应答报文格式长度) + 20(IP首部) 。
 	# 详细说明：<[WireGuard] Header / MTU sizes for Wireguard>：https://lists.zx2c4.com/pipermail/wireguard/2017-December/002201.html
 	MTU=$((1500-28))
-	ping -c1 -W1 -s $MTU -Mdo 162.159.192.1 >/dev/null 2>&1
+	ping -c1 -W1 -s $MTU -Mdo 162.159.193.10 >/dev/null 2>&1
 	until [[ $? = 0 || $MTU -le $((1280+80-28)) ]]
 	do
 	MTU=$((MTU-10))
-	ping -c1 -W1 -s $MTU -Mdo 162.159.192.1 >/dev/null 2>&1
+	ping -c1 -W1 -s $MTU -Mdo 162.159.193.10 >/dev/null 2>&1
 	done
 
 	if [[ $MTU -eq $((1500-28)) ]]; then MTU=$MTU
@@ -56,7 +56,7 @@ wgcf_install(){
 	else
 		for ((i=0; i<9; i++)); do
 		(( MTU++ ))
-		ping -c1 -W1 -s $MTU -Mdo 162.159.192.1 >/dev/null 2>&1 || break
+		ping -c1 -W1 -s $MTU -Mdo 162.159.193.10 >/dev/null 2>&1 || break
 		done
 		(( MTU-- ))
 	fi
@@ -64,7 +64,7 @@ wgcf_install(){
 	MTU=$((MTU+28-80))
 
 	[ -e wgcf.conf ] && sed -i "s/MTU.*/MTU = $MTU/g" $WGCF_DIR/wgcf.conf
-	sed -i "s/^.*\:\:\/0/#&/g;s/engage.cloudflareclient.com/162.159.192.1/g" $WGCF_DIR/wgcf.conf
+	sed -i "s/^.*\:\:\/0/#&/g;s/engage.cloudflareclient.com/162.159.193.10/g" $WGCF_DIR/wgcf.conf
 }
 
 # 期望解锁地区
