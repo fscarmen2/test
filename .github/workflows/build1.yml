@@ -45,6 +45,6 @@ jobs:
             -v /lib/modules:/lib/modules \
             ${DOCKERHUB_REPOSITORY}
             
-            sleep 20
+            sleep 8
             docker exec -i ${{ secrets.DOCKER_REPO }} wget -qO- https://ip.gs/json
             docker stop ${{ secrets.DOCKER_REPO }}
