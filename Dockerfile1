@@ -4,7 +4,7 @@ ENV DIR=/etc/wireguard
 
 WORKDIR $DIR
 
-RUN apk add --no-cache wireguard-tools \
+RUN apk add --no-cache net-tools iproute2 openresolv wireguard-tools openrc iptables \
   && rm -rf /var/cache/apk/* \
   && arch=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/) \
   && latest=$(wget -qO- "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/[ \"v,]//g') \
