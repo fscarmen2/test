@@ -102,7 +102,6 @@ RESTART="wgcf_restart"
 LOG_LIMIT="1000"
 UNLOCK_STATUS='Yes 🎉'
 NOT_UNLOCK_STATUS='No 😰'
-timedatectl set-timezone Asia/Shanghai
 if [[ \$(pgrep -laf ^[/d]*bash.*warp_unlock | awk -F, '{a[\$2]++}END{for (i in a) print i" "a[i]}') -le 2 ]]; then
 tg_output="💻 \\\$CUSTOM. ⏰ \\\$(date +'%F %T'). 🛰 \\\$WAN  🌏 \\\$COUNTRY. \\\$CONTENT"
 tg_message(){ curl -s -X POST "https://api.telegram.org/bot\$TOKEN/sendMessage" -d chat_id=\$USERID -d text="\$(eval echo "\$tg_output")" -d parse_mode="HTML" >/dev/null 2>&1; }
