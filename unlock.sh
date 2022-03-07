@@ -251,11 +251,11 @@ RESTART="$RESTART"
 LOG_LIMIT="1000"
 UNLOCK_STATUS='Yes 🎉'
 NOT_UNLOCK_STATUS='No 😰'
-timedatectl set-timezone Asia/Shanghai
 LMC999=\$(curl -sSLm4 https://raw.githubusercontent.com/lmc999/RegionRestrictionCheck/main/check.sh)
-RESULT_TITLE=\$(echo "$LMC999" | grep "result.*netflix.com/title/" | sed "s/.*title\/\([^\"]*\).*/\1/")
-REGION_TITLE=\$(echo "$LMC999" | grep "region.*netflix.com/title/" | sed "s/.*title\/\([^\"]*\).*/\1/")
+RESULT_TITLE=\$(echo "\$LMC999" | grep "result.*netflix.com/title/" | sed "s/.*title\/\([^\"]*\).*/\1/")
+REGION_TITLE=\$(echo "\$LMC999" | grep "region.*netflix.com/title/" | sed "s/.*title\/\([^\"]*\).*/\1/")
 RESULT_TITLE=\${RESULT_TITLE:-'81215567'}; REGION_TITLE=\${REGION_TITLE:-'80018499'}
+timedatectl set-timezone Asia/Shanghai
 
 if [[ \$(pgrep -laf ^[/d]*bash.*warp_unlock | awk -F, '{a[\$2]++}END{for (i in a) print i" "a[i]}') -le 2 ]]; then
 
