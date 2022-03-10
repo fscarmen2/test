@@ -1168,7 +1168,7 @@ proxy(){
 	mkdir -p /etc/wireguard/ >/dev/null 2>&1
 	if [[ $CLIENT = 0 ]]; then
 	green " ${T[${L}83]} "
-	[[ $SYSTEM = CentOS ]] && (rpm -ivh http://pkg.cloudflareclient.com/cloudflare-release-el"$(expr "$SYS" : '.*\s\([0-9]\{1,\}\)\.*')".rpm
+	[[ $SYSTEM = CentOS ]] && (rpm -ivh http://pkg.cloudflareclient.com/cloudflare-release-el8.rpm
 	${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp)
 	[[ $SYSTEM != CentOS ]] && ${PACKAGE_UPDATE[int]} && ${PACKAGE_INSTALL[int]} lsb-release
 	[[ $SYSTEM = Debian && ! $(type -P gpg 2>/dev/null) ]] && ${PACKAGE_INSTALL[int]} gnupg
