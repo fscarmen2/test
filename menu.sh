@@ -1174,10 +1174,10 @@ proxy(){
 	[[ $SYSTEM = Debian && ! $(type -P gpg 2>/dev/null) ]] && ${PACKAGE_INSTALL[int]} gnupg
 	[[ $SYSTEM = Debian && ! $(apt list 2>/dev/null | grep apt-transport-https ) =~ installed ]] && ${PACKAGE_INSTALL[int]} apt-transport-https
 	if [[ $SYSTEM != CentOS ]]; then
-		if [[ $(echo $SYS | sed "s/[^0-9.]//g" | cut -d. -f1) != 18 ]]; then
+		if	[[ $(echo $SYS | sed "s/[^0-9.]//g" | cut -d. -f1) != 18 ]]; then
 			curl https://pkg.cloudflareclient.com/pubkey.gpg | apt-key add -
 			echo "deb http://pkg.cloudflareclient.com/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/cloudflare-client.list
-		else curl https://pkg.cloudflare.com/cloudflare-main.gpg -o /usr/share/keyrings/cloudflare-main.gpg	
+		else	curl https://pkg.cloudflare.com/cloudflare-main.gpg -o /usr/share/keyrings/cloudflare-main.gpg	
 			echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/ focal main' | tee /etc/apt/sources.list.d/cloudflare-main.list
 		fi
 		${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
