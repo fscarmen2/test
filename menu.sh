@@ -1170,43 +1170,38 @@ proxy(){
 	input_port
 	start=$(date +%s)
 	mkdir -p /etc/wireguard/ >/dev/null 2>&1
-	if [[ $CLIENT = 0 ]]; then
-	green " ${T[${L}83]} "
-	if [[ $SYSTEM = CentOS ]]; then
-		rpm -ivh http://pkg.cloudflareclient.com/cloudflare-release-el8.rpm >/dev/null 2>&1
-		if [[ $(expr "$SYS" : '.*\s\([0-9]\{1,\}\)\.*') = 7 && ! $(strings /lib64/libc.so.6 ) =~ GLIBC_2.28 ]]; then
-			reading " ${T[${L}148]} " C7CLIENT
-			[[ $C7CLIENT != [Yy] ]] && exit
-			sed -i "s/\$releasever/8/g" /etc/yum.repos.d/cloudflare.repo
-			yum -y install gcc bison make centos-release-scl
-			yum -y install devtoolset-8-gcc devtoolset-8-gcc-c++ devtoolset-8-binutils
-			source /opt/rh/devtoolset-8/enable
-			# scl enable devtoolset-8 bash
-			# echo "source /opt/rh/devtoolset-8/enable" >>/etc/profile
-			wget -O /usr/bin/make https://github.com/fscarmen/tools/raw/main/make
-			curl -O http://ftp.gnu.org/gnu/glibc/glibc-2.28.tar.gz
-			tar zxf glibc-2.28.tar.gz
-			mkdir -p ./glibc-2.28/build; cd ./glibc-2.28/build
-			../configure --prefix=/usr --disable-profile --enable-add-ons --with-headers=/usr/include --with-binutils=/usr/bin
-			make; make install
-			rm -rf ./glibc-2.28
+	if [[ $CLIENT = 0 ]]; then green " ${T[${L}83]} "
+		if [[ $SYSTEM = CentOS ]]; then
+			rpm -ivh http://pkg.cloudflareclient.com/cloudflare-release-el8.rpm >/dev/null 2>&1
+			#  CentOS 7，需要用 Cloudflare CentOS 8 的库以安装 Client，并在线编译升级 C 运行库 Glibc 2.28
+			if	[[ $(expr "$SYS" : '.*\s\([0-9]\{1,\}\)\.*') = 7 && ! $(strings /lib64/libc.so.6 ) =~ GLIBC_2.28 ]]; then
+				reading " ${T[${L}148]} " C7CLIENT
+				[[ $C7CLIENT != [Yy] ]] && exit
+				sed -i "s/\$releasever/8/g" /etc/yum.repos.d/cloudflare.repo
+				yum -y install gcc bison make centos-release-scl
+				yum -y install devtoolset-8-gcc devtoolset-8-gcc-c++ devtoolset-8-binutils
+				source /opt/rh/devtoolset-8/enable
+				wget -O /usr/bin/make https://github.com/fscarmen/tools/raw/main/make
+				curl -O http://ftp.gnu.org/gnu/glibc/glibc-2.28.tar.gz
+				tar zxf glibc-2.28.tar.gz
+				mkdir -p ./glibc-2.28/build; cd ./glibc-2.28/build
+				../configure --prefix=/usr --disable-profile --enable-add-ons --with-headers=/usr/include --with-binutils=/usr/bin
+				make; make install
+				rm -rf ./glibc-2.28
+			fi
+		elif 	${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} lsb-release
+			[[ $SYSTEM = Debian && ! $(type -P gpg 2>/dev/null) ]] && ${PACKAGE_INSTALL[int]} gnupg
+			[[ $SYSTEM = Debian && ! $(apt list 2>/dev/null | grep apt-transport-https ) =~ installed ]] && ${PACKAGE_INSTALL[int]} apt-transport-https
+			if	[[ $(echo $SYS | sed "s/[^0-9.]//g" | cut -d. -f1) != 18 ]]; then
+				curl https://pkg.cloudflareclient.com/pubkey.gpg | apt-key add -
+				echo "deb http://pkg.cloudflareclient.com/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/cloudflare-client.list
+			# Ubuntu 18.04 (Bionic)，需要欺骗系统为 20.04 (Focal)，以安装 Client
+			else	curl https://pkg.cloudflare.com/cloudflare-main.gpg -o /usr/share/keyrings/cloudflare-main.gpg	
+				echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/ focal main' | tee /etc/apt/sources.list.d/cloudflare-main.list
+			fi
 		fi
 		${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
-	fi
-
-	[[ $SYSTEM != CentOS ]] && ${PACKAGE_UPDATE[int]} && ${PACKAGE_INSTALL[int]} lsb-release
-	[[ $SYSTEM = Debian && ! $(type -P gpg 2>/dev/null) ]] && ${PACKAGE_INSTALL[int]} gnupg
-	[[ $SYSTEM = Debian && ! $(apt list 2>/dev/null | grep apt-transport-https ) =~ installed ]] && ${PACKAGE_INSTALL[int]} apt-transport-https
-	if [[ $SYSTEM != CentOS ]]; then
-		if	[[ $(echo $SYS | sed "s/[^0-9.]//g" | cut -d. -f1) != 18 ]]; then
-			curl https://pkg.cloudflareclient.com/pubkey.gpg | apt-key add -
-			echo "deb http://pkg.cloudflareclient.com/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/cloudflare-client.list
-		else	curl https://pkg.cloudflare.com/cloudflare-main.gpg -o /usr/share/keyrings/cloudflare-main.gpg	
-			echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/ focal main' | tee /etc/apt/sources.list.d/cloudflare-main.list
-		fi
-		${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
-	fi
-	settings
+		settings
 
 	elif [[ $CLIENT = 2 && $(warp-cli --accept-tos status 2>/dev/null) =~ 'Registration missing' ]]; then settings
 
