@@ -1177,7 +1177,6 @@ proxy(){
 			reading " ${T[${L}148]} " C7CLIENT
 			[[ $C7CLIENT != [Yy] ]] && exit
 			sed -i "s/\$releasever/8/g" /etc/yum.repos.d/cloudflare.repo
-			${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
 			yum -y install gcc bison make centos-release-scl
 			yum -y install devtoolset-8-gcc devtoolset-8-gcc-c++ devtoolset-8-binutils
 			scl enable devtoolset-8 bash
@@ -1189,8 +1188,8 @@ proxy(){
 			../configure --prefix=/usr --disable-profile --enable-add-ons --with-headers=/usr/include --with-binutils=/usr/bin
 			make; make install
 			rm -rf ./glibc-2.28
-		else ${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
 		fi
+		${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
 	fi
 
 	[[ $SYSTEM != CentOS ]] && ${PACKAGE_UPDATE[int]} && ${PACKAGE_INSTALL[int]} lsb-release
