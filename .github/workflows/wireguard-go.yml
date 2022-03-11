@@ -35,5 +35,5 @@ jobs:
         with:
           files: /opt/release/wireguard-go
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
