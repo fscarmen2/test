@@ -1189,6 +1189,7 @@ proxy(){
 			../configure --prefix=/usr --disable-profile --enable-add-ons --with-headers=/usr/include --with-binutils=/usr/bin
 			make; make install
 			rm -rf ./glibc-2.28
+			wait
 		else ${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
 		fi
 	fi
@@ -1205,14 +1206,11 @@ proxy(){
 		fi
 		${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
 	fi
-
 	settings
 
-	elif [[ $CLIENT = 2 && $(warp-cli --accept-tos status 2>/dev/null) =~ 'Registration missing' ]]; then
-	settings
+	elif [[ $CLIENT = 2 && $(warp-cli --accept-tos status 2>/dev/null) =~ 'Registration missing' ]]; then settings
 
-	else
-	red " ${T[${L}85]} " 
+	else red " ${T[${L}85]} " 
 	fi
 
 	# 创建再次执行的软链接快捷方式，再次运行可以用 warp 指令,设置默认语言
@@ -1244,7 +1242,6 @@ stream(){
 		* ) red " ${T[${L}51]} [1-2]"; sleep 1; stream;;
 	esac
 	}
-
 
 # 免费 WARP 账户升级 WARP+ 账户
 update(){
