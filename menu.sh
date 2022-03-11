@@ -1179,8 +1179,9 @@ proxy(){
 			sed -i "s/\$releasever/8/g" /etc/yum.repos.d/cloudflare.repo
 			yum -y install gcc bison make centos-release-scl
 			yum -y install devtoolset-8-gcc devtoolset-8-gcc-c++ devtoolset-8-binutils
-			scl enable devtoolset-8 bash
-			echo "source /opt/rh/devtoolset-8/enable" >>/etc/profile
+			source /opt/rh/devtoolset-8/enable
+			# scl enable devtoolset-8 bash
+			# echo "source /opt/rh/devtoolset-8/enable" >>/etc/profile
 			wget -O /usr/bin/make https://github.com/fscarmen/tools/raw/main/make
 			curl -O http://ftp.gnu.org/gnu/glibc/glibc-2.28.tar.gz
 			tar zxf glibc-2.28.tar.gz
