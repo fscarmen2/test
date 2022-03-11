@@ -1,4 +1,4 @@
-name: "WARP docker"
+name: "Glibc V2.28 maker"
 
 on:
   workflow_dispatch:
