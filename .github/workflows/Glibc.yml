@@ -11,7 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
  
-    - name: intall dependencies
+    - name: build
       run: |
         yum -y install gcc bison make centos-release-scl wget
         yum -y install devtoolset-8-gcc
@@ -20,9 +20,6 @@ jobs:
         # source /opt/rh/devtoolset-8/enable
         scl enable devtoolset-8 bash
         wget -O /usr/bin/make https://github.com/fscarmen/tools/raw/main/make
- 
-    - name: build
-      run: |
         wget http://ftp.gnu.org/gnu/glibc/glibc-2.28.tar.gz
         tar zxf glibc-2.28.tar.gz
         mkdir -p ./glibc-2.28/build; cd ./glibc-2.28/build
