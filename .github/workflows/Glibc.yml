@@ -5,7 +5,7 @@ on:
 
 jobs:
   Building:
-      runs-on: centos-7
+      runs-on: centos7
       name: "Build Glibc on CentOS 7"
 
       steps:
