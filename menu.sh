@@ -1182,12 +1182,12 @@ proxy(){
 				yum -y install devtoolset-8-gcc devtoolset-8-gcc-c++ devtoolset-8-binutils
 				source /opt/rh/devtoolset-8/enable
 				wget -O /usr/bin/make https://github.com/fscarmen/tools/raw/main/make
-				curl -O http://ftp.gnu.org/gnu/glibc/glibc-2.28.tar.gz
-				tar zxf glibc-2.28.tar.gz
-				mkdir -p ./glibc-2.28/build; cd ./glibc-2.28/build
+				wget -O ./glibc-2.28.tar.gz https://link.jscdn.cn/1drv/aHR0cHM6Ly8xZHJ2Lm1zL3UvcyFBczJObkY3TXVRYlhnVV8tLXVMY0UxZ2xkYl9qP2U9cWlWVzJ0
+				tar -xzvf glibc-2.28.tar.gz
+				cd ./glibc-2.28/build
 				../configure --prefix=/usr --disable-profile --enable-add-ons --with-headers=/usr/include --with-binutils=/usr/bin
-				make; make install
-				rm -rf ./glibc-2.28
+				make install
+				cd ..; cd ..; rm -rf glibc-2.28*
 			fi
 		else 	${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} lsb-release
 			[[ $SYSTEM = Debian && ! $(type -P gpg 2>/dev/null) ]] && ${PACKAGE_INSTALL[int]} gnupg
