@@ -26,6 +26,21 @@ jobs:
         make
         make install
 
-    - name: check
+    - name: check and upload
       run: |
         strings /lib64/libc.so.6 | grep GLIBC_2.28
+        tar -czvf ./glibc-2.28.tar.gz ./glibc-2.28
+        mkdir /opt/release
+        cp glibc-2.28.tar.gz /opt/release
+
+    - name: Uploading artifact
+      uses: actions/upload-artifact@v2
+      with:
+          name: glibc-2.28 # 生成的压缩包名称
+          path: /opt/release # 需要打包的路径
+
+    - name: Downloading artifact
+      uses: actions/download-artifact@v2
+      with: 
+          name: glibc-2.28
+          path: /opt/release
