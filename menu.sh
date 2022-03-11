@@ -9,8 +9,8 @@ declare -A T
 
 T[E0]="\n Language:\n  1.English (default) \n  2.简体中文\n"
 T[C0]="${T[E0]}"
-T[E1]="1.Open TUN for OVZ. You needn't setting it in the control panel; 2. WARP Client support Ubuntu 18.04 and CentOS 7. "
-T[C1]="1.为 OVZ VPS 在线打开 TUN,不需要到面板处理; 2. WARP Client 支持 Ubuntu 18.04 and CentOS 7"
+T[E1]="1. First publication on a global scale. WARP Client support Ubuntu 18.04 and CentOS 7; 2. Open TUN for OVZ. You needn't setting it in the control panel. "
+T[C1]="1. 全网首发: WARP Client 支持 Ubuntu 18.04 and CentOS 7; 2. 为 OVZ VPS 在线打开 TUN,不需要到面板处理"
 T[E2]="The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C2]="必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E3]="The TUN module is not loaded. You should turn it on in the control panel. Ask the supplier for more help. Feedback: [https://github.com/fscarmen/warp/issues]"
@@ -303,8 +303,6 @@ T[E146]="Cannot switch to the same form as the current one."
 T[C146]="不能切换为当前一样的形态"
 T[E147]="Not available for IPv6 only VPS"
 T[C147]="IPv6 only VPS 不能使用此方案"
-T[E148]="This will take about an hour to compile Glibc 2.28. Confirming the installation press [y]:"
-T[C148]="实时编译 Glibc 2.28 将要花大概 1 小时。确认安装请按 [y]:"
 
 # 自定义字体彩色，read 函数，友道翻译函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -1179,8 +1177,9 @@ proxy(){
 				wget -O ./glibc-2.28.tar.gz https://link.jscdn.cn/1drv/aHR0cHM6Ly8xZHJ2Lm1zL3UvcyFBczJObkY3TXVRYlhnVV8tLXVMY0UxZ2xkYl9qP2U9cWlWVzJ0
 				tar -xzvf glibc-2.28.tar.gz; }&
 				sed -i "s/\$releasever/8/g" /etc/yum.repos.d/cloudflare.repo
-				yum -y install gcc bison make centos-release-scl
-				yum -y install devtoolset-8-gcc devtoolset-8-gcc-c++ devtoolset-8-binutils
+				${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
+				${PACKAGE_INSTALL[int]} gcc bison make centos-release-scl
+				${PACKAGE_INSTALL[int]} devtoolset-8-gcc devtoolset-8-gcc-c++ devtoolset-8-binutils
 				source /opt/rh/devtoolset-8/enable
 				wait
 				cd ./glibc-2.28/build
@@ -1198,8 +1197,8 @@ proxy(){
 			else	curl https://pkg.cloudflare.com/cloudflare-main.gpg -o /usr/share/keyrings/cloudflare-main.gpg	
 				echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/ focal main' | tee /etc/apt/sources.list.d/cloudflare-main.list
 			fi
+			${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
 		fi
-		${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
 		settings
 
 	elif [[ $CLIENT = 2 && $(warp-cli --accept-tos status 2>/dev/null) =~ 'Registration missing' ]]; then settings
