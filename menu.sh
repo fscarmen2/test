@@ -1174,8 +1174,8 @@ proxy(){
 	if [[ $SYSTEM = CentOS ]]; then
 		rpm -ivh http://pkg.cloudflareclient.com/cloudflare-release-el8.rpm
 		if [[ $(expr "$SYS" : '.*\s\([0-9]\{1,\}\)\.*') = 7 && ! $(strings /lib64/libc.so.6 ) =~ GLIBC_2.28 ]]; then
-			reading " ${T[$L148]} " C7CLIENT
-			[[ $C7CLIENT = [Yy] ]] && exit
+			reading " ${T[${L}148]} " C7CLIENT
+			[[ $C7CLIENT != [Yy] ]] && exit
 			sed -i "s/\$releasever/8/g" /etc/yum.repos.d/cloudflare.repo
 			{ ${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp; }&
 			yum -y install gcc bison make centos-release-scl
