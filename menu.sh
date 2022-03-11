@@ -1173,7 +1173,7 @@ proxy(){
 	if [[ $CLIENT = 0 ]]; then
 	green " ${T[${L}83]} "
 	if [[ $SYSTEM = CentOS ]]; then
-		rpm -ivh http://pkg.cloudflareclient.com/cloudflare-release-el8.rpm
+		rpm -ivh http://pkg.cloudflareclient.com/cloudflare-release-el8.rpm >/dev/null 2>&1
 		if [[ $(expr "$SYS" : '.*\s\([0-9]\{1,\}\)\.*') = 7 && ! $(strings /lib64/libc.so.6 ) =~ GLIBC_2.28 ]]; then
 			reading " ${T[${L}148]} " C7CLIENT
 			[[ $C7CLIENT != [Yy] ]] && exit
