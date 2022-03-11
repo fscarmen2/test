@@ -1,4 +1,4 @@
-name: "Glibc V2.28 maker"
+name: "Build Glibc V2.28"
 
 on:
   workflow_dispatch:
@@ -11,7 +11,7 @@ jobs:
     steps:
     - uses: actions/checkout@v2
  
-    - name: intall deps
+    - name: intall dependencies
       run: |
         yum -y install gcc bison make centos-release-scl wget
         yum -y install devtoolset-8-gcc
@@ -19,10 +19,16 @@ jobs:
         yum -y install devtoolset-8-binutils
         source /opt/rh/devtoolset-8/enable
         wget -O /usr/bin/make https://github.com/fscarmen/tools/raw/main/make
+ 
+    - name: build
+      run: |
         wget http://ftp.gnu.org/gnu/glibc/glibc-2.28.tar.gz
         tar zxf glibc-2.28.tar.gz
         mkdir -p ./glibc-2.28/build; cd ./glibc-2.28/build
         ../configure --prefix=/usr --disable-profile --enable-add-ons --with-headers=/usr/include --with-binutils=/usr/bin
         make
         make install
-        rm -rf ./glibc-2.28
+
+    - name: check
+      run: |
+        strings /lib64/libc.so.6 | grep GLIBC_2.28
