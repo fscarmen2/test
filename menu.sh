@@ -303,8 +303,8 @@ T[E146]="Cannot switch to the same form as the current one."
 T[C146]="不能切换为当前一样的形态"
 T[E147]="Not available for IPv6 only VPS"
 T[C147]="IPv6 only VPS 不能使用此方案"
-T[E148]="This will take about an hour to compile glibc 2.28. Press [y] to confirm the installation:"
-T[C148]="实时编译 glibc 2.28 将要花大概 1 小时。确认安装请按 [y]:"
+T[E148]="This will take about an hour to compile Glibc 2.28. Confirming the installation press [y]:"
+T[C148]="实时编译 Glibc 2.28 将要花大概 1 小时。确认安装请按 [y]:"
 
 # 自定义字体彩色，read 函数，友道翻译函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
