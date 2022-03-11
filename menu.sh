@@ -3,14 +3,14 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/sbin:/b
 export LANG=en_US.UTF-8
 
 # 当前脚本版本号和新增功能
-VERSION=2.32
+VERSION=2.33
 
 declare -A T
 
 T[E0]="\n Language:\n  1.English (default) \n  2.简体中文\n"
 T[C0]="${T[E0]}"
-T[E1]="1.Change the WARP endpoint; 2. Sync the Netflix title with lmc999"
-T[C1]="1.更换 WARP 的 endpoint; 2. 同步 lmc999 的 Netflix 检测 title"
+T[E1]="1.Open TUN for OVZ; You needn't setting it in the control panel; 2. WARP Client support Ubuntu 18.04 and CentOS 7"
+T[C1]="1.为 OVZ VPS 在线打开 TUN,不需要到面板处理; 2. WARP Client 支持 Ubuntu 18.04 and CentOS 7"
 T[E2]="The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C2]="必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E3]="The TUN module is not loaded. You should turn it on in the control panel. Ask the supplier for more help. Feedback: [https://github.com/fscarmen/warp/issues]"
@@ -303,6 +303,8 @@ T[E146]="Cannot switch to the same form as the current one."
 T[C146]="不能切换为当前一样的形态"
 T[E147]="Not available for IPv6 only VPS"
 T[C147]="IPv6 only VPS 不能使用此方案"
+T[E148]="This will take about an hour to compile glibc 2.28. Press [y] to confirm the installation:"
+T[C148]="实时编译 glibc 2.28 将要花大概 1 小时。确认安装请按 [y]:"
 
 # 自定义字体彩色，read 函数，友道翻译函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -741,8 +743,9 @@ stack_switch(){
 check_system_info(){
 	green " ${T[${L}37]} "
 
-	# 必须加载 TUN 模块
+	# 必须加载 TUN 模块，先尝试在线打开 TUN
 	TUN=$(cat /dev/net/tun 2>&1 | tr '[:upper:]' '[:lower:]')
+ 	[[ ! $TUN =~ 'in bad state' ]] && [[ ! $TUN =~ '处于错误状态' ]] && [[ ! $TUN =~ 'Die Dateizugriffsnummer ist in schlechter Verfassung' ]] && mkdir -p /dev/net && mknod /dev/net/tun c 10 200 && chmod 0666 /dev/net/tun
 	[[ ! $TUN =~ 'in bad state' ]] && [[ ! $TUN =~ '处于错误状态' ]] && [[ ! $TUN =~ 'Die Dateizugriffsnummer ist in schlechter Verfassung' ]] && red " ${T[${L}3]} " && exit 1
 
 	# 判断是否大陆 VPS。先尝试连接 CloudFlare WARP 服务的 Endpoint IP，如遇到 WARP 断网则先关闭、杀进程后重试一次，仍然不通则 WARP 项目不可用。
@@ -1168,8 +1171,28 @@ proxy(){
 	mkdir -p /etc/wireguard/ >/dev/null 2>&1
 	if [[ $CLIENT = 0 ]]; then
 	green " ${T[${L}83]} "
-	[[ $SYSTEM = CentOS ]] && (rpm -ivh http://pkg.cloudflareclient.com/cloudflare-release-el8.rpm
-	${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp)
+	if [[ $SYSTEM = CentOS ]]; then
+		rpm -ivh http://pkg.cloudflareclient.com/cloudflare-release-el8.rpm
+		if [[ $(expr "$SYS" : '.*\s\([0-9]\{1,\}\)\.*') = 7 && ! $(strings /lib64/libc.so.6 ) =~ GLIBC_2.28 ]]; then
+			reading " ${T[$L148]} " C7CLIENT
+			[[ $C7CLIENT = [Yy] ]] && exit
+			sed -i "s/\$releasever/8/g" /etc/yum.repos.d/cloudflare.repo
+			{ ${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp; }&
+			yum -y install gcc bison make centos-release-scl
+			yum -y install devtoolset-8-gcc devtoolset-8-gcc-c++ devtoolset-8-binutils
+			scl enable devtoolset-8 bash
+			echo "source /opt/rh/devtoolset-8/enable" >>/etc/profile
+			wget -O /usr/bin/make https://github.com/fscarmen/tools/raw/main/make
+			curl -O http://ftp.gnu.org/gnu/glibc/glibc-2.28.tar.gz
+			tar zxf glibc-2.28.tar.gz
+			mkdir -p ./glibc-2.28/build; cd ./glibc-2.28/build
+			../configure --prefix=/usr --disable-profile --enable-add-ons --with-headers=/usr/include --with-binutils=/usr/bin
+			make; make install
+			rm -rf ./glibc-2.28
+		else ${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
+		fi
+	fi
+
 	[[ $SYSTEM != CentOS ]] && ${PACKAGE_UPDATE[int]} && ${PACKAGE_INSTALL[int]} lsb-release
 	[[ $SYSTEM = Debian && ! $(type -P gpg 2>/dev/null) ]] && ${PACKAGE_INSTALL[int]} gnupg
 	[[ $SYSTEM = Debian && ! $(apt list 2>/dev/null | grep apt-transport-https ) =~ installed ]] && ${PACKAGE_INSTALL[int]} apt-transport-https
