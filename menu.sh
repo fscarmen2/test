@@ -1194,12 +1194,12 @@ proxy(){
 				curl https://pkg.cloudflareclient.com/pubkey.gpg | apt-key add -
 				echo "deb http://pkg.cloudflareclient.com/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/cloudflare-client.list
 			# Ubuntu 18.04 (Bionic)，需要欺骗系统为 20.04 (Focal)，以安装 Client
-			else	curl https://pkg.cloudflare.com/cloudflare-main.gpg -o /usr/share/keyrings/cloudflare-main.gpg	
+			else	curl https://pkg.cloudflare.com/cloudflare-main.gpg -o /usr/share/keyrings/cloudflare-main.gpg
 				echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/ focal main' | tee /etc/apt/sources.list.d/cloudflare-main.list
 			fi
 			${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
 		fi
-		[[ $(systemctl is-active warp-svc) != active ]] && systemctl start warp-svc
+		[[ $(systemctl is-active warp-svc) != active ]] && ( systemctl start warp-svc; sleep 1 )
 		settings
 
 	elif [[ $CLIENT = 2 && $(warp-cli --accept-tos status 2>/dev/null) =~ 'Registration missing' ]]; then settings
