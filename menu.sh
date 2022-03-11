@@ -1189,7 +1189,7 @@ proxy(){
 				make; make install
 				rm -rf ./glibc-2.28
 			fi
-		elif 	${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} lsb-release
+		else 	${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} lsb-release
 			[[ $SYSTEM = Debian && ! $(type -P gpg 2>/dev/null) ]] && ${PACKAGE_INSTALL[int]} gnupg
 			[[ $SYSTEM = Debian && ! $(apt list 2>/dev/null | grep apt-transport-https ) =~ installed ]] && ${PACKAGE_INSTALL[int]} apt-transport-https
 			if	[[ $(echo $SYS | sed "s/[^0-9.]//g" | cut -d. -f1) != 18 ]]; then
