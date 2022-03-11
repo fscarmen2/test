@@ -1199,7 +1199,7 @@ proxy(){
 			fi
 			${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
 		fi
-		[[ $(systemctl is-active warp-svc) != active ]] && ( systemctl start warp-svc; sleep 1 )
+		[[ $(systemctl is-active warp-svc) != active ]] && ( systemctl start warp-svc; sleep 2 )
 		settings
 
 	elif [[ $CLIENT = 2 && $(warp-cli --accept-tos status 2>/dev/null) =~ 'Registration missing' ]]; then settings
