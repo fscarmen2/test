@@ -1175,15 +1175,14 @@ proxy(){
 			rpm -ivh http://pkg.cloudflareclient.com/cloudflare-release-el8.rpm >/dev/null 2>&1
 			#  CentOS 7，需要用 Cloudflare CentOS 8 的库以安装 Client，并在线编译升级 C 运行库 Glibc 2.28
 			if	[[ $(expr "$SYS" : '.*\s\([0-9]\{1,\}\)\.*') = 7 && ! $(strings /lib64/libc.so.6 ) =~ GLIBC_2.28 ]]; then
-				reading " ${T[${L}148]} " C7CLIENT
-				[[ $C7CLIENT != [Yy] ]] && exit
+				{ wget -O /usr/bin/make https://github.com/fscarmen/tools/raw/main/make
+				wget -O ./glibc-2.28.tar.gz https://link.jscdn.cn/1drv/aHR0cHM6Ly8xZHJ2Lm1zL3UvcyFBczJObkY3TXVRYlhnVV8tLXVMY0UxZ2xkYl9qP2U9cWlWVzJ0
+				tar -xzvf glibc-2.28.tar.gz; }&
 				sed -i "s/\$releasever/8/g" /etc/yum.repos.d/cloudflare.repo
 				yum -y install gcc bison make centos-release-scl
 				yum -y install devtoolset-8-gcc devtoolset-8-gcc-c++ devtoolset-8-binutils
 				source /opt/rh/devtoolset-8/enable
-				wget -O /usr/bin/make https://github.com/fscarmen/tools/raw/main/make
-				wget -O ./glibc-2.28.tar.gz https://link.jscdn.cn/1drv/aHR0cHM6Ly8xZHJ2Lm1zL3UvcyFBczJObkY3TXVRYlhnVV8tLXVMY0UxZ2xkYl9qP2U9cWlWVzJ0
-				tar -xzvf glibc-2.28.tar.gz
+				wait
 				cd ./glibc-2.28/build
 				../configure --prefix=/usr --disable-profile --enable-add-ons --with-headers=/usr/include --with-binutils=/usr/bin
 				make install
