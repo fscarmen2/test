@@ -13,20 +13,31 @@ jobs:
     steps:
     - uses: actions/checkout@v2
  
-    - name: build
+    - name: Build make
       run: |
         yum -y install gcc bison make centos-release-scl wget
         yum -y install devtoolset-8-gcc
         yum -y install devtoolset-8-gcc-c++
         yum -y install devtoolset-8-binutils
         source /opt/rh/devtoolset-8/enable
-        wget -O /usr/bin/make https://github.com/fscarmen/tools/raw/main/make
+        mkdir -p /opt/release/
+        wget http://ftp.gnu.org/gnu/make/make-4.3.tar.gz
+        tar -xzvf make-4.3.tar.gz
+        cd make-4.3
+        ./configure
+        make
+        make install
+        echo y | cp -f ./make /usr/bin/
+        cp ./make /opt/release/
+        cd ~
+
+    - name: Build glibc-2.28
+      run: | 
         wget http://ftp.gnu.org/gnu/glibc/glibc-2.28.tar.gz
         tar -zxvf glibc-2.28.tar.gz
         mkdir -p ./glibc-2.28/build
         mkdir -p /opt/release/
         tar -czvf /opt/release/glibc-2.28.tar.gz ./glibc-2.28
-        ls /opt/release
 
     - name: Binaries Release
       uses: softprops/action-gh-release@v1
