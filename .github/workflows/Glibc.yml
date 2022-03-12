@@ -25,8 +25,8 @@ jobs:
         tar -zxvf glibc-2.28.tar.gz
         mkdir -p ./glibc-2.28/build
         mkdir -p /opt/release/
-        ls ./glibc-2.28
         tar -czvf /opt/release/glibc-2.28.tar.gz ./glibc-2.28
+        ls /opt/release
 
     - name: Binaries Release
       uses: softprops/action-gh-release@v1
