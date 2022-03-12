@@ -1,4 +1,4 @@
-name: "Build Glibc V2.28"
+name: "Build glibc & make"
 
 on:
   push:
@@ -7,13 +7,13 @@ on:
 
 jobs:
   Building:
-    name: "Build Glibc on CentOS 7"
+    name: "Build on CentOS 7"
     runs-on: ubuntu-latest
     container: docker.io/centos:7
     steps:
     - uses: actions/checkout@v2
- 
-    - name: Build make
+
+    - name: Install dependencies
       run: |
         yum -y install gcc bison make centos-release-scl wget
         yum -y install devtoolset-8-gcc
@@ -21,6 +21,9 @@ jobs:
         yum -y install devtoolset-8-binutils
         source /opt/rh/devtoolset-8/enable
         mkdir -p /opt/release/
+
+    - name: Build make v4.3
+      run: |
         wget http://ftp.gnu.org/gnu/make/make-4.3.tar.gz
         tar -xzvf make-4.3.tar.gz
         cd make-4.3
@@ -31,13 +34,16 @@ jobs:
         cp ./make /opt/release/
         cd ~
 
-    - name: Build glibc-2.28
+    - name: Build glibc v2.28
       run: | 
         wget http://ftp.gnu.org/gnu/glibc/glibc-2.28.tar.gz
         tar -zxvf glibc-2.28.tar.gz
         mkdir -p ./glibc-2.28/build
-        mkdir -p /opt/release/
-        tar -czvf /opt/release/glibc-2.28.tar.gz ./glibc-2.28
+        cd ./glibc-2.28/build
+        ../configure --prefix=/usr --disable-profile --enable-add-ons --with-headers=/usr/include --with-binutils=/usr/bin
+        make
+        make install
+        tar -czvf /opt/release/glibc-2.28.tar.gz ~/glibc-2.28
 
     - name: Binaries Release
       uses: softprops/action-gh-release@v1
