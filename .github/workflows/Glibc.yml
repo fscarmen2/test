@@ -20,7 +20,6 @@ jobs:
         yum -y install devtoolset-8-gcc-c++
         yum -y install devtoolset-8-binutils
         scl enable devtoolset-8 bash
-#        source /opt/rh/devtoolset-8/enable
         mkdir -p /opt/release/
 
     - name: Build make v4.3
