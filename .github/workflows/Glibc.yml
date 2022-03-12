@@ -19,7 +19,6 @@ jobs:
         yum -y install devtoolset-8-gcc
         yum -y install devtoolset-8-gcc-c++
         yum -y install devtoolset-8-binutils
-        scl enable devtoolset-8 bash
         mkdir -p /opt/release/
 
     - name: Build make v4.3
@@ -35,7 +34,8 @@ jobs:
         cd ~
 
     - name: Build glibc v2.28
-      run: | 
+      run: |
+        source /opt/rh/devtoolset-8/enable
         wget http://ftp.gnu.org/gnu/glibc/glibc-2.28.tar.gz
         tar -zxf glibc-2.28.tar.gz
         mkdir -p ./glibc-2.28/build
