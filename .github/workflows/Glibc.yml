@@ -24,32 +24,33 @@ jobs:
         wget http://ftp.gnu.org/gnu/glibc/glibc-2.28.tar.gz
         tar zxf glibc-2.28.tar.gz
         mkdir -p ./glibc-2.28/build; cd ./glibc-2.28/build
-        #../configure --prefix=/usr --disable-profile --enable-add-ons --with-headers=/usr/include --with-binutils=/usr/bin
-        #make
-        #make install
+#        ../configure --prefix=/usr --disable-profile --enable-add-ons --with-headers=/usr/include --with-binutils=/usr/bin
+#        make
+#        make install
 
-    - name: check and upload
-      run: |
-        #strings /lib64/libc.so.6 | grep GLIBC_2.28
-        #tar -czvf ./glibc-2.28.tar.gz ./glibc-2.28
-        mkdir /opt/release
-        cp -r glibc-2.28 /opt/release
+#    - name: check
+#      run: |
+#        strings /lib64/libc.so.6 | grep GLIBC_2.28
+#        tar -czvf ./glibc-2.28.tar.gz ./glibc-2.28
+#        mkdir /opt/release
+#        cp -r glibc-2.28 /opt/release
 
-    - name: Uploading artifact
-      uses: actions/upload-artifact@v2
-      with:
-          name: glibc-2.28 # 生成的压缩包名称
-          path: /opt/release # 需要打包的路径
+#    - name: Uploading artifact
+#      uses: actions/upload-artifact@v2
+#      with:
+#          name: glibc-2.28 # 生成的压缩包名称
+#          path: /opt/release # 需要打包的路径
 
-    - name: Downloading artifact
-      uses: actions/download-artifact@v2
-      with: 
-          name: glibc-2.28
-          path: /opt/release
+#    - name: Downloading artifact
+#      uses: actions/download-artifact@v2
+#      with: 
+#          name: glibc-2.28
+#          path: /opt/release
 
     - name: Binaries Release
       uses: softprops/action-gh-release@v1
       with:
-          files: /opt/release/wireguard-go
+#          files: /opt/release/
+          files: glibc-2.28
       env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
