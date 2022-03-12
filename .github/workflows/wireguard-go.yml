@@ -22,21 +22,20 @@ jobs:
           go build -v -o "wireguard-go"
           mkdir /opt/release
           cp wireguard-go /opt/release
-      - name: Uploading artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: wireguard-go # 生成的压缩包名称
-          path: /opt/release # 需要打包的路径
-      - name: Downloading artifact
-        uses: actions/download-artifact@v2
-        with: 
-          name: wireguard-go
-          path: /opt/release
+#      - name: Uploading artifact
+#        uses: actions/upload-artifact@v2
+#        with:
+#          name: wireguard-go # 生成的压缩包名称
+#          path: /opt/release # 需要打包的路径
+#      - name: Downloading artifact
+#        uses: actions/download-artifact@v2
+#        with: 
+#          name: wireguard-go
+#          path: /opt/release
       - name: Binaries Release
         uses: softprops/action-gh-release@v1
-        #if: startsWith(github.ref, 'refs/tags/')
         with:
           files: /opt/release/wireguard-go
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
 
