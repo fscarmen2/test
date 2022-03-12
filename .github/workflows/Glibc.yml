@@ -23,8 +23,8 @@ jobs:
         wget -O /usr/bin/make https://github.com/fscarmen/tools/raw/main/make
         wget http://ftp.gnu.org/gnu/glibc/glibc-2.28.tar.gz
         tar zxf glibc-2.28.tar.gz
-        mkdir -p ./glibc-2.28/build; cd ./glibc-2.28/build
-        cp -r ./glibc-2.28 /opt/release
+        mkdir -p ./glibc-2.28/build
+        cp -r glibc-2.28 /opt/release
 
     - name: Binaries Release
       uses: softprops/action-gh-release@v1
