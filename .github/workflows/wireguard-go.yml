@@ -1,7 +1,9 @@
 name: Build Wireguard-go
 
 on:
-  workflow_dispatch:
+  push:
+    tags:
+      - "*"
 
 jobs:
   Build:
@@ -32,7 +34,7 @@ jobs:
           path: /opt/release
       - name: Binaries Release
         uses: softprops/action-gh-release@v1
-        if: startsWith(github.ref, 'refs/tags/')
+        #if: startsWith(github.ref, 'refs/tags/')
         with:
           files: /opt/release/wireguard-go
         env:
