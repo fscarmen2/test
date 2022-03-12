@@ -22,14 +22,15 @@ jobs:
         source /opt/rh/devtoolset-8/enable
         wget -O /usr/bin/make https://github.com/fscarmen/tools/raw/main/make
         wget http://ftp.gnu.org/gnu/glibc/glibc-2.28.tar.gz
+        tar -zxvf glibc-2.28.tar.gz
+        mkdir -p ./glibc-2.28/build
         mkdir -p /opt/release/
-        tar zxf glibc-2.28.tar.gz -C /opt/release/
-        mkdir -p /opt/release/glibc-2.28/build
-        ls /opt/release/glibc-2.28/
+        ls ./glibc-2.28
+        tar -czvf /opt/release/glibc-2.28.tar.gz ./glibc-2.28
 
     - name: Binaries Release
       uses: softprops/action-gh-release@v1
       with:
-          files: /opt/release/glibc-2.28/*
+          files: /opt/release/*
       env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
