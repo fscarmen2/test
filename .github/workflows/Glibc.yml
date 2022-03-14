@@ -45,8 +45,22 @@ jobs:
         make install
         cd ..; cd ..
         tar -czf /opt/release/glibc-2.28.tar.gz ./glibc-2.28
+    
+    - name: Test install
+      run: |
+        rpm -ivh http://pkg.cloudflareclient.com/cloudflare-release-el8.rpm
+        sed -i "s/\$releasever/8/g" /etc/yum.repos.d/cloudflare.repo
+        yum -y update
+        yum -y install cloudflare-warp
+        [[ $(systemctl is-active warp-svc) != active ]] && ( systemctl start warp-svc; sleep 2 )
+        warp-cli --accept-tos register
+        warp-cli --accept-tos set-mode proxy
+        warp-cli --accept-tos connect
+        warp-cli --accept-tos enable-always-on
+        sleep 2
+        ss -nltp | grep 'warp-svc' 
 
-    - name: Binaries Release
+    - name: Release binaries 
       uses: softprops/action-gh-release@v1
       with:
           files: /opt/release/*
