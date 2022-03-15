@@ -28,7 +28,6 @@ jobs:
         run: |
           git clone https://git.zx2c4.com/wireguard-go
           cd wireguard-go
-          go build -v -o "wireguard-go"
 
       - name: Binaries Release
         uses: softprops/action-gh-release@v1
