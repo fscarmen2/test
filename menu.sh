@@ -741,11 +741,22 @@ stack_switch(){
 check_system_info(){
 	green " ${T[${L}37]} "
 
-	# 必须加载 TUN 模块，先尝试在线打开 TUN
-	TUN=$(cat /dev/net/tun 2>&1 | tr '[:upper:]' '[:lower:]')
- 	[[ ! $TUN =~ 'in bad state' ]] && [[ ! $TUN =~ '处于错误状态' ]] && [[ ! $TUN =~ 'Die Dateizugriffsnummer ist in schlechter Verfassung' ]] && mkdir -p /dev/net && mknod /dev/net/tun c 10 200 && chmod 0666 /dev/net/tun &&
-	TUN=$(cat /dev/net/tun 2>&1 | tr '[:upper:]' '[:lower:]') &&
-	[[ ! $TUN =~ 'in bad state' ]] && [[ ! $TUN =~ '处于错误状态' ]] && [[ ! $TUN =~ 'Die Dateizugriffsnummer ist in schlechter Verfassung' ]] && red " ${T[${L}3]} " && exit 1
+	# 必须加载 TUN 模块，先尝试在线打开 TUN。尝试成功放到启动项，失败作提示并退出脚本
+	TUN1=$(cat /dev/net/tun 2>&1 | tr '[:upper:]' '[:lower:]')
+ 	if [[ ! $TUN1 =~ 'in bad state' ]] && [[ ! $TUN1 =~ '处于错误状态' ]] && [[ ! $TUN1 =~ 'Die Dateizugriffsnummer ist in schlechter Verfassung' ]]; then
+	cat >/etc/init.d/tun.sh << EOF
+#!/bin/bash
+mkdir -p /dev/net
+mknod /dev/net/tun c 10 200
+chmod 0666 /dev/net/tun
+EOF
+	bash /etc/init.d/tun.sh
+	TUN2=$(cat /dev/net/tun 2>&1 | tr '[:upper:]' '[:lower:]')
+		if [[ ! $TUN2 =~ 'in bad state' ]] && [[ ! $TUN2 =~ '处于错误状态' ]] && [[ ! $TUN2 =~ 'Die Dateizugriffsnummer ist in schlechter Verfassung' ]]; then
+			rm -f /etc/init.d/tun.sh && red " ${T[${L}3]} " && exit 1
+		else update-rc.d tun.sh defaults 90
+		fi
+	fi
 
 	# 判断是否大陆 VPS。先尝试连接 CloudFlare WARP 服务的 Endpoint IP，如遇到 WARP 断网则先关闭、杀进程后重试一次，仍然不通则 WARP 项目不可用。
 	ping6 -c2 -w8 2606:4700:d0::a29f:c001 >/dev/null 2>&1 && IPV6=1 && CDN=-6 || IPV6=0
