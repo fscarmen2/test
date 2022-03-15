@@ -743,8 +743,8 @@ check_system_info(){
 	green " ${T[${L}37]} "
 
 	# 必须加载 TUN 模块，先尝试在线打开 TUN。尝试成功放到启动项，失败作提示并退出脚本
-	TUN1=$(cat /dev/net/tun 2>&1 | tr '[:upper:]' '[:lower:]')
- 	if [[ ! $TUN1 =~ 'in bad state' ]] && [[ ! $TUN1 =~ '处于错误状态' ]] && [[ ! $TUN1 =~ 'Die Dateizugriffsnummer ist in schlechter Verfassung' ]]; then
+	TUN=$(cat /dev/net/tun 2>&1 | tr '[:upper:]' '[:lower:]')
+ 	if [[ ! $TUN =~ 'in bad state' ]] && [[ ! $TUN =~ '处于错误状态' ]] && [[ ! $TUN =~ 'Die Dateizugriffsnummer ist in schlechter Verfassung' ]]; then
 	cat >/usr/bin/tun.sh << EOF
 #!/bin/bash
 mkdir -p /dev/net
@@ -752,8 +752,8 @@ mknod /dev/net/tun c 10 200
 chmod 0666 /dev/net/tun
 EOF
 	bash /usr/bin/tun.sh
-	TUN2=$(cat /dev/net/tun 2>&1 | tr '[:upper:]' '[:lower:]')
-		if [[ ! $TUN2 =~ 'in bad state' ]] && [[ ! $TUN2 =~ '处于错误状态' ]] && [[ ! $TUN2 =~ 'Die Dateizugriffsnummer ist in schlechter Verfassung' ]]; then
+	TUN=$(cat /dev/net/tun 2>&1 | tr '[:upper:]' '[:lower:]')
+		if [[ ! $TUN =~ 'in bad state' ]] && [[ ! $TUN =~ '处于错误状态' ]] && [[ ! $TUN =~ 'Die Dateizugriffsnummer ist in schlechter Verfassung' ]]; then
 			rm -f /usr/bin//tun.sh && red " ${T[${L}3]} " && exit 1
 		else echo "@reboot root bash /usr/bin/tun.sh" >> /etc/crontab
 		fi
