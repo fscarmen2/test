@@ -1,9 +1,7 @@
 name: "Build glibc & make"
 
 on:
-  push:
-    tags:
-      - "*"
+  workflow_dispatch:
 
 jobs:
   Building:
