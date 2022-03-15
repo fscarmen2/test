@@ -607,6 +607,7 @@ uninstall(){
 	[[ $(systemctl is-active systemd-resolved) != active ]] && systemctl enable --now systemd-resolved >/dev/null 2>&1
 	rm -rf /usr/local/bin/wgcf /etc/wireguard /usr/bin/wireguard-go wgcf-account.toml wgcf-profile.conf /usr/bin/warp /etc/dnsmasq.d/warp.conf
 	[[ -e /etc/gai.conf ]] && sed -i '/^precedence \:\:ffff\:0\:0/d;/^label 2002\:\:\/16/d' /etc/gai.conf
+	[[ -e /usr/bin/tun.sh ]] && rm -f /usr/bin/tun.sh && sed -i '/tun.sh/d' /etc/crontab
 	sed -i "/250   warp/d" /etc/iproute2/rt_tables
 	}
 	
@@ -744,17 +745,17 @@ check_system_info(){
 	# 必须加载 TUN 模块，先尝试在线打开 TUN。尝试成功放到启动项，失败作提示并退出脚本
 	TUN1=$(cat /dev/net/tun 2>&1 | tr '[:upper:]' '[:lower:]')
  	if [[ ! $TUN1 =~ 'in bad state' ]] && [[ ! $TUN1 =~ '处于错误状态' ]] && [[ ! $TUN1 =~ 'Die Dateizugriffsnummer ist in schlechter Verfassung' ]]; then
-	cat >/etc/init.d/tun.sh << EOF
+	cat >/usr/bin/tun.sh << EOF
 #!/bin/bash
 mkdir -p /dev/net
 mknod /dev/net/tun c 10 200
 chmod 0666 /dev/net/tun
 EOF
-	bash /etc/init.d/tun.sh
+	bash /usr/bin/tun.sh
 	TUN2=$(cat /dev/net/tun 2>&1 | tr '[:upper:]' '[:lower:]')
 		if [[ ! $TUN2 =~ 'in bad state' ]] && [[ ! $TUN2 =~ '处于错误状态' ]] && [[ ! $TUN2 =~ 'Die Dateizugriffsnummer ist in schlechter Verfassung' ]]; then
-			rm -f /etc/init.d/tun.sh && red " ${T[${L}3]} " && exit 1
-		else update-rc.d tun.sh defaults 90
+			rm -f /usr/bin//tun.sh && red " ${T[${L}3]} " && exit 1
+		else echo "@reboot root bash /usr/bin/tun.sh" >> /etc/crontab
 		fi
 	fi
 
