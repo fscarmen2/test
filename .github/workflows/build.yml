@@ -32,6 +32,7 @@ jobs:
         with:
           push: true
           platforms: linux/386,linux/amd64,linux/arm/v6,linux/arm/v7,linux/arm64
+          tags: v2.4
           imageName: fscarmen/test:latest
       
       - name: Test container
