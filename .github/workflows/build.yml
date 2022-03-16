@@ -33,7 +33,7 @@ jobs:
           push: true
           platforms: linux/amd64,linux/arm64
           tags: latest
-          imageName: fscarmen/test
+          name: fscarmen/test
       
       - name: Test container
         run:  |
