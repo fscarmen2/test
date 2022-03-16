@@ -8,6 +8,8 @@ jobs:
       runs-on: ubuntu-latest
       name: "Build Netflix unlock images"
       env:
+        DOCKER_BUILDKIT: 1
+        DOCKER_CLI_EXPERIMENTAL: enabled
         DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         DOCKERHUB_REPOSITORY: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest
