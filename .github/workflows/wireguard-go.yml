@@ -9,11 +9,6 @@ permissions:
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        goos: [linux]
-        goarch: [amd64, arm64]
-        
     steps:
       -
         name: Checkout
@@ -32,21 +27,17 @@ jobs:
         name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
+          # either 'goreleaser' (default) or 'goreleaser-pro'
           distribution: goreleaser
           version: latest
           args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        
+          # Your GoReleaser Pro key, if you are using the 'goreleaser-pro' distribution
+          # GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
+      -
+        name: Release Binary
         run: |
-          git clone https://git.zx2c4.com/wireguard-go
-          cd wireguard-go
-          go build -o wirguard-go /opt/release/
-
-      - name: Binaries Release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: v2.6
-          files: /opt/release/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+            git clone https://git.zx2c4.com/wireguard-go
+            cd wireguard-go
+            go build -o wirguard-go 
