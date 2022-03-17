@@ -24,7 +24,6 @@ jobs:
           project_path: "/opt/release"
           binary_name: "test-binary"
           path: "/opt/release/"
-"
 
       - name: Building wireguard-go
         run: |
