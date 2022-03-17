@@ -8,6 +8,11 @@ on:
 jobs:
   binaries:
     runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        # build and publish in parallel: linux/386, linux/amd64, linux/arm64, windows/386, windows/amd64, darwin/amd64, darwin/arm64
+        goos: [linux]
+        goarch: [amd64, arm64]
 
     steps:
       - name: Checkout
@@ -30,7 +35,7 @@ jobs:
             mkdir -p /opt/release/
             git clone https://git.zx2c4.com/wireguard-go
             cd wireguard-go
-            go build -v -o "/opt/release/wireguard-go"
+            go build -v -o "/opt/release/wireguard-go-${{ matrix.goarch }}"
    
       - name: Release binaries 
         uses: softprops/action-gh-release@v1
