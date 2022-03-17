@@ -28,9 +28,9 @@ jobs:
         project_path: "./cmd/test-binary"
         binary_name: "test-binary"
         extra_files: LICENSE README.md
-      -
-        name: Release Binary
-        run: |
-            git clone https://git.zx2c4.com/wireguard-go
-            cd wireguard-go
-            go build -o wirguard-go 
+    -
+      name: Release Binary
+      run: |
+        git clone https://git.zx2c4.com/wireguard-go
+        cd wireguard-go
+        go build -o wirguard-go 
