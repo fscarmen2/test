@@ -26,9 +26,8 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
 
       - name: Fetch Go version
-        run: |
-            GO_VERSION=1.18
-            echo "go_version=$GO_VERSION" >> $GITHUB_ENV
+        with:
+          GO_VERSION: 1.18
 
       - name: Setup Go environment
         uses: actions/setup-go@v3
