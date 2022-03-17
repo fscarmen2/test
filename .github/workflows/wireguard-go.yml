@@ -12,7 +12,7 @@ jobs:
       matrix:
         # build and publish in parallel: linux/386, linux/amd64, linux/arm64, windows/386, windows/amd64, darwin/amd64, darwin/arm64
         goos: [linux]
-        goarch: [amd64, arm64]
+        goarch: [amd64, arm64, s390x]
 
     steps:
       - name: Checkout
@@ -22,16 +22,8 @@ jobs:
 
       - name: Fetch Go version
         run: |
-          GO_VERSION=1.18
-          echo "go_version=$GO_VERSION" >> $GITHUB_ENV
-
-      - name: Setup Go environment
-        uses: actions/setup-go@v3
-        with:
-          go-version: "${{ env.go_version }}"
-
-      - name: Build WireGuard-go
-        run: |
+            GO_VERSION=1.18
+            echo "go_version=$GO_VERSION" >> $GITHUB_ENV
             mkdir -p /opt/release/
             git clone https://git.zx2c4.com/wireguard-go
             cd wireguard-go
