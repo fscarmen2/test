@@ -26,8 +26,8 @@ jobs:
           token: ${{ secrets.GH_TOKEN }}
 
       - name: Fetch Go version
-        with:
-          GO_VERSION: 1.18
+        run: |
+          GO_VERSION=1.18
 
       - name: Setup Go environment
         uses: actions/setup-go@v3
