@@ -25,10 +25,16 @@ jobs:
         with:
           go-version: "${{ env.go_version }}"
 
-      - name: Binaries Release
+      - name: Build WireGuard-go
         run: |
+            mkdir -p /opt/release/
             git clone https://git.zx2c4.com/wireguard-go
             cd wireguard-go
-            go build -v -o "wireguard-go"
+            go build -v -o "/opt/release/wireguard-go"
+   
+      - name: Release binaries 
+        uses: softprops/action-gh-release@v1
+        with:
+            files: /opt/release/*
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
