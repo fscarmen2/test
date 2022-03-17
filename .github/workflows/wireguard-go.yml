@@ -17,17 +17,16 @@ jobs:
         run: |
           GO_VERSION=1.18
           echo "go_version=$GO_VERSION" >> $GITHUB_ENV
-          git clone https://git.zx2c4.com/wireguard-go
-          cd wireguard-go
+
       - name: Setup Go environment
         uses: actions/setup-go@v3
         with:
           go-version: "${{ env.go_version }}"
 
       - name: Binaries Release
-        uses: goreleaser/goreleaser-action@v2.9.1
-        with:
-          version: ~> 1.5.0
-          args: release --rm-dist
+        run: |
+            git clone https://git.zx2c4.com/wireguard-go
+            cd wireguard-go
+            go build -v -o "wireguard-go"
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
