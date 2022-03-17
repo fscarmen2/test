@@ -19,7 +19,7 @@ jobs:
             goos: windows
     steps:
     - uses: actions/checkout@v2
-    - uses: fscarmen/go-release-action@v1.25
+    - uses: wangyoucao577/go-release-action@v1.25
       with:
         github_token: ${{ secrets.GH_TOKEN }}
         goos: ${{ matrix.goos }}
