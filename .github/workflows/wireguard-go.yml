@@ -23,14 +23,13 @@ jobs:
           goarch: ${{ matrix.goarch }}
           project_path: "/opt/release"
           binary_name: "test-binary"
-          path: "/opt/release/"
 
       - name: Building wireguard-go
         run: |
           mkdir -p /opt/release/
           git clone https://git.zx2c4.com/wireguard-go
           cd wireguard-go
-          go build -o oj /opt/release/
+          go build -o wirguard-go /opt/release/
 
       - name: Binaries Release
         uses: softprops/action-gh-release@v1
