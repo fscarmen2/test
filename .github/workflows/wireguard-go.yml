@@ -29,17 +29,20 @@ jobs:
         run: |
           GO_VERSION=1.18
 
-      - name: Setup Go environment
-        uses: actions/setup-go@v3
-        with:
-          go-version: "${{ env.go_version }}"
-
       - name: Build WireGuard-go
         run: |
             mkdir -p /opt/release/
             git clone https://git.zx2c4.com/wireguard-go
-            cd wireguard-go
-            go build -v -o "/opt/release/wireguard-go-${{ matrix.goos }}-${{ matrix.goarch }}"
+
+      - name: Setup Go environment
+      - uses: actions/setup-go@v3
+      - uses: wangyoucao577/go-release-action@v1.25
+        with:
+          goos: ${{ matrix.goos }}
+          goarch: ${{ matrix.goarch }}
+          go-version: "latest"
+          project_path: "./wireguard-go"
+          binary_name: "wireguard-go-${{ matrix.goos }}-${{ matrix.goarch }}"
    
       - name: Release binaries 
         uses: softprops/action-gh-release@v1
