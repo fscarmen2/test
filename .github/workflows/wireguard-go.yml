@@ -35,7 +35,8 @@ jobs:
             git clone https://git.zx2c4.com/wireguard-go
 
       - name: Setup Go environment
-      - uses: actions/setup-go@v3
+        uses: actions/setup-go@v3
+
       - uses: wangyoucao577/go-release-action@v1.25
         with:
           goos: ${{ matrix.goos }}
