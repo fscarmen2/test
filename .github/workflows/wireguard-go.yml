@@ -36,10 +36,11 @@ jobs:
 
       - name: Setup Go environment
         uses: actions/setup-go@v3
-
+        
       - uses: wangyoucao577/go-release-action@v1.25
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
         with:
-          goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
           goversion: "latest"
           project_path: "./wireguard-go"
@@ -50,5 +51,3 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
             files: /opt/release/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
