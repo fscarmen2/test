@@ -43,7 +43,7 @@ jobs:
           goarch: ${{ matrix.goarch }}
           goversion: "latest"
           project_path: "./wireguard-go"
-          release_tag: "wireguard-go"
+          release_name: "wireguard-go"
           binary_name: "wireguard-go-${{ matrix.goos }}-${{ matrix.goarch }}"
    
       - name: Release binaries 
