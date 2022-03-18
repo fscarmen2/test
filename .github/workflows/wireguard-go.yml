@@ -41,7 +41,7 @@ jobs:
         with:
           goos: ${{ matrix.goos }}
           goarch: ${{ matrix.goarch }}
-          go-version: "latest"
+          goversion: "latest"
           project_path: "./wireguard-go"
           binary_name: "wireguard-go-${{ matrix.goos }}-${{ matrix.goarch }}"
    
