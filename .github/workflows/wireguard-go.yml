@@ -39,7 +39,5 @@ jobs:
           distribution: goreleaser
           version: latest
           args: release --rm-dist
-          release_name: "wireguard-go"
-          binary_name: "wireguard-go-${{ matrix.goos }}-${{ matrix.goarch }}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
