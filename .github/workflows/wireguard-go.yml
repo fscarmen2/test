@@ -25,13 +25,13 @@ jobs:
       - name: Git clone
         run: |
           git clone https://git.zx2c4.com/wireguard-go
-          cd wireguard-go
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
           distribution: goreleaser
           version: latest
+          workdir: ./wireguard-go
           args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
