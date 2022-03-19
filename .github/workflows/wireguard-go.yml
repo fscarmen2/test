@@ -32,6 +32,7 @@ jobs:
           distribution: goreleaser
           version: latest
           workdir: ./wireguard-go
+          project_name: wireguard-go
           args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
