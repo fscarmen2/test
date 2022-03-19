@@ -39,7 +39,7 @@ snapshot:
 archives:
   - name_template: "wireguard-go_{{ .Os }}_{{ .Arch }}"
     files:
-      - *
+      - wireguard-go*
 changelog:
   sort: asc
   filters:
