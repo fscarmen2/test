@@ -28,9 +28,9 @@ builds:
       - goos: windows
         goarch: arm64
     main: ./wireguard-go
-    binary: main.go
+    binary: a
 universal_binaries:
-  - name_template: "wireguard-go"
+  - name_template: "b"
     replace: false
 checksum:
   name_template: "checksums.txt"
