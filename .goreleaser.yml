@@ -30,7 +30,7 @@ builds:
     main: ./wireguard-go
     binary: wireguard-go
 universal_binaries:
-  - name_template: "wireguard-go"
+  - name_template: "./wireguard-go"
     replace: false
 checksum:
   name_template: "checksums.txt"
