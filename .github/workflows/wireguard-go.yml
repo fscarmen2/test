@@ -27,11 +27,10 @@ jobs:
         with:
           go-version: "^1.17.2"
           
-      - name: Git clone WireGuard-go
+      - name: Git clone
         run: |
           mkdir -p /opt/release/
           git clone https://git.zx2c4.com/wireguard-go
-          cd wireguard-go
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
