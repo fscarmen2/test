@@ -31,6 +31,7 @@ jobs:
         run: |
           mkdir -p /opt/release/
           git clone https://git.zx2c4.com/wireguard-go
+          cd wireguard-go
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
@@ -38,7 +39,6 @@ jobs:
           distribution: goreleaser
           version: latest
           args: release --rm-dist
-          project_path: "./wireguard-go"
           release_name: "wireguard-go"
           binary_name: "wireguard-go-${{ matrix.goos }}-${{ matrix.goarch }}"
         env:
