@@ -28,7 +28,7 @@ builds:
       - goos: windows
         goarch: arm64
     main: ./wireguard-go
-    binary: ./wireguard-go/wireguard-go
+    binary: main.go
 universal_binaries:
   - name_template: "wireguard-go"
     replace: false
