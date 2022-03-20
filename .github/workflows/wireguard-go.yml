@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
 
 env:
-  workdir: ./compile/wireguard-go
+  workdir: ./wireguard-go-source
 
 jobs:
   WireGuard-go:
@@ -20,7 +20,7 @@ jobs:
           
       - name: Git clone
         run: |
-          git clone https://git.zx2c4.com/wireguard-go "./compile"
+          git clone https://git.zx2c4.com/wireguard-go "$workdir"
           cp ./.github/wireguard-go-releaser.yml $workdir/.goreleaser.yml
 
       - name: Run GoReleaser
