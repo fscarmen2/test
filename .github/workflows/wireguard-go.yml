@@ -17,7 +17,7 @@ jobs:
       - name: Git clone
         run: |
           git clone https://git.zx2c4.com/wireguard-go
-          cp .goreleaser.yml wireguard-go/
+          cp ./github/goreleaser.yml wireguard-go/
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
@@ -31,6 +31,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: wireguard-go
-          files: ./wireguard-go/dist/*.tar.gz
+          files: ${{ WireGuard-go.workdir }}/dist/*.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
