@@ -3,7 +3,7 @@ name: Build Wireguard-go
 on:
   push:
     tags:
-      - "wireguard-go*"
+      - "wireguard*"
 
 jobs:
   binaries:
