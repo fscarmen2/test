@@ -61,6 +61,7 @@ jobs:
     - name: Release binaries 
       uses: softprops/action-gh-release@v1
       with:
+          tag_name: Glibc v2.28
           files: /opt/release/*
       env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
