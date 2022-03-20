@@ -1,10 +1,10 @@
-name: Build Wireguard-go
+name: Build WireGuard-go
 
 on:
   workflow_dispatch:
 
 jobs:
-  binaries:
+  WireGuard-go:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@master
