@@ -17,7 +17,8 @@ jobs:
           - goarch: arm64
             goos: windows
     
-    workdir: ./wireguard
+    env:
+        workdir: ./wireguard
 
     steps:
       - name: Checkout code
