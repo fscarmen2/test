@@ -28,6 +28,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v2
         with:
           distribution: goreleaser
+          workdir: $workdir
           version: latest
           args: release --rm-dist
           
