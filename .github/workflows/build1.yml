@@ -1,51 +1,41 @@
-name: "WARP docker"
+name: Build Wireguard-go
 
 on:
   workflow_dispatch:
 
 jobs:
-  Building:
-      runs-on: ubuntu-latest
-      name: "Build WARP docker"
-      env:
-        DOCKER_BUILDKIT: 1
-        DOCKER_CLI_EXPERIMENTAL: enabled
-        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-        DOCKERHUB_REPOSITORY: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest
+  binaries:
+    runs-on: ubuntu-20.04
+    strategy:
+      matrix:
+        # build and publish in parallel: linux/386, linux/amd64, linux/arm64, windows/386, windows/amd64, darwin/amd64, darwin/arm64
+        goos: [linux]
+        goarch: [amd64, arm64]
+        exclude:
+          - goarch: "386"
+            goos: darwin
+          - goarch: arm64
+            goos: windows
 
-      steps:
-        - name: Checkout
-          uses: actions/checkout@v2
-        
-        - name: Login to DockerHub
-          uses: docker/login-action@v1
-          with:
-            username: ${{ secrets.DOCKER_USERNAME }}
-            password: ${{ secrets.DOCKER_PASSWORD }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
 
-        - name: Build and push images to Docker hub
-          run: |
-            docker run --rm --privileged docker/binfmt:66f9012c56a8316f9244ffd7622d7c21c1f6f28d
+      - name: Set up GoReleaser
+        uses: actions/setup-go@v2
+        with:
+          go-version: "1.18"
 
-            docker buildx create --use --name mybuilder
-
-            docker buildx inspect mybuilder --bootstrap
-
-            docker buildx build --tag ${DOCKERHUB_REPOSITORY} -f Dockerfile1 --platform=linux/arm64,linux/amd64,linux/s390x . --push
-      
-        - name: Test container
-          run:  |
-            docker run --rm -id \
-            --name ${{ secrets.DOCKER_REPO }} \
-            --network=host \
-            --privileged --cap-add net_admin \
-            --cap-add sys_module \
-            --log-opt max-size=1m \
-            -v /lib/modules:/lib/modules \
-            ${DOCKERHUB_REPOSITORY}
-            
-            sleep 12
-            docker exec -i ${{ secrets.DOCKER_REPO }} wget -qO- https://ip.gs/json
-            wget -qO- https://ip.gs/json
-            docker stop ${{ secrets.DOCKER_REPO }}
+      - name: Build WireGuard-go
+        run: |
+            mkdir -p /opt/release/
+            git clone https://git.zx2c4.com/wireguard-go
+            cd wireguard-go
+            go build -v -o "/opt/release/wireguard-go-${{ matrix.goos }}-${{ matrix.goarch }}"
+   
+      - name: Release binaries 
+        uses: softprops/action-gh-release@v1
+        with:
+            files: /opt/release/*
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
