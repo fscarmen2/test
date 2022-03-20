@@ -30,6 +30,10 @@ jobs:
           args: release --rm-dist
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+
+      - name: ls
+        run: |
+          ls ./wireguard-go/
           
       - name: Release binaries 
         uses: softprops/action-gh-release@v1
