@@ -28,7 +28,7 @@ jobs:
         uses: goreleaser/goreleaser-action@v2
         with:
           distribution: goreleaser
-          workdir: $workdir
+          workdir: ${{ env.workdir }}
           version: latest
           args: release --rm-dist
           
