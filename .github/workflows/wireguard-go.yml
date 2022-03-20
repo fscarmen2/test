@@ -3,7 +3,7 @@ name: Build Wireguard-go
 on:
   push:
     tags:
-      - "v*"
+      - "wireguard-go*"
 
 jobs:
   binaries:
@@ -32,6 +32,6 @@ jobs:
       - name: Release binaries 
         uses: softprops/action-gh-release@v1
         with:
-          files: ./wireguard-go/dist/*
+          files: ./wireguard-go/dist/*.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
