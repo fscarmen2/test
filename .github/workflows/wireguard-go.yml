@@ -3,6 +3,9 @@ name: Cross compile WireGuard-go
 on:
   workflow_dispatch:
 
+env:
+  workdir: ./compile/wireguard-go
+
 jobs:
   WireGuard-go:
     name: Cross compile WireGuard-go
@@ -17,15 +20,14 @@ jobs:
           
       - name: Git clone
         run: |
-          git clone https://git.zx2c4.com/wireguard-go
-          cp ./.github/wireguard-go-releaser.yml wireguard-go/.goreleaser.yml
+          git clone https://git.zx2c4.com/wireguard-go "./compile"
+          cp ./.github/wireguard-go-releaser.yml $workdir/.goreleaser.yml
 
       - name: Run GoReleaser
         uses: goreleaser/goreleaser-action@v2
         with:
           distribution: goreleaser
           version: latest
-          workdir: ./wireguard-go
           args: release --rm-dist
           
       - name: Release binaries 
