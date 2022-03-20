@@ -3,13 +3,13 @@ name: Cross compile WireGuard-go
 on:
   workflow_dispatch:
 
-env:
-  workdir: ./wireguard-go-source
-
 jobs:
   WireGuard-go:
+
     name: Cross compile WireGuard-go
     runs-on: ubuntu-20.04
+    env:
+      workdir: ./wireguard-go-source
     steps:
       - uses: actions/checkout@master
         with:
