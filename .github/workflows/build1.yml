@@ -16,6 +16,8 @@ jobs:
             goos: darwin
           - goarch: arm64
             goos: windows
+    
+    workdir: ./wireguard
 
     steps:
       - name: Checkout code
@@ -28,8 +30,8 @@ jobs:
  
       - name: Build WireGuard-go
         run: |
-            mkdir -p /opt/release/
-            git clone https://git.zx2c4.com/wireguard-go "./wireguard"
+#            mkdir -p /opt/release/
+            git clone https://git.zx2c4.com/wireguard-go "${{ env.workdir }}"
 #            cd wireguard
 #            go build -v -o "/opt/release/wireguard-go-${{ matrix.goos }}-${{ matrix.goarch }}"
 
