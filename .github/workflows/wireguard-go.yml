@@ -34,6 +34,6 @@ jobs:
       - name: Release binaries 
         uses: softprops/action-gh-release@v1
         with:
-          files: ./*
+          files: ./wireguard-go/*
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
