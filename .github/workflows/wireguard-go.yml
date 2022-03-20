@@ -31,6 +31,6 @@ jobs:
         uses: softprops/action-gh-release@v1
         with:
           tag_name: wireguard-go
-          files: ${{ WireGuard-go.workdir }}/dist/*.tar.gz
+          files: $workdir/dist/*.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
