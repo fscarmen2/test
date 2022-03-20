@@ -1,7 +1,9 @@
 name: Build WireGuard-go
 
 on:
-  workflow_dispatch:
+  push:
+    tags:
+      - "*"
 
 jobs:
   WireGuard-go:
