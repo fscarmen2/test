@@ -359,7 +359,7 @@ check_operating_system(){
 	RELEASE=("Debian" "Ubuntu" "CentOS" "CentOS" "Alpine" "Arch")
 	EXCLUDE=("bookworm")
 	COMPANY=("" "" "" "amazon" "" "")
-	MAJOR=("10" "16" "7" "7" "3" "")
+	MAJOR=("9" "16" "7" "7" "3" "")
 	PACKAGE_UPDATE=("apt -y update" "apt -y update" "yum -y update" "yum -y update" "apk update -f" "pacman -Sy")
 	PACKAGE_INSTALL=("apt -y install" "apt -y install" "yum -y install" "yum -y install" "apk add -f" "pacman -S --noconfirm")
 	PACKAGE_UNINSTALL=("apt -y autoremove" "apt -y autoremove" "yum -y autoremove" "yum -y autoremove" "apk del -f" "pacman -Rcnsu --noconfirm")
@@ -1045,9 +1045,12 @@ install(){
 		${PACKAGE_UPDATE[int]}
 
 		# 添加 backports 源,之后才能安装 wireguard-tools 
-		${PACKAGE_INSTALL[int]} lsb-release
-		echo "deb http://deb.debian.org/debian $(lsb_release -sc)-backports main" > /etc/apt/sources.list.d/backports.list
-
+		if [[ $(echo $SYS | sed "s/[^0-9.]//g" | cut -d. -f1) = 9 ]]; then
+			echo "deb http://deb.debian.org/debian/ unstable main" | tee /etc/apt/sources.list.d/unstable-wireguard.list
+			echo -e "Package: *\nPin: release a=unstable\nPin-Priority: 150\n" | tee /etc/apt/preferences.d/limit-unstable
+			else ${PACKAGE_INSTALL[int]} lsb-release
+			echo "deb http://deb.debian.org/debian $(lsb_release -sc)-backports main" > /etc/apt/sources.list.d/backports.list
+		fi	
 		# 再次更新源
 		${PACKAGE_UPDATE[int]}
 
