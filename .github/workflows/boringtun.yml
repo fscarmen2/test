@@ -7,18 +7,16 @@ jobs:
   BoringTun:
     name: Rust project
     runs-on: ubuntu-latest
-    env:
-      workdir: ./boringtun
     steps:
       - name: Check code
         uses: actions/checkout@v2
       - name: Git clone BoringTun
         run: |
-          git clone https://github.com/cloudflare/boringtun "$workdir"
+          git clone https://github.com/cloudflare/boringtun .
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
       - uses: actions-rs/cargo@v1
         with:
           command: build
-          args: --release --all-features
+          args: --release --bin boringtun --all-features
