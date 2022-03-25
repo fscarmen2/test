@@ -1,0 +1,33 @@
+name: Cross compile BoringTun
+
+on:
+  workflow_dispatch:
+
+
+jobs:
+  BoringTun:
+    name: Rust project
+    runs-on: ubuntu-latest
+    env:
+      workdir: ./boringtun
+    steps:
+      - name: Git clone BoringTun
+        run: |
+          git clone https://github.com/cloudflare/boringtun "$workdir"
+      - name: Check code
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release --all-features
+          
+#      - name: Release binaries 
+#        uses: softprops/action-gh-release@v1
+#        with:
+#          tag_name: wireguard-go
+#          files: ${{ env.workdir }}/dist/*.tar.gz
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
