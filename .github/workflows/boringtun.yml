@@ -13,7 +13,6 @@ jobs:
       - name: Git clone BoringTun
         run: |
           git clone https://github.com/cloudflare/boringtun
-          find / -name Cargo.toml
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
