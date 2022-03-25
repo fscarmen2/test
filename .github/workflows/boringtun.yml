@@ -12,7 +12,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Git clone BoringTun
         run: |
-          git clone https://github.com/cloudflare/boringtun
+          git clone https://github.com/cloudflare/boringtun /
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
