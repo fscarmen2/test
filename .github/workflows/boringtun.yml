@@ -19,6 +19,5 @@ jobs:
           toolchain: stable
       - uses: actions-rs/cargo@v1
         with:
-          workdir: ./boringtun
           command: build
-          args: --release --bin boringtun --all-features
+          args: --release --bin boringtun-cli --all-features
