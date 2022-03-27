@@ -3,14 +3,14 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/sbin:/b
 export LANG=en_US.UTF-8
 
 # 当前脚本版本号和新增功能
-VERSION=2.35
+VERSION=2.36
 
 declare -A T
 
 T[E0]="\n Language:\n  1.English (default) \n  2.简体中文\n"
 T[C0]="${T[E0]}"
-T[E1]="1. WARP support Debian 9"
-T[C1]="1. WARP 支持 Debian 9"
+T[E1]="1. First publication on a global scale. Wireguard client that exposes itself as a socks5 proxy"
+T[C1]="1. 全网首发: 通过 wireproxy，让 WARP 在本地建议一个 socks5 代理"
 T[E2]="The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C2]="必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E3]="The TUN module is not loaded. You should turn it on in the control panel. Ask the supplier for more help. Feedback: [https://github.com/fscarmen/warp/issues]"
@@ -1160,8 +1160,8 @@ BindAddress = 127.0.0.1:40000
 EOF
 	
 	# 安装并运行 wireproxy
-	wget https://github.com/fscarmen/test/releases/download/wireproxy/wireproxy_linux_$ARCHITECTURE.tar.gz
-	tar -xzf wireproxy_linux_$ARCHITECTURE.tar.gz -C /usr/bin/ --remove-files
+	wget -N https://github.com/fscarmen/test/releases/download/wireproxy/wireproxy_linux_$ARCHITECTURE.tar.gz
+	tar -xzf wireproxy_linux_$ARCHITECTURE.tar.gz -C /usr/bin/; rm -f wireproxy_linux*
 	nohup wireproxy /etc/wireguard/proxy.conf >/dev/null 2>&1 &
 	sleep 2; proxy_info
 	
