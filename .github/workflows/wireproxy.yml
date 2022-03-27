@@ -22,7 +22,7 @@ jobs:
       - name: Git clone WirePorxy
         run: |
           git clone https://github.com/octeep/wireproxy.git ${{ env.workdir }}
-          cp ./.github/wireproxy.yml ${{ env.workdir }}/.goreleaser.yml
+          cp ./.github/wireproxy-releaser.yml ${{ env.workdir }}/.goreleaser.yml
 
       - name: Set up GoReleaser
         uses: actions/setup-go@v2
