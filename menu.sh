@@ -1163,7 +1163,7 @@ BindAddress = 127.0.0.1:40000
 EOF
 	
 	# 安装并运行 wireproxy
-	wget -N https://github.com/fscarmen/test/releases/download/wireproxy/wireproxy_linux_$ARCHITECTURE.tar.gz
+	wget -N https://github.com/fscarmen/warp/releases/download/wireproxy/wireproxy_linux_$ARCHITECTURE.tar.gz
 	tar -xzf wireproxy_linux_$ARCHITECTURE.tar.gz -C /usr/bin/; rm -f wireproxy_linux*
 	nohup wireproxy /etc/wireguard/proxy.conf >/dev/null 2>&1 &
 	sleep 2; proxy_info
