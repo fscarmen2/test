@@ -611,10 +611,11 @@ uninstall(){
 	${PACKAGE_UNINSTALL[int]} wireguard-tools openresolv 2>/dev/null
 	rpm -e wireguard-tools 2>/dev/null
 	[[ $(systemctl is-active systemd-resolved) != active ]] && systemctl enable --now systemd-resolved >/dev/null 2>&1
-	rm -rf /usr/local/bin/wgcf /etc/wireguard /usr/bin/wireguard-go wgcf-account.toml wgcf-profile.conf /usr/bin/warp /etc/dnsmasq.d/warp.conf
+	rm -rf /usr/local/bin/wgcf /etc/wireguard /usr/bin/wireguard-go wgcf-account.toml wgcf-profile.conf /usr/bin/warp /etc/dnsmasq.d/warp.conf /usr/bin/wireproxy
 	[[ -e /etc/gai.conf ]] && sed -i '/^precedence \:\:ffff\:0\:0/d;/^label 2002\:\:\/16/d' /etc/gai.conf
 	[[ -e /usr/bin/tun.sh ]] && rm -f /usr/bin/tun.sh && sed -i '/tun.sh/d' /etc/crontab
 	sed -i "/250   warp/d" /etc/iproute2/rt_tables
+	kill -9 $(pgrep -f wireproxy) >/dev/null 2>&1
 	}
 	
 	# 卸载 Linux Client
