@@ -1123,7 +1123,7 @@ install(){
 	if [[ $OCTEEP = 1 ]]; then
 	cat > /etc/wireguard/proxy.conf << EOF
 # SelfSecretKey is the secret key of your wireguard peer
-SelfSecretKey = $(grep PrivateKey wgcf-profile.conf | cut -d= -f2)
+SelfSecretKey = $(grep PrivateKey wgcf-profile.conf | sed "s/PrivateKey = //g")
 # SelfEndpoint is the IP of your wireguard peer
 SelfEndpoint = 172.16.0.2
 # PeerPublicKey is the public key of the wireguard server you want to connect to
