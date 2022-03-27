@@ -1420,7 +1420,7 @@ menu_setting(){
 	ACTION5(){ proxy; }; ACTION6(){ change_ip; }; ACTION7(){ uninstall; }; ACTION8(){ plus; }; ACTION9(){ bbrInstall; }; ACTION10(){ ver; }; 
 	ACTION11(){ bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/warp_unlock/main/unlock.sh) -$L; }; 
 	ACTION12(){ [[ $m = 0 ]] && red " ${T[${L}147]} " && exit 1; CONF=${CONF1[m]}; ANEMONE=1 ;install; }; 
-	ACTION13(){ [[ $m = 0 ]] && red " ${T[${L}147]} " && exit 1; OCTEEP=1; install; };
+	ACTION13(){ OCTEEP=1; install; };
 	ACTION0(){ exit; }
 	}
 
