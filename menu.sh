@@ -9,8 +9,8 @@ declare -A T
 
 T[E0]="\n Language:\n  1.English (default) \n  2.简体中文\n"
 T[C0]="${T[E0]}"
-T[E1]="1. First publication on a global scale. Wireguard client that exposes itself as a socks5 proxy"
-T[C1]="1. 全网首发: 通过 wireproxy，让 WARP 在本地建议一个 socks5 代理"
+T[E1]="1. First publication on a global scale. Wireguard client that exposes itself as a socks5 proxy; 2. WARP+ and Teams can be used in WireProxy"
+T[C1]="1. 全网首发: 通过 WireProxy，让 WARP 在本地建议一个 socks5 代理; 2. WARP+ 和 Teams 账户可用于 WireProxy 安装或者升级"
 T[E2]="The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C2]="必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E3]="The TUN module is not loaded. You should turn it on in the control panel. Ask the supplier for more help. Feedback: [https://github.com/fscarmen/warp/issues]"
