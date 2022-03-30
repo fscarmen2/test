@@ -207,8 +207,8 @@ T[E97]="It is a WARP+ account already. Update is aborted."
 T[C97]="已经是 WARP+ 账户，不需要升级"
 T[E98]="Uninstall WirePorxy was complete."
 T[C98]="WirePorxy 卸载成功"
-T[E99]=""
-T[C99]=""
+T[E99]="WireProxy is connected"
+T[C99]="WireProxy 已连接"
 T[E100]="License should be 26 characters, please re-enter WARP+ License. Otherwise press Enter to continue. \(\$i times remaining\): "
 T[C100]="License 应为26位字符,请重新输入 WARP+ License \(剩余\$i次\): "
 T[E101]="Client doesn't support architecture ARM64. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]"
@@ -324,7 +324,7 @@ T[C155]="WGCF WARP 还未安装"
 T[E156]="Socks5 Proxy Client has not been installed yet."
 T[C156]="Socks5 Proxy 客户端还未安装"
 T[E157]="WireProxy has not been installed yet."
-T[C157]="WireProxy 还未安6"
+T[C157]="WireProxy 还未安装"
 T[E158]="WireProxy is disconnected. It could be connect again by [warp y]"
 T[C158]="已断开 WirePorxy，再次连接可以用 warp y"
 T[E159]="WireProxy is on"
@@ -805,7 +805,7 @@ wireproxy_onoff(){
 
 	else nohup wireproxy /etc/wireguard/proxy.conf >/dev/null 2>&1 &
 		sleep 1 && proxy_info
-		green " $(eval echo "${T[${L}162]}") "
+		green " ${T[${L}99]}\n $(eval echo "${T[${L}162]}") "
 	fi
 	}
 
@@ -999,11 +999,11 @@ change_port(){
 	CHANGE_PORT1=("wireproxy_port"	"socks5_port"	"socks5_port")
 	CHANGE_PORT2=(""		"" 		"wireproxy_port")
 
-	for ((e=0;c<${#INSTALL_CHECK[@]};e++)); do
+	for ((e=0;e<${#INSTALL_CHECK[@]};e++)); do
 		[[ "${INSTALL_CHECK[e]}" -gt 1 ]]  && INSTALL_RESULT[e]=1 ||  INSTALL_RESULT[e]=0
 	done
 
-	for ((f=0; b<${#CASE_RESAULT[@]}; f++)); do
+	for ((f=0; f<${#CASE_RESAULT[@]}; f++)); do
 		[[ ${INSTALL_RESULT[@]} = "${CASE_RESAULT[b]}" ]] && break
 	done
 
