@@ -1010,7 +1010,7 @@ change_port(){
 	2 ) yellow " ${SHOW_CHOOSE[f]} " && reading " ${T[${L}50]} " MODE
 		case "$MODE" in
 		[1-2] ) $(eval echo "\${CHANGE_IP$MODE[f]}")
-		ss -nltp | grep -q ":$PORT" && green " ${T[${L}122]} " || red " ${T[${L}34]} ";;
+		ss -nltp | grep -q ":$PORT" && green " $(eval echo "${T[${L}122]}") " || red " ${T[${L}34]} ";;
 		* ) red " ${T[${L}51]} [1-2] "; sleep 1; change_port;;
 		esac;;
 	esac	
