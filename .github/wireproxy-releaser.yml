@@ -27,7 +27,7 @@ builds:
         goarch: arm
       - goos: windows
         goarch: arm64
-    main: ./cmd/
+    main: ./
     binary: wireproxy
 universal_binaries:
   - name_template: "wireproxy"
