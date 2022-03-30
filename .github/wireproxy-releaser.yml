@@ -9,8 +9,8 @@ builds:
       - -s -w -X main.version={{.Version}} -X main.arch={{.Arch}}
     goos:
       - linux
-#      - windows
-#      - darwin
+      - windows
+      - darwin
     goarch:
       - arm
       - arm64
@@ -27,7 +27,7 @@ builds:
         goarch: arm
       - goos: windows
         goarch: arm64
-    main: ./
+    main: ./cmd/
     binary: wireproxy
 universal_binaries:
   - name_template: "wireproxy"
