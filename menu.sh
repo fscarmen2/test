@@ -75,8 +75,8 @@ T[E32]="Step 1/3: Install dependencies..."
 T[C32]="进度 1/3：安装系统依赖……"
 T[E33]="Step 2/3: WGCF is ready"
 T[C33]="进度 2/3：已安装 WGCF"
-T[E34]="This system is a native dualstack. You can only choose the WARP dualstack. Same options as 1"
-T[C34]="此系统为原生双栈，只能选择 WARP 双栈方案，选项与 1 相同"
+T[E34]=""
+T[C34]=""
 T[E35]="Update WARP+ account..."
 T[C35]="升级 WARP+ 账户中……"
 T[E36]="The upgrade failed, WARP+ account error or more than 5 devices have been activated. Free WARP account to continu."
@@ -151,8 +151,8 @@ T[E70]="WARP dualstack"
 T[C70]="WARP 双栈"
 T[E71]="Turn on WARP"
 T[C71]="打开 WARP"
-T[E72]="Turn off, uninstall WARP interface and Linux Client"
-T[C72]="永久关闭 WARP 网络接口，并删除 WARP 和 Linux Client"
+T[E72]="Turn off, uninstall WARP interface, Linux Client and WireProxy"
+T[C72]="永久关闭 WARP 网络接口，并删除 WARP、 Linux Client 和 WireProxy"
 T[E73]="Upgrade kernel, turn on BBR, change Linux system"
 T[C73]="升级内核、安装BBR、DD脚本"
 T[E74]="Getting WARP+ quota by scripts"
@@ -293,8 +293,8 @@ T[E141]="Switch \${WARP_BEFORE[m]} to \${WARP_AFTER1[m]}"
 T[C141]="\${WARP_BEFORE[m]} 转为 \${WARP_AFTER1[m]}"
 T[E142]="Switch \${WARP_BEFORE[m]} to \${WARP_AFTER2[m]}"
 T[C142]="\${WARP_BEFORE[m]} 转为 \${WARP_AFTER2[m]}"
-T[E143]="Change Client port"
-T[C143]="更改 Client 端口"
+T[E143]="Change Client or WireProxy port"
+T[C143]="更改 Client 或 WireProxy 端口"
 T[E144]="Install WARP IPv6 interface"
 T[C144]="安装 WARP IPv6 网络接口"
 T[E145]="\\\n WARP ineterface can be switched to the following:\\\n 1. \$OPTION1\\\n 2. \$OPTION2\\\n 0. \${T[\${L}76]}\\\n"
@@ -333,6 +333,12 @@ T[E161]="WireProxy is installed and disconnected"
 T[C161]="WireProxy 已安装，状态为断开连接"
 T[E162]="Local Socks5:\$PROXYSOCKS52	WARP\$AC2 IPv4:\$PROXYIP2 \$PROXYCOUNTRY2	\$PROXYASNORG2"
 T[C162]="本地 Socks5:\$PROXYSOCKS52	WARP\$AC2 IPv4:\$PROXYIP2 \$PROXYCOUNTRY2	\$PROXYASNORG2"
+T[E163]="Connect the WirePorxy"
+T[C163]="连接 WirePorxy"
+T[E164]="Disconnect the WirePorxy"
+T[C164]="断开 WirePorxy"
+
+
 
 # 自定义字体彩色，read 函数，友道翻译函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -470,7 +476,7 @@ proxy_info(){
 	PROXYIP2=$(expr "$PROXYJASON2" : '.*ip\":\"\([^"]*\).*')
 	PROXYCOUNTRY2=$(expr "$PROXYJASON2" : '.*country\":\"\([^"]*\).*')
 	[[ $L = C ]] && PROXYCOUNTRY2=$(translate "$PROXYCOUNTRY2")
-	PROXYASNORG2=$(expr "$PROXYJASON2" : '.*asn_org\":\"\([^"]*\).*')2
+	PROXYASNORG2=$(expr "$PROXYJASON2" : '.*asn_org\":\"\([^"]*\).*')
 	TRACE42=$(eval echo "\$(curl -sx socks5h://localhost:$(ss -nltp | grep wireproxy | grep -oP '127.0*\S+' | cut -d: -f2) https://www.cloudflare.com/cdn-cgi/trace)")
 		if [[ $TRACE42 =~ plus ]]; then
 			grep -sq 'Device name' /etc/wireguard/info.log && AC2='+' || AC2=' Teams'
@@ -596,7 +602,10 @@ change_ip(){
 		}
 
 	change_wireproxy(){
-		wireproxy_restart(){ red " $(eval echo "${T[${L}126]}") " && kill -9 $(pgrep -f wireproxy) >/dev/null 2>&1; sleep 1; nohup wireproxy /etc/wireguard/proxy.conf >/dev/null 2>&1 &; sleep $j; }
+		wireproxy_restart(){
+			red " $(eval echo "${T[${L}126]}") " && kill -9 $(pgrep -f wireproxy) >/dev/null 2>&1; sleep 1; nohup wireproxy /etc/wireguard/proxy.conf >/dev/null 2>&1 &
+			sleep $j
+			}
 
 		PROXYPORT="$(ss -nltp | grep 'wireproxy' | grep -oP '127.0*\S+' | cut -d: -f2)"
 		[[ -z "$EXPECT" ]] && input_region
@@ -645,10 +654,10 @@ change_ip(){
 
 	case "$b" in
 	0 ) red " ${T[${L}150]} " && exit 1;;
-	1|2|4 ) ${CHANGE_IP1[d]};;
-	* ) yellow " ${SHOW_CHOOSE[d]} " && reading " ${T[${L}50]} " MODE
+	1|2|4 ) ${CHANGE_IP1[b]};;
+	* ) yellow " ${SHOW_CHOOSE[b]} " && reading " ${T[${L}50]} " MODE
 		case "$MODE" in
-		[1-3] ) $(eval echo "\${CHANGE_IP$MODE[d]}");;
+		[1-3] ) $(eval echo "\${CHANGE_IP$MODE[b]}");;
 		* ) red " ${T[${L}51]} [1-3] "; sleep 1; change_ip;;
 		esac;;
 	esac
@@ -890,13 +899,19 @@ EOF
 	[[ $TRACE4$TRACE6 =~ on|plus ]] && PLAN=3 || PLAN=$((IPV4+IPV6))
 
 	# 判断当前 Linux Client 状态，决定变量 CLIENT，变量 CLIENT 含义：0=未安装  1=已安装未激活  2=状态激活  3=Clinet 已开启
-	type -P warp-cli >/dev/null 2>&1 && CLIENT=1 || CLIENT=0
-	[[ $CLIENT = 1 ]] && [[ $(systemctl is-active warp-svc 2>/dev/null) = active || $(systemctl is-enabled warp-svc 2>/dev/null) = enabled ]] && CLIENT=2
-	[[ $CLIENT = 2 ]] && [[ $(ss -nltp) =~ 'warp-svc' ]] && CLIENT=3 && proxy_info
+	CLIENT=0
+	if type -P warp-cli >/dev/null 2>&1; then
+		CLIENT=1
+		[[ $CLIENT = 1 ]] && [[ $(systemctl is-active warp-svc 2>/dev/null) = active || $(systemctl is-enabled warp-svc 2>/dev/null) = enabled ]] && CLIENT=2
+		[[ $CLIENT = 2 ]] && [[ $(ss -nltp) =~ 'warp-svc' ]] && CLIENT=3 && proxy_info
+	fi
 
 	# 判断当前 WireProxy 状态，决定变量 WIREPROXY，变量 WIREPROXY 含义：0=未安装  1=已安装未激活  2=状态激活  3=Clinet 已开启
-	type -P wireproxy >/dev/null 2>&1 && WIREPROXY=1 || WIREPROXY=0
-	[[ $WIREPROXY = 1 ]] && [[ $(ss -nltp) =~ 'wireproxy' ]] && WIREPROXY=3 && proxy_info || WIREPROXY=2
+	WIREPROXY=0
+	if type -P wireproxy >/dev/null 2>&1; then
+		WIREPROXY=1
+		[[ $WIREPROXY = 1 ]] && [[ $(ss -nltp) =~ 'wireproxy' ]] && WIREPROXY=3 && proxy_info || WIREPROXY=2
+	fi
 
 	# 在KVM的前提下，判断 Linux 版本是否小于 5.6，如是则安装 wireguard 内核模块，变量 WG=1。由于 linux 不能直接用小数作比较，所以用 （主版本号 * 100 + 次版本号 ）与 506 作比较
 	[[ $LXC != 1 && $(($(uname -r | cut -d . -f1) * 100 +  $(uname -r | cut -d . -f2))) -lt 506 ]] && WG=1
@@ -965,6 +980,39 @@ input_port(){
 			echo "$PORT" | grep -qE "^[1-9][0-9]{1,4}$" && [[ $(ss -nltp) =~ :"$PORT"[[:space:]] ]] && reading " $(eval echo "${T[${L}103]}") " PORT
 	done
 	}
+
+# Linux Client 或 WireProxy 端口
+change_port(){
+	socks5_port(){ input_port; warp-cli --accept-tos set-proxy-port "$PORT"; }
+	wireproxy_port(){
+		input_port
+		kill -9 $(pgrep -f wireproxy) >/dev/null 2>&1
+		sed -i "s/BindAddress.*/BindAddress = 127.0.0.1:$PORT/g" /etc/wireguard/proxy.conf
+		nohup wireproxy /etc/wireguard/proxy.conf >/dev/null 2>&1 &
+		}
+
+	INSTALL_CHECK=("$CLIENT" "$WIREPROXY")
+	CASE_RESAULT=("0 1"		"1 0"		"1 1")
+	SHOW_CHOOSE=(""			""		"${T[${L}151]}")
+	CHANGE_PORT1=("wireproxy_port"	"socks5_port"	"socks5_port")
+	CHANGE_PORT2=(""		"" 		"wireproxy_port")
+
+	for ((e=0;c<${#INSTALL_CHECK[@]};e++)); do
+		[[ "${INSTALL_CHECK[e]}" -gt 1 ]]  && INSTALL_RESULT[e]=1 ||  INSTALL_RESULT[e]=0
+	done
+
+	for ((f=0; b<${#CASE_RESAULT[@]}; f++)); do
+		[[ ${INSTALL_RESULT[@]} = "${CASE_RESAULT[b]}" ]] && break
+	done
+
+	case "$f" in
+	0|1 ) ${CHANGE_PORT1[f]};;
+	2 ) yellow " ${SHOW_CHOOSE[f]} " && reading " ${T[${L}50]} " MODE
+		case "$MODE" in
+		[1-2] ) $(eval echo "\${CHANGE_IP$MODE[f]}");;
+		* ) red " ${T[${L}51]} [1-2] "; sleep 1; change_port;;
+		esac;;
+	esac	
 
 # 选用 iptables+dnsmasq+ipset 方案执行
 iptables_solution(){
@@ -1547,16 +1595,14 @@ update(){
 
 # 判断当前 WARP 网络接口及 Client 的运行状态，并对应的给菜单和动作赋值
 menu_setting(){
-	case "$CLIENT" in
-	2 ) OPTION1="${T[${L}88]}"; OPTION2="${T[${L}143]}"; OPTION3="${T[${L}144]}"; OPTION4="${T[${L}78]}"; OPTION5="${T[${L}77]}";
-	    ACTION1(){ proxy_onoff; }; ACTION2(){ input_port; warp-cli --accept-tos set-proxy-port "$PORT"; };
-	    ACTION3(){ CONF=106; [[ $TRACE6 != off ]] && red " ${T[${L}140]} " && exit 1 || install; }; ACTION4(){ update; }; ACTION5(){ onff; };;
+	if [[ "$CLIENT" -gt 1 || "$WIREPROXY" -gt 1 ]]; then
+		[[ "$CLIENT" -lt 3 ]] && OPTION1="${T[${L}88]}" || OPTION1="${T[${L}89]}"
+		[[ "$WIREPROXY" -lt 3 ]] && OPTION2="${T[${L}163]}" || OPTION2="${T[${L}164]}"
+		OPTION3="${T[${L}143]}"; OPTION4="${T[${L}78]}"
 
-	3 ) OPTION1="${T[${L}89]}"; OPTION2="${T[${L}143]}"; OPTION3="${T[${L}144]}"; OPTION4="${T[${L}78]}"; OPTION5="${T[${L}77]}";
-	    ACTION1(){ proxy_onoff; }; ACTION2(){ input_port; warp-cli --accept-tos set-proxy-port "$PORT"; };
-	    ACTION3(){ CONF=106; [[ $TRACE6 != off ]] && red " ${T[${L}140]} " && exit 1 || install; }; ACTION4(){ update; }; ACTION5(){ onff; };;
+		ACTION1(){ proxy_onoff; }; ACTION2(){ wireproxy_onoff; }; ACTION3(){ change_port; }; ACTION4(){ update; };
 
-	* ) check_stack
+	else check_stack
 	case "$m" in
 	[0-2] ) NATIVE=("IPv6 only"	"IPv4 only"	"${T[${L}69]}")
 		CONF1=("014"		"104"		"114")
@@ -1568,10 +1614,11 @@ menu_setting(){
 	* )	OPTION1="$(eval echo "${T[${L}141]}")"; OPTION2="$(eval echo "${T[${L}142]}")"; OPTION3="${T[${L}78]}"; OPTION4="${T[${L}77]}"
 		ACTION1(){ stack_switch; }; ACTION2(){ stack_switch; }; ACTION3(){ update; }; ACTION4(){ onoff; };;
 	esac;;
-	esac
+	fi
 
-	OPTION5="${T[${L}82]}"; 
-	OPTION6="${T[${L}123]}"; OPTION7="${T[${L}72]}"; OPTION8="${T[${L}74]}"; OPTION9="${T[${L}73]}"; OPTION10="${T[${L}75]}"; OPTION11="${T[${L}80]}"; OPTION12="${T[${L}138]}"; OPTION13="${T[${L}148]}"; OPTION0="${T[${L}76]}"
+	OPTION5="${T[${L}82]}"; OPTION6="${T[${L}123]}"; OPTION7="${T[${L}72]}"; OPTION8="${T[${L}74]}"; OPTION9="${T[${L}73]}"; OPTION10="${T[${L}75]}";
+	OPTION11="${T[${L}80]}"; OPTION12="${T[${L}138]}"; OPTION13="${T[${L}148]}"; OPTION0="${T[${L}76]}"
+
 	ACTION5(){ proxy; }; ACTION6(){ change_ip; }; ACTION7(){ uninstall; }; ACTION8(){ plus; }; ACTION9(){ bbrInstall; }; ACTION10(){ ver; }; 
 	ACTION11(){ bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/warp_unlock/main/unlock.sh) -$L; }; 
 	ACTION12(){ [[ $m = 0 ]] && red " ${T[${L}147]} " && exit 1; CONF=${CONF1[m]}; ANEMONE=1 ;install; }; 
