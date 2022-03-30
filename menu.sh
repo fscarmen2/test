@@ -1006,7 +1006,8 @@ change_port(){
 	done
 
 	case "$f" in
-	0|1 ) ${CHANGE_PORT1[f]};;
+	0|1 ) ${CHANGE_PORT1[f]}
+		ss -nltp | grep -q ":$PORT" && green " $(eval echo "${T[${L}122]}") " || red " ${T[${L}34]} ";;
 	2 ) yellow " ${SHOW_CHOOSE[f]} " && reading " ${T[${L}50]} " MODE
 		case "$MODE" in
 		[1-2] ) $(eval echo "\${CHANGE_IP$MODE[f]}")
