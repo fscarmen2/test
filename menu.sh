@@ -999,12 +999,12 @@ change_port(){
 	CHANGE_PORT1=("wireproxy_port"	"socks5_port"	"socks5_port")
 	CHANGE_PORT2=(""		"" 		"wireproxy_port")
 
-	for ((e=0;e<${#INSTALL_CHECK[@]};e++)); do
+	for ((e=0;e<${#INSTALL_CHECK[@]}; e++)); do
 		[[ "${INSTALL_CHECK[e]}" -gt 1 ]]  && INSTALL_RESULT[e]=1 ||  INSTALL_RESULT[e]=0
 	done
 
 	for ((f=0; f<${#CASE_RESAULT[@]}; f++)); do
-		[[ ${INSTALL_RESULT[@]} = "${CASE_RESAULT[b]}" ]] && break
+		[[ ${INSTALL_RESULT[@]} = "${CASE_RESAULT[f]}" ]] && break
 	done
 
 	case "$f" in
