@@ -3,7 +3,6 @@ before:
   hooks:
     - go mod tidy -v
 builds:
-  - main: ${{ env.workdir }}/cmd/wireproxy/
   - env:
       - CGO_ENABLED=0
     ldflags:
@@ -28,7 +27,7 @@ builds:
         goarch: arm
       - goos: windows
         goarch: arm64
-    main: ./
+    main: ./cmd/wireproxy/
     binary: wireproxy
 universal_binaries:
   - name_template: "wireproxy"
