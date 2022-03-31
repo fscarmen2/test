@@ -1350,7 +1350,7 @@ EOF
 	# 安装并运行 wireproxy
 	wget -N https://github.com/fscarmen/warp/releases/download/wireproxy/wireproxy_linux_$ARCHITECTURE.tar.gz
 	tar -xzf wireproxy_linux_$ARCHITECTURE.tar.gz -C /usr/bin/; rm -f wireproxy_linux*
-	systemctl enable --now wireproxy; fsleep 1
+	systemctl enable --now wireproxy; sleep 1
 
 	# 保存好配置文件, 把 wgcf-profile.conf 复制到/etc/wireguard/ 并命名为 wgcf.conf, 如有 Teams，改为 Teams 账户信息	
 	mv -f wgcf-profile.conf /etc/wireguard/wgcf.conf >/dev/null 2>&1
