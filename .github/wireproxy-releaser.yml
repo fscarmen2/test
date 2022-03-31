@@ -3,7 +3,7 @@ before:
   hooks:
     - go mod tidy -v
 builds:
-  - skip: true
+  - main: ${{ env.workdir }}/cmd/wireproxy/
   - env:
       - CGO_ENABLED=0
     ldflags:
