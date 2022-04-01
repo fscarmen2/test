@@ -3,7 +3,7 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/sbin:/b
 export LANG=en_US.UTF-8
 
 # 当前脚本版本号和新增功能
-VERSION='1.06'
+VERSION='1.07'
 
 # 最大支持流媒体
 SUPPORT_NUM='2'
@@ -13,14 +13,14 @@ declare -A T
 
 T[E0]="\n Language:\n  1.English (default) \n  2.简体中文\n"
 T[C0]="${T[E0]}"
-T[E1]="1. Add two modes to unlock: systemd service and pm2 daemon"
-T[C1]="1. 增加两个解锁模式: systemd 服务和 pm2 进程守护"
+T[E1]="1. Support change IP for WireProxy"
+T[C1]="1. 支持 WirePorxy 更换 IP"
 T[E2]="The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp_unlock/issues]"
 T[C2]="必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp_unlock/issues]"
 T[E3]="Choose:"
 T[C3]="请选择:"
-T[E4]="\n Neither the WARP network interface nor Socks5 are installed, please select the installation script:\n 1. fscarmen (Default)\n 2. kkkyg\n 3. P3terx\n 0. Exit\n"
-T[C4]="\n WARP 网络接口和 Socks5 都没有安装，请选择安装脚本:\n 1. fscarmen (默认)\n 2. kkkyg\n 3. P3terx\n 0. 退出\n"
+T[E4]="\n Neither the WARP network interface nor Socks5 are installed, please select the installation script:\n 1. fscarmen (Default)\n 2. kkkyg\n 3. P3terx\n 4. Misaka\n 0. Exit\n"
+T[C4]="\n WARP 网络接口和 Socks5 都没有安装，请选择安装脚本:\n 1. fscarmen (默认)\n 2. kkkyg\n 3. P3terx\n 4. Misaka\n 0. 退出\n"
 T[E5]="The script supports Debian, Ubuntu, CentOS or Alpine systems only. Feedback: [https://github.com/fscarmen/warp_unlock/issues]"
 T[C5]="本脚本只支持 Debian、Ubuntu、CentOS 或 Alpine 系统,问题反馈:[https://github.com/fscarmen/warp_unlock/issues]"
 T[E6]="Please choose to brush WARP IP:\n 1. WARP Socks5 Proxy (Default)\n 2. WARP IPv6 Interface\n"
@@ -85,6 +85,24 @@ T[E43]="Media unlock daemon installed successfully. A systemd service has been c
 T[C43]="\n 媒体解锁守护进程已安装成功，已创建一个 systemd 服务，查看 [systemctl status warp_unlock]，关闭 [systemctl disable --now warp_unlock]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log\n"
 T[E44]="Media unlock daemon installed successfully. pm2 daemon is running, check pm2 [list] and close [pm2 delete warp_unlock; pm2 unstartup systemd;]. The VPS restart will still take effect. The running log of the scheduled task will be saved in /root/result.log\n"
 T[C44]="\n 媒体解锁守护进程已安装成功，pm2 守护进程正在工作中，查看 [pm2 list]，关闭 [pm2 delete warp_unlock; pm2 unstartup systemd; ]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log\n"
+T[E45]="Please choose to brush WARP IP:\n 1. WireProxy (Default)\n 2. WARP Socks5 Proxy\n"
+T[C45]="\n 请选择刷 WARP IP 方式:\n 1. WireProxy (默认)\n 2. WARP Socks5 代理\n"
+T[E46]="Please choose to brush WARP IP:\n 1. WireProxy (Default)\n 2. WARP IPv6 Interface\n"
+T[C46]="\n 请选择刷 WARP IP 方式:\n 1. WireProxy (默认)\n 2. WARP IPv6 网络接口\n"
+T[E47]="Please choose to brush WARP IP:\n 1. WireProxy (Default)\n 2. WARP Socks5 Proxy\n 3. WARP IPv6 Interface\n"
+T[C47]="\n 请选择刷 WARP IP 方式:\n 1. WireProxy (默认)\n 2. WARP Socks5 代理\n 3. WARP IPv6 网络接口\n"
+T[E48]="Please choose to brush WARP IP:\n 1. WireProxy (Default)\n 2. WARP IPv4 Interface\n"
+T[C48]="\n 请选择刷 WARP IP 方式:\n 1. WireProxy (默认)\n 2. WARP IPv4 网络接口\n"
+T[E49]="Please choose to brush WARP IP:\n 1. WARP Socks5 Proxy (Default)\n 2. WARP IPv4 Interface\n"
+T[C49]="\n 请选择刷 WARP IP 方式:\n 1. WARP Socks5 代理 (默认)\n 2. WARP IPv4 网络接口\n"
+T[E50]="Please choose to brush WARP IP:\n 1. WireProxy (Default)\n 2. WARP Socks5 Proxy\n 3. WARP IPv4 Interface\n"
+T[C50]="\n 请选择刷 WARP IP 方式:\n 1. WireProxy (默认)\n 2. WARP Socks5 代理\n 3. WARP IPv4 网络接口\n"
+T[E51]="Please choose to brush WARP IP:\n 1. WireProxy (Default)\n 2. WARP IPv4 Interface\n 3. WARP IPv6 Interface\n"
+T[C51]="\n 请选择刷 WARP IP 方式:\n 1. WireProxy (默认)\n 2. WARP IPv4 网络接口\n 3. WARP IPv6 网络接口\n"
+T[E52]="Please choose to brush WARP IP:\n 1. WARP Socks5 Proxy (Default)\n 2. WARP IPv4 Interface\n 3. WARP IPv6 Interface\n"
+T[C52]="\n 请选择刷 WARP IP 方式:\n 1. WARP Socks5 代理 (默认)\n 2. WARP IPv4 网络接口\n 3. WARP IPv6 网络接口\n"
+T[E53]="Please choose to brush WARP IP:\n 1. WireProxy (Default)\n 2. WARP Socks5 Proxy (Default)\n 3. WARP IPv4 Interface\n 4. WARP IPv6 Interface\n"
+T[C53]="\n 请选择刷 WARP IP 方式:\n 1. WireProxy (默认)\n 2. WARP Socks5 代理 (默认)\n 3. WARP IPv4 网络接口\n 4. WARP IPv6 网络接口\n"
 
 # 自定义字体彩色，read 函数，友道翻译函数，安装依赖函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -161,34 +179,106 @@ if [[ -z "${STATUS[@]}" ]]; then
 	fi
 
 	type -P warp-cli >/dev/null 2>&1 && [[ ! $(ss -nltp) =~ 'warp-svc' ]] && warp-cli --accept-tos connect >/dev/null 2>&1
-	[[ $(ss -nltp) =~ 'warp-svc' ]] && STATUS[2]=1 || STATUS[2]=0
+	[[ $(ss -nltp) =~ 'warp-svc' ]] && CLIENT_PORT=$(ss -nltp | grep warp-svc | grep -oP '127.0*\S+' | cut -d: -f2) && STATUS[2]=1 || STATUS[2]=0
+
+	type -P wireproxy >/dev/null 2>&1 && [[ ! $(ss -nltp) =~ 'wireproxy' ]] && systemctl restart wireproxy
+	[[ $(ss -nltp) =~ 'wireproxy' ]] && WIREPROXY_PORT=$(ss -nltp | grep wireproxy | grep -oP '127.0*\S+' | cut -d: -f2) && STATUS[3]=1 || STATUS[3]=0
 fi
 
+CASE_IPV4(){ NIC='-ks4m8'; RESTART="wgcf_restart"; }
+CASE_IPV6(){ NIC='-ks6m8'; RESTART="wgcf_restart"; }
+CASE_CLIENT(){ NIC="-sx socks5h://localhost:$CLIENT_PORT"; RESTART="socks5_restart"; }
+CASE_WIREPROXY(){ NIC="-sx socks5h://localhost:$WIREPROXY_PORT"; RESTART="wireproxy_restart"; }
+
 case "${STATUS[@]}" in
-'0 0 0') yellow " ${T[${L}4]} " && reading " ${T[${L}3]} " CHOOSE2
+'0 0 0 0') yellow " ${T[${L}4]} " && reading " ${T[${L}3]} " CHOOSE2
      case "$CHOOSE2" in
       2 ) wget -N https://cdn.jsdelivr.net/gh/kkkyg/CFwarp/CFwarp.sh && bash CFwarp.sh; exit;;
       3 ) bash <(curl -fsSL git.io/warp.sh) menu; exit;;
+      4 ) wget -N https://raw.githubusercontents.com/Misaka-blog/Misaka-WARP-Script/master/misakawarp.sh && bash misakawarp.sh; exit;;
       0 ) exit;;
       * ) wget -N https://cdn.jsdelivr.net/gh/fscarmen/warp/menu.sh && bash menu.sh; exit;;
      esac;;
-'0 0 1' ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
-     NIC="-ks4m8 --socks5 $PROXYSOCKS5"
-     RESTART="socks5_restart";;
-'0 1 0' ) NIC='-ks6m8'; RESTART="wgcf_restart";;
-'1 0 0' ) NIC='-ks4m8'; RESTART="wgcf_restart";;
-'1 1 0' ) yellow " ${T[${L}23]} " && reading " ${T[${L}3]} " CHOOSE3
-      case "$CHOOSE3" in
-      2 ) NIC='-ks6m8'; RESTART="wgcf_restart";;
-      * ) NIC='-ks4m8'; RESTART="wgcf_restart";;
-      esac;;
-'0 1 1' ) yellow " ${T[${L}6]} " && reading " ${T[${L}3]} " CHOOSE3
-      case "$CHOOSE3" in
-      2 ) NIC='-ks6m8'; RESTART="wgcf_restart";;
-      * ) PROXYSOCKS5=$(ss -nltp | grep warp | grep -oP '127.0*\S+')
-          NIC="-ks4m8 --socks5 $PROXYSOCKS5"
-	  RESTART="socks5_restart";;
-      esac;;
+
+'0 0 0 1') CASE_WIREPROXY;;
+	
+'0 0 1 0') CASE_CLIENT;;
+
+'0 0 1 1') yellow " ${T[${L}45]} " && reading " ${T[${L}3]} " CHOOSE3
+	case "$CHOOSE3" in
+	2 ) CASE_CLIENT;;
+	* ) CASE_WIREPROXY;;
+	esac;;
+
+'0 1 0 0') CASE_IPV6;;
+
+'0 1 0 1') yellow " ${T[${L}46]} " && reading " ${T[${L}3]} " CHOOSE3
+	case "$CHOOSE3" in
+	2 ) CASE_IPV6;;
+	* ) CASE_WIREPROXY;;
+	esac;;
+
+'0 1 1 0') yellow " ${T[${L}6]} " && reading " ${T[${L}3]} " CHOOSE3
+ 	case "$CHOOSE3" in
+ 	2 ) CASE_IPV6;;
+ 	* ) CASE_CLIENT;;
+ 	esac;;
+
+'0 1 1 1') yellow " ${T[${L}47]} " && reading " ${T[${L}3]} " CHOOSE3
+ 	case "$CHOOSE3" in
+ 	2 ) CASE_CLIENT;;
+ 	3 ）CASE_IPV6;;
+ 	* ) CASE_WIREPROXY;;
+ 	esac;;
+
+'1 0 0 0' ) CASE_IPV4;;
+
+'1 0 0 1' ) yellow " ${T[${L}48]} " && reading " ${T[${L}3]} " CHOOSE3
+	case "$CHOOSE3" in
+	2 ) CASE_IPV4;;
+	* ) CASE_WIREPROXY;;
+	esac;;
+
+'1 0 1 0' ) yellow " ${T[${L}49]} " && reading " ${T[${L}3]} " CHOOSE3
+	case "$CHOOSE3" in
+	2 ) CASE_IPV4;;
+	* ) CASE_CLIENT;;
+	esac;;
+
+'1 0 1 1') yellow " ${T[${L}50]} " && reading " ${T[${L}3]} " CHOOSE3
+	case "$CHOOSE3" in
+	2 ) CASE_CLIENT;;
+	3 ) CASE_IPV4;;
+	* ) CASE_WIREPROXY;;
+	esac;;
+
+'1 1 0 0' ) yellow " ${T[${L}23]} " && reading " ${T[${L}3]} " CHOOSE3
+	case "$CHOOSE3" in
+	2 ) CASE_IPV6;;
+	* ) CASE_IPV4;;
+	esac;;
+
+'1 1 0 1') yellow " ${T[${L}51]} " && reading " ${T[${L}3]} " CHOOSE3
+	case "$CHOOSE3" in
+	2 ) CASE_IPV4;;
+	3 ）CASE_IPV6;;
+	* ) CASE_WIREPROXY;;
+	esac;;
+
+'1 1 1 0') yellow " ${T[${L}52]} " && reading " ${T[${L}3]} " CHOOSE3
+	case "$CHOOSE3" in
+	2 ) CASE_IPV4;;
+	3 ）CASE_IPV6;;
+	* ) CASE_CLIENT;;
+	esac;;
+
+'1 1 1 1') yellow " ${T[${L}53]} " && reading " ${T[${L}3]} " CHOOSE3
+	case "$CHOOSE3" in
+	2 ) CASE_CLIENT;;
+	3 ) CASE_IPV4;;
+	4 ）CASE_IPV6;;
+	* ) CASE_WIREPROXY;;
+	esac;;
  esac
 }
 
@@ -279,6 +369,8 @@ socks5_restart(){
 warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1 && sleep 15
 ip
 [[ -e /etc/wireguard/license ]] && warp-cli --accept-tos set-license \$(cat /etc/wireguard/license) >/dev/null 2>&1 && sleep 2; }
+
+wireproxy_restart(){ systemctl restart wg-quick@wgcf; sleep 5; ip; }
 
 check0(){
 RESULT[0]=""; REGION[0]=""; R[0]="";
