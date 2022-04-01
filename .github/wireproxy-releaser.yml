@@ -32,21 +32,7 @@ builds:
 universal_binaries:
   - name_template: "wireproxy"
     replace: false
-checksum:
-  name_template: "checksums.txt"
-snapshot:
-  name_template: "wireproxy"
 archives:
-  - name_template: "wireproxy_${{ env.release_version }}_{{ .Os }}_{{ .Arch }}"
+  - name_template: "wireproxy_{{ .Os }}_{{ .Arch }}"
     files:
       - none*
-changelog:
-  sort: asc
-  filters:
-    exclude:
-      - "^docs:"
-      - "^test:"
-      - "^chore"
-      - Merge pull request
-      - Merge branch
-      - go mod tidy
