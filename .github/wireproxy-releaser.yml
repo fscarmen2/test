@@ -8,18 +8,18 @@ builds:
     ldflags:
       - -s -w -X main.version={{.Version}} -X main.arch={{.Arch}}
     goos:
-      - linux
+#      - linux
       - windows
-      - darwin
+#      - darwin
     goarch:
-      - arm
-      - arm64
+ #     - arm
+ #     - arm64
       - 386
-      - amd64
-      - mips
-      - mipsle
-      - s390x
-      - riscv64
+ #     - amd64
+ #     - mips
+ #     - mipsle
+ #     - s390x
+ #     - riscv64
     gomips:
       - softfloat
     ignore:
