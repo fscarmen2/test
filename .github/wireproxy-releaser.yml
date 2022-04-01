@@ -37,7 +37,7 @@ checksum:
 snapshot:
   name_template: "wireproxy"
 archives:
-  - name_template: "wireproxy_${{ tag_name }}_{{ .Os }}_{{ .Arch }}"
+  - name_template: "wireproxy_${{ steps.vars.outputs.tag }}_{{ .Os }}_{{ .Arch }}"
     files:
       - none*
 changelog:
