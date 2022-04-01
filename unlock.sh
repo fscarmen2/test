@@ -103,6 +103,8 @@ T[E52]="Please choose to brush WARP IP:\n 1. WARP Socks5 Proxy (Default)\n 2. WA
 T[C52]="\n 请选择刷 WARP IP 方式:\n 1. WARP Socks5 代理 (默认)\n 2. WARP IPv4 网络接口\n 3. WARP IPv6 网络接口\n"
 T[E53]="Please choose to brush WARP IP:\n 1. WireProxy (Default)\n 2. WARP Socks5 Proxy (Default)\n 3. WARP IPv4 Interface\n 4. WARP IPv6 Interface\n"
 T[C53]="\n 请选择刷 WARP IP 方式:\n 1. WireProxy (默认)\n 2. WARP Socks5 代理 (默认)\n 3. WARP IPv4 网络接口\n 4. WARP IPv6 网络接口\n"
+T[E54]="No option. The script is aborted. Feedback: [https://github.com/fscarmen/warp_unlock/issues]"
+T[C54]="没有该选项，脚本退出，问题反馈:[https://github.com/fscarmen/warp_unlock/issues]"
 
 # 自定义字体彩色，read 函数，友道翻译函数，安装依赖函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -190,96 +192,34 @@ CASE_IPV6(){ NIC='-ks6m8'; RESTART="wgcf_restart"; }
 CASE_CLIENT(){ NIC="-sx socks5h://localhost:$CLIENT_PORT"; RESTART="socks5_restart"; }
 CASE_WIREPROXY(){ NIC="-sx socks5h://localhost:$WIREPROXY_PORT"; RESTART="wireproxy_restart"; }
 
-case "${STATUS[@]}" in
-'0 0 0 0') yellow " ${T[${L}4]} " && reading " ${T[${L}3]} " CHOOSE2
-     case "$CHOOSE2" in
-      2 ) wget -N https://cdn.jsdelivr.net/gh/kkkyg/CFwarp/CFwarp.sh && bash CFwarp.sh; exit;;
-      3 ) bash <(curl -fsSL git.io/warp.sh) menu; exit;;
-      4 ) wget -N https://raw.githubusercontents.com/Misaka-blog/Misaka-WARP-Script/master/misakawarp.sh && bash misakawarp.sh; exit;;
-      0 ) exit;;
-      * ) wget -N https://cdn.jsdelivr.net/gh/fscarmen/warp/menu.sh && bash menu.sh; exit;;
-     esac;;
+INSTALL_CHECK=("0 0 0 0" "1 1 1 1" "0 1 1 1" "1 0 1 1" "1 1 0 1" "1 1 1 0" "0 0 1 1" "0 1 0 1" "0 1 1 0" "1 0 0 1" "1 0 1 0" "1 1 0 0" "0 0 0 1"  "0 0 1 0" "0 1 0 0" "1 0 0 0")
+SHOW=("${T[${L}4]}" "${T[${L}53]}" "${T[${L}47]}" "${T[${L}50]}" "${T[${L}51]}" "${T[${L}52]}" "${T[${L}45]}" "${T[${L}46]}" "${T[${L}6]}" "${T[${L}48]}" "${T[${L}49]}" "${T[${L}23]}")
+DO1[0]="wget -N https://cdn.jsdelivr.net/gh/fscarmen/warp/menu.sh && bash menu.sh; exit"
+DO2[0]="wget -N https://cdn.jsdelivr.net/gh/kkkyg/CFwarp/CFwarp.sh && bash CFwarp.sh; exit"
+DO3[0]="bash <(curl -fsSL git.io/warp.sh) menu; exit"
+DO4[0]="wget -N https://raw.githubusercontents.com/Misaka-blog/Misaka-WARP-Script/master/misakawarp.sh && bash misakawarp.sh; exit"
+DO0[0]="exit"
+DO1=("" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_IPV4" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_IPV6" "CASE_IPV6")
+DO2=("" "CASE_CLIENT" "CASE_CLIENT" "CASE_CLIENT" "CASE_IPV4" "CASE_IPV4" "CASE_CLIENT" "CASE_IPV6" "CASE_IPV6" "CASE_IPV4" "CASE_IPV4" "CASE_IPV6")
+DO3=("" "CASE_IPV4" "CASE_IPV6" "CASE_IPV4" "CASE_IPV6" "CASE_IPV6")
+DO4=("" "CASE_IPV6")
 
-'0 0 0 1') CASE_WIREPROXY;;
-	
-'0 0 1 0') CASE_CLIENT;;
+for ((f=0; f<${#INSTALL_CHECK[@]}; f++)); do
+	[[ ${STATUS[@]} = "${INSTALL_CHECK[f]}" ]] && break
+done
 
-'0 0 1 1') yellow " ${T[${L}45]} " && reading " ${T[${L}3]} " CHOOSE3
-	case "$CHOOSE3" in
-	2 ) CASE_CLIENT;;
-	* ) CASE_WIREPROXY;;
-	esac;;
-
-'0 1 0 0') CASE_IPV6;;
-
-'0 1 0 1') yellow " ${T[${L}46]} " && reading " ${T[${L}3]} " CHOOSE3
-	case "$CHOOSE3" in
-	2 ) CASE_IPV6;;
-	* ) CASE_WIREPROXY;;
-	esac;;
-
-'0 1 1 0') yellow " ${T[${L}6]} " && reading " ${T[${L}3]} " CHOOSE3
- 	case "$CHOOSE3" in
- 	2 ) CASE_IPV6;;
- 	* ) CASE_CLIENT;;
- 	esac;;
-
-'0 1 1 1') yellow " ${T[${L}47]} " && reading " ${T[${L}3]} " CHOOSE3
- 	case "$CHOOSE3" in
- 	2 ) CASE_CLIENT;;
- 	3 ) CASE_IPV6;;
- 	* ) CASE_WIREPROXY;;
- 	esac;;
-
-'1 0 0 0' ) CASE_IPV4;;
-
-'1 0 0 1' ) yellow " ${T[${L}48]} " && reading " ${T[${L}3]} " CHOOSE3
-	case "$CHOOSE3" in
-	2 ) CASE_IPV4;;
-	* ) CASE_WIREPROXY;;
-	esac;;
-
-'1 0 1 0' ) yellow " ${T[${L}49]} " && reading " ${T[${L}3]} " CHOOSE3
-	case "$CHOOSE3" in
-	2 ) CASE_IPV4;;
-	* ) CASE_CLIENT;;
-	esac;;
-
-'1 0 1 1') yellow " ${T[${L}50]} " && reading " ${T[${L}3]} " CHOOSE3
-	case "$CHOOSE3" in
-	2 ) CASE_CLIENT;;
-	3 ) CASE_IPV4;;
-	* ) CASE_WIREPROXY;;
-	esac;;
-
-'1 1 0 0' ) yellow " ${T[${L}23]} " && reading " ${T[${L}3]} " CHOOSE3
-	case "$CHOOSE3" in
-	2 ) CASE_IPV6;;
-	* ) CASE_IPV4;;
-	esac;;
-
-'1 1 0 1') yellow " ${T[${L}51]} " && reading " ${T[${L}3]} " CHOOSE3
-	case "$CHOOSE3" in
-	2 ) CASE_IPV4;;
-	3 ) CASE_IPV6;;
-	* ) CASE_WIREPROXY;;
-	esac;;
-
-'1 1 1 0') yellow " ${T[${L}52]} " && reading " ${T[${L}3]} " CHOOSE3
-	case "$CHOOSE3" in
-	2 ) CASE_IPV4;;
-	3 ) CASE_IPV6;;
-	* ) CASE_CLIENT;;
-	esac;;
-
-'1 1 1 1') yellow " ${T[${L}53]} " && reading " ${T[${L}3]} " CHOOSE3
-	case "$CHOOSE3" in
-	2 ) CASE_CLIENT;;
-	3 ) CASE_IPV4;;
-	4 ) CASE_IPV6;;
-	* ) CASE_WIREPROXY;;
-	esac;;
- esac
+case "$f" in
+	0 )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
+		[[ $CHOOSE2 != [0-4] ]] && red " ${T[${L}54]} " && exit 1 || $(eval echo \${DO$CHOOSE2[f]});;
+	1 )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
+		[[ $CHOOSE2 != [1-4] ]] && red " ${T[${L}54]} " && exit 1 || $(eval echo \${DO$CHOOSE2[f]});;
+	[2-5] )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
+		[[ $CHOOSE2 != [1-3] ]] && red " ${T[${L}54]} " && exit 1 || $(eval echo \${DO$CHOOSE2[f]});;
+	[6-11] )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
+			[[ $CHOOSE2 != [1-2] ]] && red " ${T[${L}54]} " && exit 1 || $(eval echo \${DO$CHOOSE2[f]});;
+	[12-15] )	$(eval echo \${DO$CHOOSE2[f]});;
+	* )	red " ${T[${L}54]} " && exit 1;;
+esac
 }
 
 # 期望解锁流媒体, 变量 SUPPORT_NUM 限制选项枚举的次数，不填默认全选, 解锁状态保存在 /etc/wireguard/status.log
