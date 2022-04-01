@@ -14,7 +14,7 @@ jobs:
 
     env:
       workdir: ./WirePorxy
- #     RELEASE_VERSION: ${GITHUB_REF#refs/*/}
+      release_version: ${GITHUB_REF#refs/*/}
 
     steps:
       - name: Checkout code
@@ -28,8 +28,8 @@ jobs:
 
       - name: Test
         run: |
-          echo $RELEASE_VERSION
-          echo ${{ env.RELEASE_VERSION }}
+          echo $release_version
+          echo ${{ env.release_version }}
 
       - name: Git clone WirePorxy
         run: |
