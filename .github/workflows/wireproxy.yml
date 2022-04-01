@@ -14,6 +14,8 @@ jobs:
 
     env:
       workdir: ./WirePorxy
+      tag_name: ${{ github.ref }}
+      release_name: ${{ github.ref }}
 
     steps:
       - name: Checkout code
@@ -42,8 +44,6 @@ jobs:
       - name: Release binaries 
         uses: softprops/action-gh-release@v1
         with:
-          tag_name: ${{ github.ref }}
-          release_name: ${{ github.ref }}
           files: ${{ env.workdir }}/dist/*.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
