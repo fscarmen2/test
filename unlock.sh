@@ -217,9 +217,9 @@ case "$f" in
 		[[ $CHOOSE2 != [1-4] ]] && red " ${T[${L}54]} " && exit 1 || $(eval echo \${DO$CHOOSE2[f]});;
 	[2-5] )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
 		[[ $CHOOSE2 != [1-3] ]] && red " ${T[${L}54]} " && exit 1 || $(eval echo \${DO$CHOOSE2[f]});;
-	[6-11] )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
+	['6'-'11'] )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
 			[[ $CHOOSE2 != [1-2] ]] && red " ${T[${L}54]} " && exit 1 || $(eval echo \${DO$CHOOSE2[f]});;
-	[12-15] )	$(eval echo \${DO$CHOOSE2[f]});;
+	['12'-'15'] )	$(eval echo \${DO$CHOOSE2[f]});;
 	* )	red " ${T[${L}54]} " && exit 1;;
 esac
 }
