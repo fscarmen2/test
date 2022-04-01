@@ -194,15 +194,15 @@ CASE_WIREPROXY(){ NIC="-sx socks5h://localhost:$WIREPROXY_PORT"; RESTART="wirepr
 
 INSTALL_CHECK=("0 0 0 0" "1 1 1 1" "0 1 1 1" "1 0 1 1" "1 1 0 1" "1 1 1 0" "0 0 1 1" "0 1 0 1" "0 1 1 0" "1 0 0 1" "1 0 1 0" "1 1 0 0" "0 0 0 1"  "0 0 1 0" "0 1 0 0" "1 0 0 0")
 SHOW=("${T[${L}4]}" "${T[${L}53]}" "${T[${L}47]}" "${T[${L}50]}" "${T[${L}51]}" "${T[${L}52]}" "${T[${L}45]}" "${T[${L}46]}" "${T[${L}6]}" "${T[${L}48]}" "${T[${L}49]}" "${T[${L}23]}")
+DO1=("" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_IPV4" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_IPV6" "CASE_IPV6")
+DO2=("" "CASE_CLIENT" "CASE_CLIENT" "CASE_CLIENT" "CASE_IPV4" "CASE_IPV4" "CASE_CLIENT" "CASE_IPV6" "CASE_IPV6" "CASE_IPV4" "CASE_IPV4" "CASE_IPV6")
+DO3=("" "CASE_IPV4" "CASE_IPV6" "CASE_IPV4" "CASE_IPV6" "CASE_IPV6")
+DO4=("" "CASE_IPV6")
 DO1[0]="wget -N https://cdn.jsdelivr.net/gh/fscarmen/warp/menu.sh && bash menu.sh; exit"
 DO2[0]="wget -N https://cdn.jsdelivr.net/gh/kkkyg/CFwarp/CFwarp.sh && bash CFwarp.sh; exit"
 DO3[0]="bash <(curl -fsSL git.io/warp.sh) menu; exit"
 DO4[0]="wget -N https://raw.githubusercontents.com/Misaka-blog/Misaka-WARP-Script/master/misakawarp.sh && bash misakawarp.sh; exit"
 DO0[0]="exit"
-DO1=("" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_IPV4" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_IPV6" "CASE_IPV6")
-DO2=("" "CASE_CLIENT" "CASE_CLIENT" "CASE_CLIENT" "CASE_IPV4" "CASE_IPV4" "CASE_CLIENT" "CASE_IPV6" "CASE_IPV6" "CASE_IPV4" "CASE_IPV4" "CASE_IPV6")
-DO3=("" "CASE_IPV4" "CASE_IPV6" "CASE_IPV4" "CASE_IPV6" "CASE_IPV6")
-DO4=("" "CASE_IPV6")
 
 for ((f=0; f<${#INSTALL_CHECK[@]}; f++)); do
 	[[ ${STATUS[@]} = "${INSTALL_CHECK[f]}" ]] && break
