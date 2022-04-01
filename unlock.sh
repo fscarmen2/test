@@ -227,7 +227,7 @@ case "${STATUS[@]}" in
 '0 1 1 1') yellow " ${T[${L}47]} " && reading " ${T[${L}3]} " CHOOSE3
  	case "$CHOOSE3" in
  	2 ) CASE_CLIENT;;
- 	3 ）CASE_IPV6;;
+ 	3 ) CASE_IPV6;;
  	* ) CASE_WIREPROXY;;
  	esac;;
 
@@ -261,14 +261,14 @@ case "${STATUS[@]}" in
 '1 1 0 1') yellow " ${T[${L}51]} " && reading " ${T[${L}3]} " CHOOSE3
 	case "$CHOOSE3" in
 	2 ) CASE_IPV4;;
-	3 ）CASE_IPV6;;
+	3 ) CASE_IPV6;;
 	* ) CASE_WIREPROXY;;
 	esac;;
 
 '1 1 1 0') yellow " ${T[${L}52]} " && reading " ${T[${L}3]} " CHOOSE3
 	case "$CHOOSE3" in
 	2 ) CASE_IPV4;;
-	3 ）CASE_IPV6;;
+	3 ) CASE_IPV6;;
 	* ) CASE_CLIENT;;
 	esac;;
 
@@ -276,7 +276,7 @@ case "${STATUS[@]}" in
 	case "$CHOOSE3" in
 	2 ) CASE_CLIENT;;
 	3 ) CASE_IPV4;;
-	4 ）CASE_IPV6;;
+	4 ) CASE_IPV6;;
 	* ) CASE_WIREPROXY;;
 	esac;;
  esac
