@@ -370,7 +370,7 @@ warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >
 ip
 [[ -e /etc/wireguard/license ]] && warp-cli --accept-tos set-license \$(cat /etc/wireguard/license) >/dev/null 2>&1 && sleep 2; }
 
-wireproxy_restart(){ systemctl restart wg-quick@wgcf; sleep 5; ip; }
+wireproxy_restart(){ systemctl restart wireproxy; sleep 5; ip; }
 
 check0(){
 RESULT[0]=""; REGION[0]=""; R[0]="";
