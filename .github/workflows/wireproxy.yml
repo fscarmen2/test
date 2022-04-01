@@ -14,6 +14,7 @@ jobs:
 
     env:
       workdir: ./WirePorxy
+      RELEASE_VERSION: ${GITHUB_REF#refs/*/}
 
     steps:
       - name: Checkout code
@@ -21,9 +22,9 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Set env
-        run: |
-          echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+#      - name: Set env
+ #       run: |
+ #         echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
 
       - name: Test
         run: |
