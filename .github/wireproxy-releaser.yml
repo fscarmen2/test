@@ -2,6 +2,7 @@ project_name: Build wireproxy
 before:
   hooks:
     - go mod tidy -v
+    RELEASE_VERSION: ${GITHUB_REF#refs/*/}
 builds:
   - env:
       - CGO_ENABLED=0
@@ -37,7 +38,7 @@ checksum:
 snapshot:
   name_template: "wireproxy"
 archives:
-  - name_template: "wireproxy_${GITHUB_REF#refs/*/}_{{ .Os }}_{{ .Arch }}"
+  - name_template: "wireproxy_echo ${{ env.RELEASE_VERSION }}_{{ .Os }}_{{ .Arch }}"
     files:
       - none*
 changelog:
