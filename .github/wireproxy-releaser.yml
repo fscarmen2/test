@@ -2,10 +2,10 @@ project_name: Build wireproxy
 before:
   hooks:
     - go mod tidy -v
-    RELEASE_VERSION: ${GITHUB_REF#refs/*/}
 builds:
   - env:
       - CGO_ENABLED=0
+      RELEASE_VERSION: ${GITHUB_REF#refs/*/}
     ldflags:
       - -s -w -X main.version={{.Version}} -X main.arch={{.Arch}}
     goos:
