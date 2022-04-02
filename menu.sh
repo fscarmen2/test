@@ -711,7 +711,7 @@ uninstall(){
 	}
 	
 	# 如已安装 warp_unlock 项目，先行卸载
-	[[ -e /etc/wireguard/warp_unlock.sh ]] && bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/warp_unlock/main/unlock.sh) -U -E
+	[[ -e /etc/wireguard/warp_unlock.sh ]] && bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/warp_unlock/main/unlock.sh) -U -$L
 	
 	# 根据已安装情况执行卸载任务并显示结果
 	UNINSTALL_CHECK=("wg-quick"		"warp-cli"		"wireproxy")
