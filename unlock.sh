@@ -208,6 +208,8 @@ check_warp(){
 		[[ ${STATUS[@]} = "${INSTALL_CHECK[f]}" ]] && break
 	done
 
+	echo "$f"
+
 	case "$f" in
 		0 )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
 			[[ $CHOOSE2 != [0-4] ]] && red " ${T[${L}54]} " && exit 1 || sh -c "$(eval echo \${DO$CHOOSE2[f]})";;
