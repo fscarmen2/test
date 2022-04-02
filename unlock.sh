@@ -118,17 +118,17 @@ type -P $c >/dev/null 2>&1 || (yellow " $(eval echo "${T[${L}7]}") " && ${PACKAG
 
 # 脚本当天及累计运行次数统计
 statistics_of_run-times(){
-COUNT=$(curl -ksm1 "https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2Ffscarmen%2Fwarp_unlock%2Fmain%2Funlock.sh&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false" 2>&1) &&
-TODAY=$(expr "$COUNT" : '.*\s\([0-9]\{1,\}\)\s/.*') && TOTAL=$(expr "$COUNT" : '.*/\s\([0-9]\{1,\}\)\s.*')
-	}
+	COUNT=$(curl -ksm1 "https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fraw.githubusercontent.com%2Ffscarmen%2Fwarp_unlock%2Fmain%2Funlock.sh&count_bg=%2379C83D&title_bg=%23555555&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false" 2>&1) &&
+	TODAY=$(expr "$COUNT" : '.*\s\([0-9]\{1,\}\)\s/.*') && TOTAL=$(expr "$COUNT" : '.*/\s\([0-9]\{1,\}\)\s.*')
+}
 
 # 选择语言，先判断 /etc/wireguard/language 里的语言选择，没有的话再让用户选择，默认英语
 select_laguage(){
-[[ -z "$L" ]] && case $(cat /etc/wireguard/language 2>&1) in
-E ) L=E;;	C ) L=C;;
-* ) L=E && yellow " ${T[${L}0]} " && reading " ${T[${L}3]} " LANGUAGE 
-[[ $LANGUAGE = 2 ]] && L=C;;
-esac
+	[[ -z "$L" ]] && case $(cat /etc/wireguard/language 2>&1) in
+	E ) L=E;;	C ) L=C;;
+	* ) L=E && yellow " ${T[${L}0]} " && reading " ${T[${L}3]} " LANGUAGE 
+	[[ $LANGUAGE = 2 ]] && L=C;;
+	esac
 }
 
 check_system_info(){
@@ -141,19 +141,19 @@ CMD=(	"$(grep -i pretty_name /etc/os-release 2>/dev/null | cut -d \" -f2)"
 	"$(grep . /etc/issue 2>/dev/null | cut -d \\ -f1 | sed '/^[ ]*$/d')"
 	)
 
-for a in "${CMD[@]}"; do
-	SYS="$a" && [[ -n $SYS ]] && break
-done
+	for a in "${CMD[@]}"; do
+		SYS="$a" && [[ -n $SYS ]] && break
+	done
 
-REGEX=("debian" "ubuntu" "centos|red hat|kernel|oracle linux|alma|rocky" "'amazon linux'")
-RELEASE=("Debian" "Ubuntu" "CentOS" "CentOS")
-PACKAGE_UPDATE=("apt -y update" "apt -y update" "yum -y update" "yum -y update")
-PACKAGE_INSTALL=("apt -y install" "apt -y install" "yum -y install" "yum -y install")
+	REGEX=("debian" "ubuntu" "centos|red hat|kernel|oracle linux|alma|rocky" "'amazon linux'")
+	RELEASE=("Debian" "Ubuntu" "CentOS" "CentOS")
+	PACKAGE_UPDATE=("apt -y update" "apt -y update" "yum -y update" "yum -y update")
+	PACKAGE_INSTALL=("apt -y install" "apt -y install" "yum -y install" "yum -y install")
 
-for ((b=0; b<${#REGEX[@]}; b++)); do
-	[[ $(echo "$SYS" | tr '[:upper:]' '[:lower:]') =~ ${REGEX[b]} ]] && SYSTEM="${RELEASE[b]}" && [[ -n $SYSTEM ]] && break
-done
-[[ -z $SYSTEM ]] && red " ${T[${L}5]} " && exit 1
+	for ((b=0; b<${#REGEX[@]}; b++)); do
+		[[ $(echo "$SYS" | tr '[:upper:]' '[:lower:]') =~ ${REGEX[b]} ]] && SYSTEM="${RELEASE[b]}" && [[ -n $SYSTEM ]] && break
+	done
+	[[ -z $SYSTEM ]] && red " ${T[${L}5]} " && exit 1
 }
 
 # 检查解锁是否已运行，如果是则判断模式，以前给更换模式赋值
@@ -170,70 +170,70 @@ check_unlock_running(){
 
 # 判断是否已经安装 WARP 网络接口或者 Socks5 代理,如已经安装组件尝试启动。再分情况作相应处理
 check_warp(){
-if [[ -z "${STATUS[@]}" ]]; then
-	if type -P wg-quick >/dev/null 2>&1; then
-		[[ -z $(wg 2>/dev/null) ]] && wg-quick up wgcf >/dev/null 2>&1
-		TRACE4=$(curl -ks4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
-		TRACE6=$(curl -ks6m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
-		[[ $TRACE4 =~ on|plus ]] && STATUS[0]=1 || STATUS[0]=0
-		[[ $TRACE6 =~ on|plus ]] && STATUS[1]=1 || STATUS[1]=0
-	else STATUS=(0 0)
+	if [[ -z "${STATUS[@]}" ]]; then
+		if type -P wg-quick >/dev/null 2>&1; then
+			[[ -z $(wg 2>/dev/null) ]] && wg-quick up wgcf >/dev/null 2>&1
+			TRACE4=$(curl -ks4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
+			TRACE6=$(curl -ks6m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
+			[[ $TRACE4 =~ on|plus ]] && STATUS[0]=1 || STATUS[0]=0
+			[[ $TRACE6 =~ on|plus ]] && STATUS[1]=1 || STATUS[1]=0
+		else STATUS=(0 0)
+		fi
+
+		type -P warp-cli >/dev/null 2>&1 && [[ ! $(ss -nltp) =~ 'warp-svc' ]] && warp-cli --accept-tos connect >/dev/null 2>&1
+		[[ $(ss -nltp) =~ 'warp-svc' ]] && CLIENT_PORT=$(ss -nltp | grep warp-svc | grep -oP '127.0*\S+' | cut -d: -f2) && STATUS[2]=1 || STATUS[2]=0
+
+		type -P wireproxy >/dev/null 2>&1 && [[ ! $(ss -nltp) =~ 'wireproxy' ]] && systemctl restart wireproxy
+		[[ $(ss -nltp) =~ 'wireproxy' ]] && WIREPROXY_PORT=$(ss -nltp | grep wireproxy | grep -oP '127.0*\S+' | cut -d: -f2) && STATUS[3]=1 || STATUS[3]=0
 	fi
 
-	type -P warp-cli >/dev/null 2>&1 && [[ ! $(ss -nltp) =~ 'warp-svc' ]] && warp-cli --accept-tos connect >/dev/null 2>&1
-	[[ $(ss -nltp) =~ 'warp-svc' ]] && CLIENT_PORT=$(ss -nltp | grep warp-svc | grep -oP '127.0*\S+' | cut -d: -f2) && STATUS[2]=1 || STATUS[2]=0
+	CASE_IPV4(){ NIC='-ks4m8'; RESTART="wgcf_restart"; }
+	CASE_IPV6(){ NIC='-ks6m8'; RESTART="wgcf_restart"; }
+	CASE_CLIENT(){ NIC="-sx socks5h://localhost:$CLIENT_PORT"; RESTART="socks5_restart"; }
+	CASE_WIREPROXY(){ NIC="-sx socks5h://localhost:$WIREPROXY_PORT"; RESTART="wireproxy_restart"; }
 
-	type -P wireproxy >/dev/null 2>&1 && [[ ! $(ss -nltp) =~ 'wireproxy' ]] && systemctl restart wireproxy
-	[[ $(ss -nltp) =~ 'wireproxy' ]] && WIREPROXY_PORT=$(ss -nltp | grep wireproxy | grep -oP '127.0*\S+' | cut -d: -f2) && STATUS[3]=1 || STATUS[3]=0
-fi
+	INSTALL_CHECK=("0 0 0 0" "1 1 1 1" "0 1 1 1" "1 0 1 1" "1 1 0 1" "1 1 1 0" "0 0 1 1" "0 1 0 1" "0 1 1 0" "1 0 0 1" "1 0 1 0" "1 1 0 0" "0 0 0 1"  "0 0 1 0" "0 1 0 0" "1 0 0 0")
+	SHOW=("${T[${L}4]}" "${T[${L}53]}" "${T[${L}47]}" "${T[${L}50]}" "${T[${L}51]}" "${T[${L}52]}" "${T[${L}45]}" "${T[${L}46]}" "${T[${L}6]}" "${T[${L}48]}" "${T[${L}49]}" "${T[${L}23]}")
+	DO1=("" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_IPV4" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_IPV6" "CASE_IPV6")
+	DO2=("" "CASE_CLIENT" "CASE_CLIENT" "CASE_CLIENT" "CASE_IPV4" "CASE_IPV4" "CASE_CLIENT" "CASE_IPV6" "CASE_IPV6" "CASE_IPV4" "CASE_IPV4" "CASE_IPV6")
+	DO3=("" "CASE_IPV4" "CASE_IPV6" "CASE_IPV4" "CASE_IPV6" "CASE_IPV6")
+	DO4=("" "CASE_IPV6")
+	DO1[0]="wget -N https://cdn.jsdelivr.net/gh/fscarmen/warp/menu.sh && bash menu.sh; exit"
+	DO2[0]="wget -N https://cdn.jsdelivr.net/gh/kkkyg/CFwarp/CFwarp.sh && bash CFwarp.sh; exit"
+	DO3[0]="bash <(curl -fsSL git.io/warp.sh) menu; exit"
+	DO4[0]="wget -N https://raw.githubusercontents.com/Misaka-blog/Misaka-WARP-Script/master/misakawarp.sh && bash misakawarp.sh; exit"
+	DO0[0]="exit"
 
-CASE_IPV4(){ NIC='-ks4m8'; RESTART="wgcf_restart"; }
-CASE_IPV6(){ NIC='-ks6m8'; RESTART="wgcf_restart"; }
-CASE_CLIENT(){ NIC="-sx socks5h://localhost:$CLIENT_PORT"; RESTART="socks5_restart"; }
-CASE_WIREPROXY(){ NIC="-sx socks5h://localhost:$WIREPROXY_PORT"; RESTART="wireproxy_restart"; }
+	for ((f=0; f<${#INSTALL_CHECK[@]}; f++)); do
+		[[ ${STATUS[@]} = "${INSTALL_CHECK[f]}" ]] && break
+	done
 
-INSTALL_CHECK=("0 0 0 0" "1 1 1 1" "0 1 1 1" "1 0 1 1" "1 1 0 1" "1 1 1 0" "0 0 1 1" "0 1 0 1" "0 1 1 0" "1 0 0 1" "1 0 1 0" "1 1 0 0" "0 0 0 1"  "0 0 1 0" "0 1 0 0" "1 0 0 0")
-SHOW=("${T[${L}4]}" "${T[${L}53]}" "${T[${L}47]}" "${T[${L}50]}" "${T[${L}51]}" "${T[${L}52]}" "${T[${L}45]}" "${T[${L}46]}" "${T[${L}6]}" "${T[${L}48]}" "${T[${L}49]}" "${T[${L}23]}")
-DO1=("" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_IPV4" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_IPV6" "CASE_IPV6")
-DO2=("" "CASE_CLIENT" "CASE_CLIENT" "CASE_CLIENT" "CASE_IPV4" "CASE_IPV4" "CASE_CLIENT" "CASE_IPV6" "CASE_IPV6" "CASE_IPV4" "CASE_IPV4" "CASE_IPV6")
-DO3=("" "CASE_IPV4" "CASE_IPV6" "CASE_IPV4" "CASE_IPV6" "CASE_IPV6")
-DO4=("" "CASE_IPV6")
-DO1[0]="wget -N https://cdn.jsdelivr.net/gh/fscarmen/warp/menu.sh && bash menu.sh; exit"
-DO2[0]="wget -N https://cdn.jsdelivr.net/gh/kkkyg/CFwarp/CFwarp.sh && bash CFwarp.sh; exit"
-DO3[0]="bash <(curl -fsSL git.io/warp.sh) menu; exit"
-DO4[0]="wget -N https://raw.githubusercontents.com/Misaka-blog/Misaka-WARP-Script/master/misakawarp.sh && bash misakawarp.sh; exit"
-DO0[0]="exit"
-
-for ((f=0; f<${#INSTALL_CHECK[@]}; f++)); do
-	[[ ${STATUS[@]} = "${INSTALL_CHECK[f]}" ]] && break
-done
-
-case "$f" in
-	0 )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
-		[[ $CHOOSE2 != [0-4] ]] && red " ${T[${L}54]} " && exit 1 || sh -c "$(eval echo \${DO$CHOOSE2[f]})";;
-	1 )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
-		[[ $CHOOSE2 != [1-4] ]] && red " ${T[${L}54]} " && exit 1 || sh -c "$(eval echo \${DO$CHOOSE2[f]})";;
-	[2-5] )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
-		[[ $CHOOSE2 != [1-3] ]] && red " ${T[${L}54]} " && exit 1 || sh -c "$(eval echo \${DO$CHOOSE2[f]})";;
-	[6-9]|'10'|'11' )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
-			[[ $CHOOSE2 != [1-2] ]] && red " ${T[${L}54]} " && exit 1 || sh -c "$(eval echo \${DO$CHOOSE2[f]})";;
-	'12'|'13'|'14'|'15' )	sh -c "$(eval echo \${DO$CHOOSE2[f]})";;
-	* )	red " ${T[${L}54]} " && exit 1;;
-esac
+	case "$f" in
+		0 )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
+			[[ $CHOOSE2 != [0-4] ]] && red " ${T[${L}54]} " && exit 1 || sh -c "$(eval echo \${DO$CHOOSE2[f]})";;
+		1 )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
+			[[ $CHOOSE2 != [1-4] ]] && red " ${T[${L}54]} " && exit 1 || $(eval echo \${DO$CHOOSE2[f]});;
+		[2-5] )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
+			[[ $CHOOSE2 != [1-3] ]] && red " ${T[${L}54]} " && exit 1 || $(eval echo \${DO$CHOOSE2[f]});;
+		[6-9]|'10'|'11' )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
+				[[ $CHOOSE2 != [1-2] ]] && red " ${T[${L}54]} " && exit 1 || $(eval echo \${DO$CHOOSE2[f]});;
+		'12'|'13'|'14'|'15' )	$(eval echo \${DO$CHOOSE2[f]});;
+		* )	red " ${T[${L}54]} " && exit 1;;
+	esac
 }
 
 # 期望解锁流媒体, 变量 SUPPORT_NUM 限制选项枚举的次数，不填默认全选, 解锁状态保存在 /etc/wireguard/status.log
 input_streammedia_unlock(){
-if [[ -z "${STREAM_UNLOCK[@]}" ]]; then
-	yellow " ${T[${L}15]} " && reading " ${T[${L}3]} " CHOOSE4
-	for ((d=0; d<"$SUPPORT_NUM"; d++)); do
-	       ( [[ -z "$CHOOSE4" ]] || echo "$CHOOSE4" | grep -q "$((d+1))" ) && STREAM_UNLOCK[d]='1' || STREAM_UNLOCK[d]='0'
-	       [[ $d = 0 ]] && echo 'null' > /etc/wireguard/status.log || echo 'null' >> /etc/wireguard/status.log
-	done
-fi
-UNLOCK_SELECT=$(for ((e=0; e<"$SUPPORT_NUM"; e++)); do
-                [[ "${STREAM_UNLOCK[e]}" = 1 ]] && echo -e "[[ ! \${R[*]} =~ 'No' ]] && check$e;" || echo -e "#[[ ! \${R[*]} =~ 'No' ]] && check$e;"
-		done)
+	if [[ -z "${STREAM_UNLOCK[@]}" ]]; then
+		yellow " ${T[${L}15]} " && reading " ${T[${L}3]} " CHOOSE4
+		for ((d=0; d<"$SUPPORT_NUM"; d++)); do
+		       ( [[ -z "$CHOOSE4" ]] || echo "$CHOOSE4" | grep -q "$((d+1))" ) && STREAM_UNLOCK[d]='1' || STREAM_UNLOCK[d]='0'
+		       [[ $d = 0 ]] && echo 'null' > /etc/wireguard/status.log || echo 'null' >> /etc/wireguard/status.log
+		done
+	fi
+	UNLOCK_SELECT=$(for ((e=0; e<"$SUPPORT_NUM"; e++)); do
+	                [[ "${STREAM_UNLOCK[e]}" = 1 ]] && echo -e "[[ ! \${R[*]} =~ 'No' ]] && check$e;" || echo -e "#[[ ! \${R[*]} =~ 'No' ]] && check$e;"
+			done)
 }
 
 # 期望解锁地区
@@ -378,24 +378,24 @@ chmod +x /etc/wireguard/warp_unlock.sh
 
 # 输出执行结果
 result_output(){
-green " $RESULT_OUTPUT "
-green " $(eval echo "${T[${L}22]}") "
+	green " $RESULT_OUTPUT "
+	green " $(eval echo "${T[${L}22]}") "
 }
 
 # 卸载
 uninstall(){
-screen -QX u quit >/dev/null 2>&1 && screen -wipe >/dev/null 2>&1
-type -P wg-quick >/dev/null 2>&1 && systemctl restart wgcf >/dev/null 2>&1
-type -P warp-cli >/dev/null 2>&1 && ( warp-cli --accept-tos delete >/dev/null 2>&1; sleep 1; warp-cli --accept-tos register >/dev/null 2>&1 )
-sed -i '/warp_unlock.sh/d' /etc/crontab
-kill -9 $(pgrep -f warp_unlock.sh) >/dev/null 2>&1
-rm -f /etc/wireguard/warp_unlock.sh /root/result.log /etc/wireguard/status.log /etc/systemd/system/warp_unlock.service
-systemctl disable --now warp_unlock >/dev/null 2>&1
-pm2 delete warp_unlock >/dev/null 2>&1
-pm2 unstartup systemd >/dev/null 2>&1
+	screen -QX u quit >/dev/null 2>&1 && screen -wipe >/dev/null 2>&1
+	type -P wg-quick >/dev/null 2>&1 && systemctl restart wgcf >/dev/null 2>&1
+	type -P warp-cli >/dev/null 2>&1 && ( warp-cli --accept-tos delete >/dev/null 2>&1; sleep 1; warp-cli --accept-tos register >/dev/null 2>&1 )
+	sed -i '/warp_unlock.sh/d' /etc/crontab
+	kill -9 $(pgrep -f warp_unlock.sh) >/dev/null 2>&1
+	rm -f /etc/wireguard/warp_unlock.sh /root/result.log /etc/wireguard/status.log /etc/systemd/system/warp_unlock.service
+	systemctl disable --now warp_unlock >/dev/null 2>&1
+	pm2 delete warp_unlock >/dev/null 2>&1
+	pm2 unstartup systemd >/dev/null 2>&1
 
-# 输出执行结果，如是切换模式则不显示
-[ "$UN" = 1 ] && green " ${T[${L}11]} "
+	# 输出执行结果，如是切换模式则不显示
+	[ "$UN" = 1 ] && green " ${T[${L}11]} "
 }
 
 # 传参 1/2
@@ -445,17 +445,17 @@ MODE2=("while true; do" "sleep 1h; done")
 [ -n "$UNLOCK_MODE_NOW" ] && MENU_SHOW="$(eval echo "${T[${L}19]}")${T[${L}12]}" || MENU_SHOW="${T[${L}12]}"
 
 action1(){
-unset MODE2
-[ -n "$UNLOCK_MODE_NOW" ] && uninstall
-TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 * * * * root bash /etc/wireguard/warp_unlock.sh\" >> /etc/crontab"
-RESULT_OUTPUT="${T[${L}10]}"
-export_unlock_file
-result_output
+	unset MODE2
+	[ -n "$UNLOCK_MODE_NOW" ] && uninstall
+	TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"*/5 * * * * root bash /etc/wireguard/warp_unlock.sh\" >> /etc/crontab"
+	RESULT_OUTPUT="${T[${L}10]}"
+	export_unlock_file
+	result_output
 }
 
 action2(){
-[ -n "$UNLOCK_MODE_NOW" ] && uninstall
-TASK="cat <<EOF > /etc/systemd/system/warp_unlock.service
+	[ -n "$UNLOCK_MODE_NOW" ] && uninstall
+	TASK="cat <<EOF > /etc/systemd/system/warp_unlock.service
 [Unit]
 Description = WARP unlock
 After = network.target
@@ -468,42 +468,42 @@ Type = simple
 [Install]
 WantedBy = multi-user.target
 EOF"
-RESULT_OUTPUT="${T[${L}43]}"
-export_unlock_file
-systemctl enable --now warp_unlock >/dev/null 2>&1 &
-result_output
+	RESULT_OUTPUT="${T[${L}43]}"
+	export_unlock_file
+	systemctl enable --now warp_unlock >/dev/null 2>&1 &
+	result_output
 }
 
 action3(){
-[ -n "$UNLOCK_MODE_NOW" ] && uninstall
-TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root nohup bash /etc/wireguard/warp_unlock.sh &\" >> /etc/crontab"
-RESULT_OUTPUT="${T[${L}21]}"
-export_unlock_file
-nohup bash /etc/wireguard/warp_unlock.sh >/dev/null 2>&1 &
-result_output
+	[ -n "$UNLOCK_MODE_NOW" ] && uninstall
+	TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root nohup bash /etc/wireguard/warp_unlock.sh &\" >> /etc/crontab"
+	RESULT_OUTPUT="${T[${L}21]}"
+	export_unlock_file
+	nohup bash /etc/wireguard/warp_unlock.sh >/dev/null 2>&1 &
+	result_output
 }
 
 action4(){
-[ -n "$UNLOCK_MODE_NOW" ] && uninstall
-TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh\" >> /etc/crontab"
-RESULT_OUTPUT="${T[${L}20]}"
-check_dependencies screen
-export_unlock_file
-screen -USdm u bash /etc/wireguard/warp_unlock.sh
-result_output
+	[ -n "$UNLOCK_MODE_NOW" ] && uninstall
+	TASK="sed -i '/warp_unlock.sh/d' /etc/crontab && echo \"@reboot root screen -USdm u bash /etc/wireguard/warp_unlock.sh\" >> /etc/crontab"
+	RESULT_OUTPUT="${T[${L}20]}"
+	check_dependencies screen
+	export_unlock_file
+	screen -USdm u bash /etc/wireguard/warp_unlock.sh
+	result_output
 }
 
 action5(){
-[ -n "$UNLOCK_MODE_NOW" ] && uninstall
-TASK=""
-RESULT_OUTPUT="${T[${L}44]}"
-node -v >/dev/null 2>&1 || ${PACKAGE_INSTALL[b]} nodejs
-npm -v >/dev/null 2>&1 || check_dependencies npm
-npm install -g pm2
-export_unlock_file
-pm2 start /etc/wireguard/warp_unlock.sh
-pm2 save; pm2 startup
-result_output
+	[ -n "$UNLOCK_MODE_NOW" ] && uninstall
+	TASK=""
+	RESULT_OUTPUT="${T[${L}44]}"
+	node -v >/dev/null 2>&1 || ${PACKAGE_INSTALL[b]} nodejs
+	npm -v >/dev/null 2>&1 || check_dependencies npm
+	npm install -g pm2
+	export_unlock_file
+	pm2 start /etc/wireguard/warp_unlock.sh
+	pm2 save; pm2 startup
+	result_output
 }
 
 action6(){ UN=1; uninstall; }
@@ -512,16 +512,16 @@ action0(){ exit 0; }
 
 # 菜单显示
 menu(){
-clear
-yellow " ${T[${L}16]} "
-red "======================================================================================================================\n"
-green " ${T[${L}17]}：$VERSION  ${T[${L}18]}：${T[${L}1]}\n "
-red "======================================================================================================================\n"
-[[ -z "$CHOOSE1" ]] && yellow " $MENU_SHOW " && reading " ${T[${L}3]} " CHOOSE1
-case "$CHOOSE1" in
-[0-6] ) action$CHOOSE1;;
-* ) red " ${T[${L}14]} "; sleep 1; menu;;
-esac
+	clear
+	yellow " ${T[${L}16]} "
+	red "======================================================================================================================\n"
+	green " ${T[${L}17]}：$VERSION  ${T[${L}18]}：${T[${L}1]}\n "
+	red "======================================================================================================================\n"
+	[[ -z "$CHOOSE1" ]] && yellow " $MENU_SHOW " && reading " ${T[${L}3]} " CHOOSE1
+	case "$CHOOSE1" in
+	[0-6] ) action$CHOOSE1;;
+	* ) red " ${T[${L}14]} "; sleep 1; menu;;
+	esac
 }
 
 menu
