@@ -709,7 +709,10 @@ uninstall(){
 	[[ -e /etc/gai.conf ]] && sed -i '/^precedence \:\:ffff\:0\:0/d;/^label 2002\:\:\/16/d' /etc/gai.conf
 	[[ -e /usr/bin/tun.sh ]] && rm -f /usr/bin/tun.sh && sed -i '/tun.sh/d' /etc/crontab
 	}
-
+	
+	# 如已安装 warp_unlock 项目，先行卸载
+	[[ -e /etc/wireguard/warp_unlock.sh ]] && bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/warp_unlock/main/unlock.sh) -U -E
+	
 	# 根据已安装情况执行卸载任务并显示结果
 	UNINSTALL_CHECK=("wg-quick"		"warp-cli"		"wireproxy")
 	UNINSTALL_DO=("uninstall_wgcf"		"uninstall_proxy"	"uninstall_wireproxy")
