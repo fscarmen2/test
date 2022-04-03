@@ -357,7 +357,7 @@ TODAY=$(expr "$COUNT" : '.*\s\([0-9]\{1,\}\)\s/.*') && TOTAL=$(expr "$COUNT" : '
 select_language(){
 	case $(cat /etc/wireguard/language 2>&1) in
 	E ) L=E;;	C ) L=C;;
-	* ) L=E && [[ -z $OPTION || $OPTION = [acehdpbvis46] ]] && yellow " ${T[${L}0]} " && reading " ${T[${L}50]} " LANGUAGE 
+	* ) L=E && [[ -z $OPTION || $OPTION = [acehdpbvisw46] ]] && yellow " ${T[${L}0]} " && reading " ${T[${L}50]} " LANGUAGE 
 	[[ $LANGUAGE = 2 ]] && L=C;;
 	esac
 	}
