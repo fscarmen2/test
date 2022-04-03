@@ -1163,7 +1163,7 @@ install(){
 	until [[ -e wgcf-account.toml ]] >/dev/null 2>&1; do
 		wgcf register --accept-tos >/dev/null 2>&1 && break
 	done
-	[[ -n $LICENSE ]] && yellow " \n${T[${L}35]}\n " && sed -i "s/license_key.*/license_key = \"$LICENSE\"/g" wgcf-account.toml &&
+	[[ -n $LICENSE ]] && yellow " \n${T[${L}35]}\n " && sed -i "s#license_key.*#license_key = \"$LICENSE\"#g" wgcf-account.toml &&
 	( wgcf update --name "$NAME" > /etc/wireguard/info.log 2>&1 || red " \n${T[${L}36]}\n " )
 
 	# 生成 Wire-Guard 配置文件 (wgcf-profile.conf)
@@ -1294,44 +1294,44 @@ install(){
 
 	if [[ $OCTEEP = 1 ]]; then
 	# 默认 Endpoint 和 DNS 默认 IPv4 和 双栈的，如是 IPv6 修改默认值
-	PEERENDPOINT='162.159.193.10' && DNS='1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844'
-	[[ $m = 0 ]] && PEERENDPOINT='[2606:4700:d0::a29f:c001]' && DNS='2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4'
+	ENDPOINT='162.159.193.10' && DNS='1.1.1.1,8.8.8.8,8.8.4.4,2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844'
+	[[ $m = 0 ]] && ENDPOINT='[2606:4700:d0::a29f:c001]' && DNS='2606:4700:4700::1111,2001:4860:4860::8888,2001:4860:4860::8844,1.1.1.1,8.8.8.8,8.8.4.4'
 	
 	# 创建 WirePorxy 配置文件
 	cat > /etc/wireguard/proxy.conf << EOF
-# SelfSecretKey is the secret key of your wireguard peer
-SelfSecretKey = ${PRIVATEKEY:-"$(grep PrivateKey wgcf-profile.conf | sed "s/PrivateKey = //g")"}
-# SelfEndpoint is the IP of your wireguard peer
-SelfEndpoint = 172.16.0.2
-# PeerPublicKey is the public key of the wireguard server you want to connect to
-PeerPublicKey = bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=
-# PeerEndpoint is the endpoint of the wireguard server you want to connect to
-PeerEndpoint = $PEERENDPOINT:2408
-# DNS is the nameservers that will be used by wireproxy.
-# Multple nameservers can be specified as such: DNS = 1.1.1.1, 1.0.0.1
+# The [Interface] and [Peer] configurations follow the same semantics and meaning
+# of a wg-quick configuration. To understand what these fields mean, please refer to:
+# https://wiki.archlinux.org/title/WireGuard#Persistent_configuration
+# https://www.wireguard.com/#simple-network-interface
+[Interface]
+Address = 172.16.0.2/32 # The subnet should be /32 and /128 for IPv4 and v6 respectively
+MTU = $MTU
+PrivateKey = ${PRIVATEKEY:-"$(grep PrivateKey wgcf-profile.conf | sed "s/PrivateKey = //g")"}
 DNS = $DNS
-# KeepAlive is the persistent keep alive interval of the wireguard device
-# usually not needed
-# KeepAlive = 25
-# PreSharedKey is the pre shared key of your wireguard device
-# if you don't know what this is you don't need it
-# PreSharedKey = UItQuvLsyh50ucXHfjF0bbR4IIpVBd74lwKc8uIPXXs=
 
-# TCPClientTunnel is a tunnel listening on your machine, and
-# forward any TCP traffic received to the specified target via wireguard
-# some applications on your LAN -> 127.0.0.1:25565 --wireguard--> play.cubecraft.net:25565
+[Peer]
+PublicKey = bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=
+# PresharedKey = UItQuvLsyh50ucXHfjF0bbR4IIpVBd74lwKc8uIPXXs= (optional)
+Endpoint = $ENDPOINT:2408
+# PersistentKeepalive = 25 (optional)
+
+# TCPClientTunnel is a tunnel listening on your machine,
+# and it forwards any TCP traffic received to the specified target via wireguard.
+# Flow:
+# <an app on your LAN> --> localhost:25565 --(wireguard)--> play.cubecraft.net:25565
 #[TCPClientTunnel]
 #BindAddress = 127.0.0.1:25565
 #Target = play.cubecraft.net:25565
 
-# TCPServerTunnel is a tunnel listening on wireguard, and
-# forward any TCP traffic received to the specified target via local network
-# some applications on your wireguard network --wireguard--> 172.16.31.2:3422 -> localhost:25545
+# TCPServerTunnel is a tunnel listening on wireguard,
+# and it forwards any TCP traffic received to the specified target via local network.
+# Flow:
+# <an app on your wireguard network> --(wireguard)--> 172.16.31.2:3422 --> localhost:25545
 #[TCPServerTunnel]
 #ListenPort = 3422
 #Target = localhost:25545
 
-# Socks5 create a socks5 proxy on your LAN, and any traffic would be routed via wireguard
+# Socks5 creates a socks5 proxy on your LAN, and all traffic would be routed via wireguard.
 [Socks5]
 BindAddress = 127.0.0.1:$PORT
 
@@ -1351,7 +1351,7 @@ Documentation=https://github.com/fscarmen/warp
 Documentation=https://github.com/octeep/wireproxy
 
 [Service]
-ExecStart=/usr/bin/wireproxy /etc/wireguard/proxy.conf
+ExecStart=/usr/bin/wireproxy -c /etc/wireguard/proxy.conf
 RemainAfterExit=yes
 Restart=always
 
@@ -1597,14 +1597,14 @@ update(){
 	wgcf update --name "$NAME" > /etc/wireguard/info.log 2>&1 &&
 	(wgcf generate >/dev/null 2>&1
 	sed -i "2s#.*#$(sed -ne 2p wgcf-profile.conf)#;3s#.*#$(sed -ne 3p wgcf-profile.conf)#;4s#.*#$(sed -ne 4p wgcf-profile.conf)#" wgcf.conf
-	sed -i "s#SelfSecretKey.*#SelfSecretKey = $(grep "PrivateKey.*" /etc/wireguard/wgcf.conf | sed "s#PrivateKey = ##g")#g" proxy.conf
+	sed -i "s#PrivateKey.*#PrivateKey = $(grep "PrivateKey.*" /etc/wireguard/wgcf.conf | sed "s#PrivateKey = ##g")#g" proxy.conf
 	systemctl restart wireproxy
 	[[ $(eval echo "\$(curl -sx socks5h://localhost:$(ss -nltp | grep wireproxy | grep -oP '127.0*\S+' | cut -d: -f2) https://www.cloudflare.com/cdn-cgi/trace)") =~ plus ]] &&
 	green " ${T[${L}62]}\n ${T[${L}25]}：$(grep 'Device name' /etc/wireguard/info.log | awk '{ print $NF }')\n ${T[${L}63]}：$(grep Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }')" ) || red " ${T[${L}36]} ";;
 
 	2 ) input_url
 	[[ $CONFIRM = [Yy] ]] && (echo "$TEAMS" > /etc/wireguard/info.log 2>&1
-	sed -i "s#SelfSecretKey.*#SelfSecretKey = $PRIVATEKEY#g" /etc/wireguard/proxy.conf
+	sed -i "s#PrivateKey.*#PrivateKey = $PRIVATEKEY#g" /etc/wireguard/proxy.conf
 	systemctl restart wireproxy
 	[[ $(eval echo "\$(curl -sx socks5h://localhost:$(ss -nltp | grep wireproxy | grep -oP '127.0*\S+' | cut -d: -f2) https://www.cloudflare.com/cdn-cgi/trace)") =~ plus ]] && green " ${T[${L}128]} ");;
 
