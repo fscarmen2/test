@@ -1305,7 +1305,7 @@ install(){
 # https://www.wireguard.com/#simple-network-interface
 [Interface]
 Address = 172.16.0.2/32 # The subnet should be /32 and /128 for IPv4 and v6 respectively
-MTU = $MTU
+MTU = $(grep MTU wgcf-profile.conf | sed "s/MTU = //g")
 PrivateKey = ${PRIVATEKEY:-"$(grep PrivateKey wgcf-profile.conf | sed "s/PrivateKey = //g")"}
 DNS = $DNS
 
