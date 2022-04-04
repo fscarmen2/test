@@ -1,4 +1,4 @@
-name: Specified WireGuard-go version
+name: WireGuard-go version
 
 on:
   workflow_dispatch:
