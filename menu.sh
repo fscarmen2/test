@@ -191,8 +191,8 @@ T[E90]="Client is connected"
 T[C90]="Client 已连接"
 T[E91]="Client is disconnected. It could be connect again by [warp r]"
 T[C91]="已断开 Client，再次连接可以用 warp r"
-T[E92]="(Already installed, do not select.)"
-T[C92]="(已安装，请勿选择)"
+T[E92]="(!!! Already installed, do not select.)"
+T[C92]="(!!! 已安装，请勿选择)"
 T[E93]="Client is not installed. It could be installed by [warp c]"
 T[C93]="Client 未安装，如需安装，可以用 warp c"
 T[E94]="Congratulations! WARP\$AC Linux Client is working. Spend time:\$(( end - start )) seconds.\\\n The script runs on today: \$TODAY. Total:\$TOTAL"
@@ -1681,8 +1681,8 @@ menu_setting(){
 	
 	[[ -e /etc/dnsmasq.d/warp.conf ]] && IPTABLE_INSTALLED="${T[${L}92]}"
 	
-	OPTION5="${T[${L}82]}$CLIENT_INSTALLED"; OPTION6="${T[${L}123]}"; OPTION7="${T[${L}72]}"; OPTION8="${T[${L}74]}"; OPTION9="${T[${L}73]}"; OPTION10="${T[${L}75]}";
-	OPTION11="${T[${L}80]}"; OPTION12="${T[${L}138]}$IPTABLE_INSTALLED"; OPTION13="${T[${L}148]}$WIREPROXY_INSTALLED"; OPTION0="${T[${L}76]}"
+	OPTION5="$CLIENT_INSTALLED${T[${L}82]}"; OPTION6="${T[${L}123]}"; OPTION7="${T[${L}72]}"; OPTION8="${T[${L}74]}"; OPTION9="${T[${L}73]}"; OPTION10="${T[${L}75]}";
+	OPTION11="${T[${L}80]}"; OPTION12="$IPTABLE_INSTALLED${T[${L}138]}"; OPTION13="$WIREPROXY_INSTALLED${T[${L}148]}"; OPTION0="${T[${L}76]}"
 
 	ACTION5(){ proxy; }; ACTION6(){ change_ip; }; ACTION7(){ uninstall; }; ACTION8(){ plus; }; ACTION9(){ bbrInstall; }; ACTION10(){ ver; }; 
 	ACTION11(){ bash <(curl -sSL https://raw.githubusercontent.com/fscarmen/warp_unlock/main/unlock.sh) -$L; }; 
