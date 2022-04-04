@@ -177,8 +177,8 @@ T[E83]="Step 1/2: Installing WARP Client..."
 T[C83]="进度 1/2： 安装 Client……"
 T[E84]="Step 2/2: Setting to Proxy Mode"
 T[C84]="进度 2/2： 设置代理模式"
-T[E85]="Client was installed. You can connect/disconnect by [warp r]"
-T[C85]="Linux Client 已安装，连接/断开 Client 可以用 warp r"
+T[E85]="Client was installed.\n connect/disconnect by [warp r].\n uninstalled by [warp u]"
+T[C85]="Linux Client 已安装\n 连接/断开 用 warp r\n 卸载用 warp u"
 T[E86]="Client is working. Socks5 proxy listening on: \$(ss -nltp | grep -E 'warp|wireproxy' | grep -oP '127.0*\S+')"
 T[C86]="Linux Client 正常运行中。 Socks5 代理监听:\$(ss -nltp | grep -E 'warp|wireproxy' | grep -oP '127.0*\S+')"
 T[E87]="Fail to establish Socks5 proxy. Feedback: [https://github.com/fscarmen/warp/issues]"
@@ -191,8 +191,8 @@ T[E90]="Client is connected"
 T[C90]="Client 已连接"
 T[E91]="Client is disconnected. It could be connect again by [warp r]"
 T[C91]="已断开 Client，再次连接可以用 warp r"
-T[E92]="Client is installed already. It could be uninstalled by [warp u]"
-T[C92]="Client 已安装，如要卸载，可以用 warp u"
+T[E92]=""
+T[C92]=""
 T[E93]="Client is not installed. It could be installed by [warp c]"
 T[C93]="Client 未安装，如需安装，可以用 warp c"
 T[E94]="Congratulations! WARP\$AC Linux Client is working. Spend time:\$(( end - start )) seconds.\\\n The script runs on today: \$TODAY. Total:\$TOTAL"
@@ -339,8 +339,8 @@ T[E164]="Disconnect the WirePorxy"
 T[C164]="断开 WirePorxy"
 T[E165]="WireProxy Solution. A wireguard client that exposes itself as a socks5 proxy or tunnels. Adapted from the mature works of [octeep],[https://github.com/octeep/wireproxy]"
 T[C165]="WireProxy，让 WARP 在本地建议一个 socks5 代理。改编自 [octeep] 的成熟作品，地址[https://github.com/octeep/wireproxy]，请熟知"
-T[E166]="WireProxy was installed. You can connect/disconnect by [warp y]"
-T[C166]="WireProxy 已安装，连接/断开 WireProxy 可以用 warp y"
+T[E166]="WireProxy was installed.\n connect/disconnect by [warp y]\n uninstall by [warp u]"
+T[C166]="WireProxy 已安装\n 连接/断开 WireProxy 用 warp y\n 卸载用 warp u"
 
 # 自定义字体彩色，read 函数，友道翻译函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -1456,7 +1456,7 @@ proxy(){
 		}
 	
 	# 禁止安装的情况。重复安装，非 AMD64 CPU 架构，IPv4 是 WARP
-	[[ $CLIENT -ge 2 ]] && red " ${T[${L}92]} " && exit 1
+	[[ $CLIENT -ge 2 ]] && red " ${T[${L}85]} " && exit 1
 	[[ $ARCHITECTURE != amd64 ]] && red " ${T[${L}101]} " && exit 1
 	[[ $TRACE4 != off ]] && red " ${T[${L}95]} " && exit 1
 
