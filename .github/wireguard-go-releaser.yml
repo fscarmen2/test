@@ -40,13 +40,3 @@ archives:
   - name_template: "wireguard-go_{{ .Os }}_{{ .Arch }}"
     files:
       - none*
-changelog:
-  sort: asc
-  filters:
-    exclude:
-      - "^docs:"
-      - "^test:"
-      - "^chore"
-      - Merge pull request
-      - Merge branch
-      - go mod tidy
