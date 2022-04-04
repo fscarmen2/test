@@ -26,6 +26,9 @@ jobs:
           tar -xvf wireguard-go-${{ env.version }}.tar.xz
           cp -r wireguard-go-${{ env.version }}/* .
           cp ./.github/wireguard-go-releaser.yml ${{ env.workdir }}/.goreleaser.yml
+          ls
+          echo ==================
+          ls ${{ env.workdir }}
 
       - name: Set up GoReleaser
         uses: actions/setup-go@v2
