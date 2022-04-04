@@ -22,10 +22,9 @@ jobs:
 
       - name: Git clone WireGuard-go
         run: |
-          mkdir -p ${{ env.workdir }}
           wget https://git.zx2c4.com/wireguard-go/snapshot/wireguard-go-${{ env.version }}.tar.xz
           tar -xvf wireguard-go-${{ env.version }}.tar.xz
-          mv wireguard-go-${{ env.version }} ${{ env.workdir }}
+          cp -r wireguard-go-${{ env.version }}/* .
           cp ./.github/wireguard-go-releaser.yml ${{ env.workdir }}/.goreleaser.yml
 
       - name: Set up GoReleaser
