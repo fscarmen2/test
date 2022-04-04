@@ -25,7 +25,7 @@ jobs:
           mkdir -p ${{ env.workdir }}
           wget https://git.zx2c4.com/wireguard-go/snapshot/wireguard-go-${{ env.version }}.tar.xz
           tar -xvf wireguard-go-${{ env.version }}.tar.xz
-          mv wireguard-go-${{ env.version }} ${{ env.workdir }}
+          cp -r ./wireguard-go-${{ env.version }}/* ${{ env.workdir }}/
           cp ./.github/wireguard-go-releaser.yml ${{ env.workdir }}/.goreleaser.yml
           ls ${{ env.workdir }}
 
@@ -48,4 +48,4 @@ jobs:
           tag_name: wireguard-go
           files: ${{ env.workdir }}/dist/*.tar.gz
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
