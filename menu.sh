@@ -1157,7 +1157,7 @@ install(){
 
 	# 安装 wgcf，尽量下载官方的最新版本，如官方 wgcf 下载不成功，将使用 jsDelivr 的 CDN，以更好的支持双栈。并添加执行权限
 	wget --no-check-certificate -T1 -t1 $CDN -O /usr/bin/wgcf https://github.com/ViRb3/wgcf/releases/download/v"$latest"/wgcf_"$latest"_linux_$ARCHITECTURE ||
-	wget --no-check-certificate $CDN -O /usr/bin/wgcf https://github.com/fscarmen/warp/blob/main/wgcf/wgcf_"$latest"_linux_$ARCHITECTURE
+	wget --no-check-certificate $CDN -O /usr/bin/wgcf https://github.com/fscarmen/warp/raw/main/wgcf/wgcf_"$latest"_linux_$ARCHITECTURE
 	chmod +x /usr/bin/wgcf
 	
 	# 如是 LXC，安装 Wireguard-GO。部分较低内核版本的KVM，即使安装了wireguard-dkms, 仍不能正常工作，兜底使用 wireguard-go
