@@ -1,4 +1,4 @@
-name: Cross compile WireGuard-go
+name: Specified version to cross compile WireGuard-go 
 
 on:
   workflow_dispatch:
