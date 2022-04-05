@@ -194,7 +194,7 @@ check_warp(){
 
 	INSTALL_CHECK=("0 0 0 0" "1 1 1 1" "0 1 1 1" "1 0 1 1" "1 1 0 1" "1 1 1 0" "0 0 1 1" "0 1 0 1" "0 1 1 0" "1 0 0 1" "1 0 1 0" "1 1 0 0" "0 0 0 1"  "0 0 1 0" "0 1 0 0" "1 0 0 0")
 	SHOW=("${T[${L}4]}" "${T[${L}53]}" "${T[${L}47]}" "${T[${L}50]}" "${T[${L}51]}" "${T[${L}52]}" "${T[${L}45]}" "${T[${L}46]}" "${T[${L}6]}" "${T[${L}48]}" "${T[${L}49]}" "${T[${L}23]}")
-	DO1=("" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_IPV4" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_IPV6" "CASE_IPV6")
+	DO1=("" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_IPV4" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_IPV6" "CASE_IPV4")
 	DO2=("" "CASE_CLIENT" "CASE_CLIENT" "CASE_CLIENT" "CASE_IPV4" "CASE_IPV4" "CASE_CLIENT" "CASE_IPV6" "CASE_IPV6" "CASE_IPV4" "CASE_IPV4" "CASE_IPV6")
 	DO3=("" "CASE_IPV4" "CASE_IPV6" "CASE_IPV4" "CASE_IPV6" "CASE_IPV6")
 	DO4=("" "CASE_IPV6")
@@ -210,7 +210,7 @@ check_warp(){
 
 	case "$f" in
 		0 )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
-			[[ $CHOOSE2 != [0-4] ]] && red " ${T[${L}54]} " && exit 1 || sh -c "$(eval echo \${DO$CHOOSE2[f]})";;
+			[[ $CHOOSE2 != [0-4] ]] && red " ${T[${L}54]} " && exit 1 || $(eval echo \${DO$CHOOSE2[f]});;
 		1 )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
 			[[ $CHOOSE2 != [1-4] ]] && red " ${T[${L}54]} " && exit 1 || $(eval echo \${DO$CHOOSE2[f]});;
 		[2-5] )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
