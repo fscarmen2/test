@@ -209,12 +209,13 @@ check_warp(){
 	for ((f=0; f<${#INSTALL_CHECK[@]}; f++)); do
 		[[ ${STATUS[@]} = "${INSTALL_CHECK[f]}" ]] && break
 	done
-
-	if 	echo "$f" | grep -qwE "12|13|14|15" ; then CHOOSE2=1 
-	else 	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2 
+	
+	# 默认只安装一种 WARP 形式时，不用选择。如两种或以上则让用户选择哪个方式的解锁
+	CHOOSE2=1
+	if 	echo "$f" | grep -qvwE "12|13|14|15" ; then
+		yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2 
 		echo "$CHOOSE2" | grep -qvwE "${NUM[f]}" && red " ${T[${L}54]} " && exit 1
 	fi
-
 	$(eval echo \${DO$CHOOSE2[f]})
 }
 
