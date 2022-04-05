@@ -199,6 +199,7 @@ check_warp(){
 
 	INSTALL_CHECK=("0 0 0 0" "1 1 1 1" "0 1 1 1" "1 0 1 1" "1 1 0 1" "1 1 1 0" "0 0 1 1" "0 1 0 1" "0 1 1 0" "1 0 0 1" "1 0 1 0" "1 1 0 0" "0 0 0 1"  "0 0 1 0" "0 1 0 0" "1 0 0 0")
 	SHOW=("${T[${L}4]}" "${T[${L}53]}" "${T[${L}47]}" "${T[${L}50]}" "${T[${L}51]}" "${T[${L}52]}" "${T[${L}45]}" "${T[${L}46]}" "${T[${L}6]}" "${T[${L}48]}" "${T[${L}49]}" "${T[${L}23]}")
+	NUM=("0|1|2|3|4" "1|2|3|4" "1|2|3" "1|2|3" "1|2|3" "1|2|3" "1|2" "1|2" "1|2" "1|2" "1|2" "1|2")
 	DO1=("fscarmen" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_IPV4" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_IPV6" "CASE_IPV4")
 	DO2=("kkkyg" "CASE_CLIENT" "CASE_CLIENT" "CASE_CLIENT" "CASE_IPV4" "CASE_IPV4" "CASE_CLIENT" "CASE_IPV6" "CASE_IPV6" "CASE_IPV4" "CASE_IPV4" "CASE_IPV6")
 	DO3=("p3terx" "CASE_IPV4" "CASE_IPV6" "CASE_IPV4" "CASE_IPV6" "CASE_IPV6")
@@ -209,18 +210,12 @@ check_warp(){
 		[[ ${STATUS[@]} = "${INSTALL_CHECK[f]}" ]] && break
 	done
 
-	case "$f" in
-		0 )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
-			[[ $CHOOSE2 != [0-4] ]] && red " ${T[${L}54]} " && exit 1 || $(eval echo \${DO$CHOOSE2[f]});;
-		1 )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
-			[[ $CHOOSE2 != [1-4] ]] && red " ${T[${L}54]} " && exit 1 || $(eval echo \${DO$CHOOSE2[f]});;
-		[2-5] )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
-			[[ $CHOOSE2 != [1-3] ]] && red " ${T[${L}54]} " && exit 1 || $(eval echo \${DO$CHOOSE2[f]});;
-		[6-9]|'10'|'11' )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
-			[[ $CHOOSE2 != [1-2] ]] && red " ${T[${L}54]} " && exit 1 || $(eval echo \${DO$CHOOSE2[f]});;
-		'12'|'13'|'14'|'15' )	$(eval echo \${DO1[f]});;
-		* )	red " ${T[${L}54]} " && exit 1;;
-	esac
+	if echo "$f" | grep -qwE "12|13|14|15" ; then CHOOSE2=1 
+	else yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2 
+	echo "$CHOOSE2" | grep -qvwE "${NUM[f]}" && red " ${T[${L}54]} " && exit 1
+	fi
+
+	$(eval echo \${DO$CHOOSE2[f]}
 }
 
 # 期望解锁流媒体, 变量 SUPPORT_NUM 限制选项枚举的次数，不填默认全选, 解锁状态保存在 /etc/wireguard/status.log
