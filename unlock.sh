@@ -203,6 +203,7 @@ check_warp(){
 	DO2=("kkkyg" "CASE_CLIENT" "CASE_CLIENT" "CASE_CLIENT" "CASE_IPV4" "CASE_IPV4" "CASE_CLIENT" "CASE_IPV6" "CASE_IPV6" "CASE_IPV4" "CASE_IPV4" "CASE_IPV6")
 	DO3=("p3terx" "CASE_IPV4" "CASE_IPV6" "CASE_IPV4" "CASE_IPV6" "CASE_IPV6")
 	DO4=("misaka" "CASE_IPV6")
+	DO0=("exit")
 
 	for ((f=0; f<${#INSTALL_CHECK[@]}; f++)); do
 		[[ ${STATUS[@]} = "${INSTALL_CHECK[f]}" ]] && break
