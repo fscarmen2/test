@@ -210,12 +210,12 @@ check_warp(){
 		[[ ${STATUS[@]} = "${INSTALL_CHECK[f]}" ]] && break
 	done
 
-	if echo "$f" | grep -qwE "12|13|14|15" ; then CHOOSE2=1 
-	else yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2 
-	echo "$CHOOSE2" | grep -qvwE "${NUM[f]}" && red " ${T[${L}54]} " && exit 1
+	if 	echo "$f" | grep -qwE "12|13|14|15" ; then CHOOSE2=1 
+	else 	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2 
+		echo "$CHOOSE2" | grep -qvwE "${NUM[f]}" && red " ${T[${L}54]} " && exit 1
 	fi
 
-	$(eval echo \${DO$CHOOSE2[f]}
+	$(eval echo \${DO$CHOOSE2[f]})
 }
 
 # 期望解锁流媒体, 变量 SUPPORT_NUM 限制选项枚举的次数，不填默认全选, 解锁状态保存在 /etc/wireguard/status.log
