@@ -217,7 +217,7 @@ check_warp(){
 		[2-5] )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
 			[[ $CHOOSE2 != [1-3] ]] && red " ${T[${L}54]} " && exit 1 || $(eval echo \${DO$CHOOSE2[f]});;
 		[6-9]|'10'|'11' )	yellow "${SHOW[f]}" && reading " ${T[${L}3]} " CHOOSE2
-				[[ $CHOOSE2 != [1-2] ]] && red " ${T[${L}54]} " && exit 1 || $(eval echo \${DO$CHOOSE2[f]});;
+			[[ $CHOOSE2 != [1-2] ]] && red " ${T[${L}54]} " && exit 1 || $(eval echo \${DO$CHOOSE2[f]});;
 		'12'|'13'|'14'|'15' )	$(eval echo \${DO1[f]});;
 		* )	red " ${T[${L}54]} " && exit 1;;
 	esac
