@@ -187,6 +187,11 @@ check_warp(){
 		[[ $(ss -nltp) =~ 'wireproxy' ]] && WIREPROXY_PORT=$(ss -nltp | grep wireproxy | grep -oP '127.0*\S+' | cut -d: -f2) && STATUS[3]=1 || STATUS[3]=0
 	fi
 
+	fscarmen(){ wget -N https://raw.githubusercontent.com/fscarmen/warp/main/menu.sh && bash menu.sh; exit; }
+	kkkyg(){ wget -N https://cdn.jsdelivr.net/gh/kkkyg/CFwarp/CFwarp.sh && bash CFwarp.sh; exit; }
+	p3terx(){ bash <(curl -fsSL git.io/warp.sh) menu; exit; }
+	misaka(){ wget -N https://raw.githubusercontents.com/Misaka-blog/Misaka-WARP-Script/master/misakawarp.sh && bash misakawarp.sh; exit; }
+
 	CASE_IPV4(){ NIC='-ks4m8'; RESTART="wgcf_restart"; }
 	CASE_IPV6(){ NIC='-ks6m8'; RESTART="wgcf_restart"; }
 	CASE_CLIENT(){ NIC="-sx socks5h://localhost:$CLIENT_PORT"; RESTART="socks5_restart"; }
@@ -194,15 +199,10 @@ check_warp(){
 
 	INSTALL_CHECK=("0 0 0 0" "1 1 1 1" "0 1 1 1" "1 0 1 1" "1 1 0 1" "1 1 1 0" "0 0 1 1" "0 1 0 1" "0 1 1 0" "1 0 0 1" "1 0 1 0" "1 1 0 0" "0 0 0 1"  "0 0 1 0" "0 1 0 0" "1 0 0 0")
 	SHOW=("${T[${L}4]}" "${T[${L}53]}" "${T[${L}47]}" "${T[${L}50]}" "${T[${L}51]}" "${T[${L}52]}" "${T[${L}45]}" "${T[${L}46]}" "${T[${L}6]}" "${T[${L}48]}" "${T[${L}49]}" "${T[${L}23]}")
-	DO1=("" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_IPV4" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_IPV6" "CASE_IPV4")
-	DO2=("" "CASE_CLIENT" "CASE_CLIENT" "CASE_CLIENT" "CASE_IPV4" "CASE_IPV4" "CASE_CLIENT" "CASE_IPV6" "CASE_IPV6" "CASE_IPV4" "CASE_IPV4" "CASE_IPV6")
-	DO3=("" "CASE_IPV4" "CASE_IPV6" "CASE_IPV4" "CASE_IPV6" "CASE_IPV6")
-	DO4=("" "CASE_IPV6")
-	DO1[0]="wget -N https://cdn.jsdelivr.net/gh/fscarmen/warp/menu.sh && bash menu.sh; exit"
-	DO2[0]="wget -N https://cdn.jsdelivr.net/gh/kkkyg/CFwarp/CFwarp.sh && bash CFwarp.sh; exit"
-	DO3[0]="bash <(curl -fsSL git.io/warp.sh) menu; exit"
-	DO4[0]="wget -N https://raw.githubusercontents.com/Misaka-blog/Misaka-WARP-Script/master/misakawarp.sh && bash misakawarp.sh; exit"
-	DO0[0]="exit"
+	DO1=("fscarmen" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_WIREPROXY" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_IPV4" "CASE_WIREPROXY" "CASE_CLIENT" "CASE_IPV6" "CASE_IPV4")
+	DO2=("kkkyg" "CASE_CLIENT" "CASE_CLIENT" "CASE_CLIENT" "CASE_IPV4" "CASE_IPV4" "CASE_CLIENT" "CASE_IPV6" "CASE_IPV6" "CASE_IPV4" "CASE_IPV4" "CASE_IPV6")
+	DO3=("p3terx" "CASE_IPV4" "CASE_IPV6" "CASE_IPV4" "CASE_IPV6" "CASE_IPV6")
+	DO4=("misaka" "CASE_IPV6")
 
 	for ((f=0; f<${#INSTALL_CHECK[@]}; f++)); do
 		[[ ${STATUS[@]} = "${INSTALL_CHECK[f]}" ]] && break
