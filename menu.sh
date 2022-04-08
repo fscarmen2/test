@@ -585,28 +585,63 @@ change_ip(){
 		done
 		}
 
-	change_socks5(){
-		socks5_restart(){
-			red " $(eval echo "${T[${L}126]}") " && warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1 && sleep $j &&
-			[[ -e /etc/wireguard/license ]] && warp-cli --accept-tos set-license $(cat /etc/wireguard/license) >/dev/null 2>&1 && sleep 2
+	change_client(){
+		if [[ -e /etc/wireguard/luban ]]; then
+			interface_restart(){
+				red " $(eval echo "${T[${L}126]}") " &&	warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1 && sleep $j &&
+				[[ -e /etc/wireguard/license ]] && warp-cli --accept-tos set-license $(cat /etc/wireguard/license) >/dev/null 2>&1 && sleep 2
+				warp-cli --accept-tos disconnect >/dev/null 2>&1
+				warp-cli --accept-tos disable-always-on >/dev/null 2>&1
+				ip -4 rule delete from 172.16.0.2 lookup 51820
+				ip -4 rule delete table main suppress_prefixlength 0
+				sleep 2
+				warp-cli --accept-tos connect >/dev/null 2>&1
+				warp-cli --accept-tos enable-always-on >/dev/null 2>&1
+				sleep 5
+				ip -4 rule add from 172.16.0.2 lookup 51820
+				ip -4 route add default dev CloudflareWARP table 51820
+				ip -4 rule add table main suppress_prefixlength 0
 			}
+		
+			[[ -z "$EXPECT" ]] && input_region
+			i=0; [[ -e /etc/wireguard/license ]] && j=13 || j=15
+			while true
+			do (( i++ )) || true
+			ip_now=$(date +%s); RUNTIME=$((ip_now - ip_start)); DAY=$(( RUNTIME / 86400 )); HOUR=$(( (RUNTIME % 86400 ) / 3600 )); MIN=$(( (RUNTIME % 86400 % 3600) / 60 )); SEC=$(( RUNTIME % 86400 % 3600 % 60 ))
+			ip4_info
+			WAN=$WAN4 && ASNORG=$ASNORG4
+			[[ $L = C ]] && COUNTRY=$(translate "$COUNTRY4") || COUNTRY=$COUNTRY4
+			RESULT=$(curl --user-agent "${UA_Browser}" --interface CloudflareWARP -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/$RESULT_TITLE"  2>&1)
+			if [[ $RESULT = 200 ]]; then
+				REGION=$(tr '[:lower:]' '[:upper:]' <<< $(curl --user-agent "${UA_Browser}" --interface CloudflareWARP -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
+				REGION=${REGION:-'US'}
+				echo "$REGION" | grep -qi "$EXPECT" && green " $(eval echo "${T[${L}125]}") " && i=0 && sleep 1h || interface_restart
+			else interface_restart
+			fi
+			done
 
-		PROXYPORT="$(ss -nltp | grep 'warp' | grep -oP '127.0*\S+' | cut -d: -f2)"
-		[[ -z "$EXPECT" ]] && input_region
-		i=0; [[ -e /etc/wireguard/license ]] && j=13 || j=15
-		while true
-		do (( i++ )) || true
-		ip_now=$(date +%s); RUNTIME=$((ip_now - ip_start)); DAY=$(( RUNTIME / 86400 )); HOUR=$(( (RUNTIME % 86400 ) / 3600 )); MIN=$(( (RUNTIME % 86400 % 3600) / 60 )); SEC=$(( RUNTIME % 86400 % 3600 % 60 ))
-		proxy_info
-		WAN=$PROXYIP && ASNORG=$PROXYASNORG && NF=4 && COUNTRY=$PROXYCOUNTRY
-		RESULT=$(curl --user-agent "${UA_Browser}" -sx socks5h://localhost:$PROXYPORT -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/$RESULT_TITLE"  2>&1)
-		if [[ $RESULT = 200 ]]; then
-			REGION=$(tr '[:lower:]' '[:upper:]' <<< $(curl --user-agent "${UA_Browser}" -sx socks5h://localhost:$PROXYPORT -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
-			REGION=${REGION:-'US'}
-			echo "$REGION" | grep -qi "$EXPECT" && green " $(eval echo "${T[${L}125]}") " && i=0 && sleep 1h || socks5_restart
-		else socks5_restart
-		fi
-		done
+		else
+			socks5_restart(){
+				red " $(eval echo "${T[${L}126]}") " && warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1 && sleep $j &&
+				[[ -e /etc/wireguard/license ]] && warp-cli --accept-tos set-license $(cat /etc/wireguard/license) >/dev/null 2>&1 && sleep 2
+				}
+
+			PROXYPORT="$(ss -nltp | grep 'warp' | grep -oP '127.0*\S+' | cut -d: -f2)"
+			[[ -z "$EXPECT" ]] && input_region
+			i=0; [[ -e /etc/wireguard/license ]] && j=13 || j=15
+			while true
+			do (( i++ )) || true
+			ip_now=$(date +%s); RUNTIME=$((ip_now - ip_start)); DAY=$(( RUNTIME / 86400 )); HOUR=$(( (RUNTIME % 86400 ) / 3600 )); MIN=$(( (RUNTIME % 86400 % 3600) / 60 )); SEC=$(( RUNTIME % 86400 % 3600 % 60 ))
+			proxy_info
+			WAN=$PROXYIP && ASNORG=$PROXYASNORG && NF=4 && COUNTRY=$PROXYCOUNTRY
+			RESULT=$(curl --user-agent "${UA_Browser}" -sx socks5h://localhost:$PROXYPORT -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/$RESULT_TITLE"  2>&1)
+			if [[ $RESULT = 200 ]]; then
+				REGION=$(tr '[:lower:]' '[:upper:]' <<< $(curl --user-agent "${UA_Browser}" -sx socks5h://localhost:$PROXYPORT -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
+				REGION=${REGION:-'US'}
+				echo "$REGION" | grep -qi "$EXPECT" && green " $(eval echo "${T[${L}125]}") " && i=0 && sleep 1h || socks5_restart
+			else socks5_restart
+			fi
+			done
 		}
 
 	change_wireproxy(){
@@ -645,8 +680,8 @@ change_ip(){
 	INSTALL_CHECK=("wg-quick" "warp-cli" "wireproxy")
 	CASE_RESAULT=("0 0 0"		"0 0 1"			"0 1 0"			"0 1 1"			"1 0 0"			"1 0 1"			"1 1 0"			"1 1 1")
 	SHOW_CHOOSE=("${T[${L}150]}"	""			""			"${T[${L}151]}"		""			"${T[${L}152]}"		"${T[${L}153]}"		"${T[${L}154]}")
-	CHANGE_IP1=(""			"change_wireproxy"	"change_socks5"		"change_socks5"		"change_wgcf"		"change_wgcf"		"change_wgcf"		"change_wgcf")
-	CHANGE_IP2=(""			"" 			"" 			"change_wireproxy" 	""			"change_wireproxy" 	"change_socks5" 	"change_socks5")
+	CHANGE_IP1=(""			"change_wireproxy"	"change_client"		"change_client"		"change_wgcf"		"change_wgcf"		"change_wgcf"		"change_wgcf")
+	CHANGE_IP2=(""			"" 			"" 			"change_wireproxy" 	""			"change_wireproxy" 	"change_client" 	"change_client")
 	CHANGE_IP3=(""			"" 			""			""			""			""			""			"change_wireproxy")
 
 	for ((a=0; a<${#INSTALL_CHECK[@]}; a++)); do
@@ -1606,6 +1641,7 @@ proxy(){
 	fi
 
 	if [[ $LUBAN = 1 ]]; then
+		[[ $L = C ]] && COUNTRY4=$(translate "$COUNTRY4")
 		end=$(date +%s)
 		red "\n==============================================================\n"
 		green " $(eval echo "${T[${L}94]}")\n $(eval echo "${T[${L}169]}") "
