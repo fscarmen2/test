@@ -1565,6 +1565,7 @@ proxy(){
 					red " $(eval echo "${T[${L}13]}") " && exit 1
 				fi
 			done
+			green " ${T[${L}14]} "
 		else
 			warp-cli --accept-tos set-mode proxy >/dev/null 2>&1
 			warp-cli --accept-tos set-proxy-port "$PORT" >/dev/null 2>&1
