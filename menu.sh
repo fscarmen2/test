@@ -1501,6 +1501,31 @@ proxy(){
 			ip -4 rule add from 172.16.0.2 lookup 51820
 			ip -4 route add default dev CloudflareWARP table 51820
 			ip -4 rule add table main suppress_prefixlength 0
+			i=1; j=5; INTERFACE='--interface CloudflareWARP'
+			ip4_info
+			until [[ -n $IP4 ]]
+			do	(( i++ )) || true
+				yellow " $(eval echo "${T[${L}12]}") "
+				warp-cli --accept-tos disconnect >/dev/null 2>&1
+				warp-cli --accept-tos disable-always-on >/dev/null 2>&1
+				ip -4 rule delete from 172.16.0.2 lookup 51820
+				ip -4 rule delete table main suppress_prefixlength 0
+				sleep 2
+				warp-cli --accept-tos connect >/dev/null 2>&1
+				warp-cli --accept-tos enable-always-on >/dev/null 2>&1
+				sleep 5
+				ip -4 rule add from 172.16.0.2 lookup 51820
+				ip -4 route add default dev CloudflareWARP table 51820
+				ip -4 rule add table main suppress_prefixlength 0
+				ip4_info
+				if [[ $i = "$j" ]]; then
+					warp-cli --accept-tos disconnect >/dev/null 2>&1
+					warp-cli --accept-tos disable-always-on >/dev/null 2>&1
+					ip -4 rule delete from 172.16.0.2 lookup 51820
+					ip -4 rule delete table main suppress_prefixlength 0
+					red " $(eval echo "${T[${L}13]}") " && exit 1
+				fi
+			done
 		else
 			warp-cli --accept-tos set-mode proxy >/dev/null 2>&1
 			warp-cli --accept-tos set-proxy-port "$PORT" >/dev/null 2>&1
