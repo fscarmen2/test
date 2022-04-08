@@ -1606,8 +1606,6 @@ proxy(){
 	fi
 
 	if [[ $LUBAN = 1 ]]; then
-		INTERFACE='--interface CloudflareWARP'
-		ip4_info
 		end=$(date +%s)
 		red "\n==============================================================\n"
 		green " $(eval echo "${T[${L}94]}")\n $(eval echo "${T[${L}169]}") "
