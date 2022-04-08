@@ -544,8 +544,9 @@ stack_priority(){
 
 # 更换 Netflix IP 时确认期望区域
 input_region(){
-	[[ -n $NF ]] && REGION=$(tr '[:lower:]' '[:upper:]' <<< $(curl --user-agent "${UA_Browser}" -$NF -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g')) ||
-	REGION=$(tr '[:lower:]' '[:upper:]' <<< $(curl --user-agent "${UA_Browser}" -sx socks5h://localhost:$PROXYPORT -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
+	[[ -n "$NF" ]] && REGION=$(tr '[:lower:]' '[:upper:]' <<< $(curl --user-agent "${UA_Browser}" -$NF -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g')) ||
+	[[ -n "$PROXYPORT" ]] && REGION=$(tr '[:lower:]' '[:upper:]' <<< $(curl --user-agent "${UA_Browser}" -sx socks5h://localhost:$PROXYPORT -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
+	[[ -n "$INTERFACE" ]] && REGION=$(tr '[:lower:]' '[:upper:]' <<< $(curl --user-agent "${UA_Browser}" $INTERFACE -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
 	REGION=${REGION:-'US'}
 	reading " $(eval echo "${T[${L}56]}") " EXPECT
 	until [[ -z $EXPECT || $EXPECT = [Yy] || $EXPECT =~ ^[A-Za-z]{2}$ ]]; do
@@ -602,7 +603,8 @@ change_ip(){
 				ip -4 route add default dev CloudflareWARP table 51820
 				ip -4 rule add table main suppress_prefixlength 0
 			}
-		
+			
+			INTERFACE='--interface CloudflareWARP'
 			[[ -z "$EXPECT" ]] && input_region
 			i=0; [[ -e /etc/wireguard/license ]] && j=13 || j=15
 			while true
@@ -611,9 +613,9 @@ change_ip(){
 			ip4_info
 			WAN=$WAN4 && ASNORG=$ASNORG4
 			[[ $L = C ]] && COUNTRY=$(translate "$COUNTRY4") || COUNTRY=$COUNTRY4
-			RESULT=$(curl --user-agent "${UA_Browser}" --interface CloudflareWARP -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/$RESULT_TITLE"  2>&1)
+			RESULT=$(curl --user-agent "${UA_Browser}" $INTERFACE -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/$RESULT_TITLE"  2>&1)
 			if [[ $RESULT = 200 ]]; then
-				REGION=$(tr '[:lower:]' '[:upper:]' <<< $(curl --user-agent "${UA_Browser}" --interface CloudflareWARP -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
+				REGION=$(tr '[:lower:]' '[:upper:]' <<< $(curl --user-agent "${UA_Browser}" $INTERFACE -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
 				REGION=${REGION:-'US'}
 				echo "$REGION" | grep -qi "$EXPECT" && green " $(eval echo "${T[${L}125]}") " && i=0 && sleep 1h || interface_restart
 			else interface_restart
