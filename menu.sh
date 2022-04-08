@@ -794,15 +794,14 @@ proxy_onoff(){
 		if [[ $(ip a) =~ 'CloudflareWARP' ]]; then
 		warp-cli --accept-tos disconnect >/dev/null 2>&1
 		warp-cli --accept-tos disable-always-on >/dev/null 2>&1
-		sleep 5
-		[[ $SYSTEM = CentOS ]] && ip -4 rule delete from 172.16.0.2 lookup 51820
+		ip -4 rule delete from 172.16.0.2 lookup 51820
 		ip -4 rule delete table main suppress_prefixlength 0
 		green " ${T[${L}91]} " && exit 0
 		else
 		warp-cli --accept-tos connect >/dev/null 2>&1
 		warp-cli --accept-tos enable-always-on >/dev/null 2>&1
 		sleep 5
-		[[ $SYSTEM = CentOS ]] && ip -4 rule add from 172.16.0.2 lookup 51820
+		ip -4 rule add from 172.16.0.2 lookup 51820
 		ip -4 route add default dev CloudflareWARP table 51820
 		ip -4 rule add table main suppress_prefixlength 0
 		INTERFACE='--interface CloudflareWARP'
