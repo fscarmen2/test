@@ -1529,6 +1529,8 @@ proxy(){
 		[[ $ACCOUNT =~ Limited ]] && echo "$LICENSE" >/etc/wireguard/license && green " ${T[${L}62]} " ||
 		red " ${T[${L}36]} " )
 		if [[ $LUBAN = 1 ]]; then
+			i=1; j=5; INTERFACE='--interface CloudflareWARP'
+			yellow " $(eval echo "${T[${L}11]}")\n $(eval echo "${T[${L}12]}") "
 			warp-cli --accept-tos add-excluded-route 0.0.0.0/0 >/dev/null 2>&1
 			warp-cli --accept-tos add-excluded-route ::0/0 >/dev/null 2>&1
 			warp-cli --accept-tos set-mode warp >/dev/null 2>&1
@@ -1539,7 +1541,6 @@ proxy(){
 			ip -4 rule add from 172.16.0.2 lookup 51820
 			ip -4 route add default dev CloudflareWARP table 51820
 			ip -4 rule add table main suppress_prefixlength 0
-			i=1; j=5; INTERFACE='--interface CloudflareWARP'
 			ip4_info
 			until [[ -n $IP4 ]]
 			do	(( i++ )) || true
