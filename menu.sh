@@ -10,7 +10,7 @@ declare -A T
 T[E0]="\n Language:\n  1.English (default) \n  2.简体中文\n"
 T[C0]="${T[E0]}"
 T[E1]="1. First publication on a global scale: After WirePorxy, another major technological breakthrough -- WARP-Cli's WARP mode solution. Thanks to the original creator -- Teacher LUBAN. It solves two major pain points: 1) The instability of the traditional proxy model; 2) Currently HK does not have a WARP service; "
-T[C1]="1. 全网首发: 继 WirePorxy 之后，又一重大技术突破，WARP-Cli 的 WARP 模式方案，感谢原创者 LUBAN 老师，引用大神的思路，解决两大通点: 1) 传统 proxy 模式的断流和慢; 2) 解决 HK 没有 WARP 服务;"
+T[C1]="1. 全网首发: 继 WirePorxy 之后，又一重大技术突破，WARP-Cli 的 WARP 模式方案，感谢原创者 LUBAN 老师，引用大神的思路，解决两大痛点: 1) 传统 proxy 模式的断流和慢; 2) 解决 HK 没有 WARP 服务;"
 T[E2]="The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C2]="必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E3]="The TUN module is not loaded. You should turn it on in the control panel. Ask the supplier for more help. Feedback: [https://github.com/fscarmen/warp/issues]"
