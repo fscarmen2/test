@@ -308,7 +308,7 @@ tg_output="💻 \\\$CUSTOM. ⏰ \\\$(date +'%F %T'). 🛰 \\\$WAN  🌏 \\\$COUN
 log_message(){ echo -e "\$(eval echo "\$log_output")" | tee -a /root/result.log; [[ \$(cat /root/result.log | wc -l) -gt \$LOG_LIMIT ]] && sed -i "1,10d" /root/result.log; }
 tg_message(){ curl -s -X POST "https://api.telegram.org/bot\$TOKEN/sendMessage" -d chat_id=\$USERID -d text="\$(eval echo "\$tg_output")" -d parse_mode="HTML" >/dev/null 2>&1; }
 
-ip(){
+check_ip(){
 unset IP_INFO WAN COUNTRY ASNORG
 IP_INFO="\$(curl \$NIC https://ip.gs/json 2>/dev/null)"
 WAN=\$(expr "\$IP_INFO" : '.*ip\":\"\([^"]*\).*')
@@ -321,7 +321,7 @@ wgcf_restart(){ systemctl restart wg-quick@wgcf; sleep 2; ss -nltp | grep 'dnsma
 socks5_restart(){
 	warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1 && sleep 15
 	[[ -e /etc/wireguard/license ]] && warp-cli --accept-tos set-license \$(cat /etc/wireguard/license) >/dev/null 2>&1 && sleep 2
-	ip
+	check_ip
 }
 
 interface_restart(){
@@ -338,10 +338,10 @@ interface_restart(){
 	ip -4 rule add from 172.16.0.2 lookup 51820
 	ip -4 route add default dev CloudflareWARP table 51820
 	ip -4 rule add table main suppress_prefixlength 0
-	ip
+	check_ip
 }
 
-wireproxy_restart(){ systemctl restart wireproxy; sleep 5; ip; }
+wireproxy_restart(){ systemctl restart wireproxy; sleep 5; check_ip; }
 
 check0(){
 RESULT[0]=""; REGION[0]=""; R[0]="";
@@ -390,7 +390,7 @@ sed -i "2s/.*/\${R[1]}/" /etc/wireguard/status.log
 }
 
 ${MODE2[0]}
-ip
+check_ip
 CONTENT='Script runs.'
 log_message
 UA_Browser="Mozilla/5.0 (Windows NT 10.0; Win64; x6*4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.87 Safari/537.36"
