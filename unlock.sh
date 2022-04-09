@@ -3,7 +3,7 @@ export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/sbin:/b
 export LANG=en_US.UTF-8
 
 # 当前脚本版本号和新增功能
-VERSION='1.07'
+VERSION='1.08'
 
 # 最大支持流媒体
 SUPPORT_NUM='2'
@@ -13,8 +13,8 @@ declare -A T
 
 T[E0]="\n Language:\n  1.English (default) \n  2.简体中文\n"
 T[C0]="${T[E0]}"
-T[E1]="1. Support change IP for WireProxy"
-T[C1]="1. 支持 WirePorxy 更换 IP"
+T[E1]="Support change IP for Client WARP mode"
+T[C1]="支持 Client WRAP 模式下更换 IP"
 T[E2]="The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp_unlock/issues]"
 T[C2]="必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp_unlock/issues]"
 T[E3]="Choose:"
