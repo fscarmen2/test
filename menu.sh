@@ -617,10 +617,10 @@ change_ip(){
 				warp-cli --accept-tos disable-always-on >/dev/null 2>&1
 				ip -4 rule delete from 172.16.0.2 lookup 51820
 				ip -4 rule delete table main suppress_prefixlength 0
-				sleep 4
+				sleep 3
 				warp-cli --accept-tos connect >/dev/null 2>&1
 				warp-cli --accept-tos enable-always-on >/dev/null 2>&1
-				sleep 8
+				sleep 10
 				ip -4 rule add from 172.16.0.2 lookup 51820
 				ip -4 route add default dev CloudflareWARP table 51820
 				ip -4 rule add table main suppress_prefixlength 0
@@ -851,7 +851,7 @@ proxy_onoff(){
 		else
 			warp-cli --accept-tos connect >/dev/null 2>&1
 			warp-cli --accept-tos enable-always-on >/dev/null 2>&1
-			sleep 5
+			sleep 10
 			ip -4 rule add from 172.16.0.2 lookup 51820
 			ip -4 route add default dev CloudflareWARP table 51820
 			ip -4 rule add table main suppress_prefixlength 0
@@ -1535,7 +1535,7 @@ proxy(){
 			warp-cli --accept-tos set-mode warp >/dev/null 2>&1
 			warp-cli --accept-tos connect >/dev/null 2>&1
 			warp-cli --accept-tos enable-always-on >/dev/null 2>&1
-			sleep 5
+			sleep 10
 			ip -4 rule add from 172.16.0.2 lookup 51820
 			ip -4 route add default dev CloudflareWARP table 51820
 			ip -4 rule add table main suppress_prefixlength 0
@@ -1550,7 +1550,7 @@ proxy(){
 				sleep 2
 				warp-cli --accept-tos connect >/dev/null 2>&1
 				warp-cli --accept-tos enable-always-on >/dev/null 2>&1
-				sleep 5
+				sleep 10
 				ip -4 rule add from 172.16.0.2 lookup 51820
 				ip -4 route add default dev CloudflareWARP table 51820
 				ip -4 rule add table main suppress_prefixlength 0
