@@ -182,8 +182,11 @@ check_warp(){
 		
 		# 在已安装 Client 的前提下，区分模式 Mode
 		if type -P warp-cli >/dev/null 2>&1; then
-			if [[ -e /etc/wireguard/luban ]]; then
-				if [[ ! $(ip a) =~ 'CloudflareWARP' ]]; then
+			if [[ $(warp-cli --accept-tos settings) =~ WarpProxy ]]; then
+				[[ ! $(ss -nltp) =~ 'warp-svc' ]] && warp-cli --accept-tos connect >/dev/null 2>&1
+				[[ $(ss -nltp) =~ 'warp-svc' ]] && CLIENT_PORT=$(ss -nltp | grep warp-svc | grep -oP '127.0*\S+' | cut -d: -f2) && STATUS[2]=1 || STATUS[2]=0
+			
+			else	if [[ ! $(ip a) =~ 'CloudflareWARP' ]]; then
 					warp-cli --accept-tos connect >/dev/null 2>&1
 					warp-cli --accept-tos enable-always-on >/dev/null 2>&1
 					sleep 5
@@ -192,9 +195,6 @@ check_warp(){
 					ip -4 rule add table main suppress_prefixlength 0
 				fi
 				[[ $(ip a) =~ 'CloudflareWARP' ]] && STATUS[2]=1 || STATUS[2]=0
-		
-			else [[ ! $(ss -nltp) =~ 'warp-svc' ]] && warp-cli --accept-tos connect >/dev/null 2>&1
-				[[ $(ss -nltp) =~ 'warp-svc' ]] && CLIENT_PORT=$(ss -nltp | grep warp-svc | grep -oP '127.0*\S+' | cut -d: -f2) && STATUS[2]=1 || STATUS[2]=0
 			fi
 		else STATUS[2]=0
 		fi
