@@ -617,10 +617,10 @@ change_ip(){
 				warp-cli --accept-tos disable-always-on >/dev/null 2>&1
 				ip -4 rule delete from 172.16.0.2 lookup 51820
 				ip -4 rule delete table main suppress_prefixlength 0
-				sleep 3
+				sleep 2
 				warp-cli --accept-tos connect >/dev/null 2>&1
 				warp-cli --accept-tos enable-always-on >/dev/null 2>&1
-				sleep 10
+				sleep 6
 				ip -4 rule add from 172.16.0.2 lookup 51820
 				ip -4 route add default dev CloudflareWARP table 51820
 				ip -4 rule add table main suppress_prefixlength 0
@@ -628,7 +628,7 @@ change_ip(){
 			
 			INTERFACE='--interface CloudflareWARP'
 			[[ -z "$EXPECT" ]] && input_region
-			i=0; [[ -e /etc/wireguard/license ]] && j=13 || j=15
+			i=0; j=10
 			while true
 			do (( i++ )) || true
 			ip_now=$(date +%s); RUNTIME=$((ip_now - ip_start)); DAY=$(( RUNTIME / 86400 )); HOUR=$(( (RUNTIME % 86400 ) / 3600 )); MIN=$(( (RUNTIME % 86400 % 3600) / 60 )); SEC=$(( RUNTIME % 86400 % 3600 % 60 ))
@@ -851,7 +851,7 @@ proxy_onoff(){
 		else
 			warp-cli --accept-tos connect >/dev/null 2>&1
 			warp-cli --accept-tos enable-always-on >/dev/null 2>&1
-			sleep 10
+			sleep 5
 			ip -4 rule add from 172.16.0.2 lookup 51820
 			ip -4 route add default dev CloudflareWARP table 51820
 			ip -4 rule add table main suppress_prefixlength 0
@@ -1535,7 +1535,7 @@ proxy(){
 			warp-cli --accept-tos set-mode warp >/dev/null 2>&1
 			warp-cli --accept-tos connect >/dev/null 2>&1
 			warp-cli --accept-tos enable-always-on >/dev/null 2>&1
-			sleep 10
+			sleep 5
 			ip -4 rule add from 172.16.0.2 lookup 51820
 			ip -4 route add default dev CloudflareWARP table 51820
 			ip -4 rule add table main suppress_prefixlength 0
@@ -1550,7 +1550,7 @@ proxy(){
 				sleep 2
 				warp-cli --accept-tos connect >/dev/null 2>&1
 				warp-cli --accept-tos enable-always-on >/dev/null 2>&1
-				sleep 10
+				sleep 5
 				ip -4 rule add from 172.16.0.2 lookup 51820
 				ip -4 route add default dev CloudflareWARP table 51820
 				ip -4 rule add table main suppress_prefixlength 0
