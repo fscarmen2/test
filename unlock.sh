@@ -210,7 +210,7 @@ check_warp(){
 
 	CASE_IPV4(){ NIC='-ks4m8'; RESTART="wgcf_restart"; }
 	CASE_IPV6(){ NIC='-ks6m8'; RESTART="wgcf_restart"; }
-	CASE_CLIENT(){ NIC='--interface CloudflareWARP' && RESTART="interface_restart" && [[ $(warp-cli --accept-tos settings) =~ WarpProxy ]] && NIC="-sx socks5h://localhost:$CLIENT_PORT" && RESTART="socks5_restart"; }
+	CASE_CLIENT(){ NIC='-s4m8 --interface CloudflareWARP' && RESTART="interface_restart" && [[ $(warp-cli --accept-tos settings) =~ WarpProxy ]] && NIC="-sx socks5h://localhost:$CLIENT_PORT" && RESTART="socks5_restart"; }
 	CASE_WIREPROXY(){ NIC="-sx socks5h://localhost:$WIREPROXY_PORT"; RESTART="wireproxy_restart"; }
 
 	INSTALL_CHECK=("0 0 0 0" "1 1 1 1" "0 1 1 1" "1 0 1 1" "1 1 0 1" "1 1 1 0" "0 0 1 1" "0 1 0 1" "0 1 1 0" "1 0 0 1" "1 0 1 0" "1 1 0 0" "0 0 0 1"  "0 0 1 0" "0 1 0 0" "1 0 0 0")
