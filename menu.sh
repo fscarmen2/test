@@ -596,7 +596,7 @@ change_ip(){
 		if [[ $(warp-cli --accept-tos settings) =~ WarpProxy ]]; then
 			PROXYPORT="$(ss -nltp | grep 'warp' | grep -oP '127.0*\S+' | cut -d: -f2)"
 			[[ -z "$EXPECT" ]] && input_region
-			i=0; j=15
+			i=0; j=10
 			while true
 			do (( i++ )) || true
 			ip_now=$(date +%s); RUNTIME=$((ip_now - ip_start)); DAY=$(( RUNTIME / 86400 )); HOUR=$(( (RUNTIME % 86400 ) / 3600 )); MIN=$(( (RUNTIME % 86400 % 3600) / 60 )); SEC=$(( RUNTIME % 86400 % 3600 % 60 ))
