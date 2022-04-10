@@ -182,7 +182,7 @@ check_warp(){
 		
 		# 在已安装 Client 的前提下，区分模式 Mode
 		if type -P warp-cli >/dev/null 2>&1; then
-			systemctl is-active warp-svc >/dev/null 2>&1 || systemctl start warp-svc
+			! systemctl is-active warp-svc >/dev/null 2>&1 && systemctl start warp-svc && sleep 5
 			if [[ $(warp-cli --accept-tos settings) =~ WarpProxy ]]; then
 				[[ $(ss -nltp) =~ 'warp-svc' ]] && CLIENT_PORT=$(ss -nltp | grep warp-svc | grep -oP '127.0*\S+' | cut -d: -f2) && STATUS[2]=1 || STATUS[2]=0
 			else
