@@ -589,8 +589,9 @@ change_ip(){
 	change_client(){
 		if [[ $(warp-cli --accept-tos settings) =~ WarpProxy ]]; then
 			socks5_restart(){
-				red " $(eval echo "${T[${L}126]}") " && warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1 && sleep $j &&
-				[[ -e /etc/wireguard/license ]] && warp-cli --accept-tos set-license $(cat /etc/wireguard/license) >/dev/null 2>&1 && sleep 2
+				red " $(eval echo "${T[${L}126]}") " && warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1 &&
+				[[ -e /etc/wireguard/license ]] && warp-cli --accept-tos set-license $(cat /etc/wireguard/license) >/dev/null 2>&1
+				sleep $j
 				}
 
 			PROXYPORT="$(ss -nltp | grep 'warp' | grep -oP '127.0*\S+' | cut -d: -f2)"
@@ -613,7 +614,8 @@ change_ip(){
 		else	interface_restart(){
 				red " $(eval echo "${T[${L}126]}") " &&	warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1 &&
 				[[ -e /etc/wireguard/license ]] && warp-cli --accept-tos set-license $(cat /etc/wireguard/license) >/dev/null 2>&1
-				systemctl restart warp-svc && sleep $j
+				systemctl restart warp-svc
+				sleep $j
 				}
 			
 			INTERFACE='--interface CloudflareWARP'
@@ -822,7 +824,7 @@ proxy_onoff(){
 		systemctl stop warp-svc
 		green " ${T[${L}91]} " && exit 0
 
-	else	systemctl start warp-svc; sleep 5
+	else	systemctl start warp-svc; sleep 2
 		if [[ $(warp-cli --accept-tos settings) =~ WarpProxy ]]; then
 			proxy_info
 			ACCOUNT=$(warp-cli --accept-tos account 2>/dev/null)
