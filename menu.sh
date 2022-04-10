@@ -596,7 +596,7 @@ change_ip(){
 
 			PROXYPORT="$(ss -nltp | grep 'warp' | grep -oP '127.0*\S+' | cut -d: -f2)"
 			[[ -z "$EXPECT" ]] && input_region
-			i=0; [[ -e /etc/wireguard/license ]] && j=13 || j=15
+			i=0; j=15
 			while true
 			do (( i++ )) || true
 			ip_now=$(date +%s); RUNTIME=$((ip_now - ip_start)); DAY=$(( RUNTIME / 86400 )); HOUR=$(( (RUNTIME % 86400 ) / 3600 )); MIN=$(( (RUNTIME % 86400 % 3600) / 60 )); SEC=$(( RUNTIME % 86400 % 3600 % 60 ))
