@@ -623,7 +623,7 @@ change_ip(){
 			do (( i++ )) || true
 			ip_now=$(date +%s); RUNTIME=$((ip_now - ip_start)); DAY=$(( RUNTIME / 86400 )); HOUR=$(( (RUNTIME % 86400 ) / 3600 )); MIN=$(( (RUNTIME % 86400 % 3600) / 60 )); SEC=$(( RUNTIME % 86400 % 3600 % 60 ))
 			ip4_info
-			WAN=$WAN4 && ASNORG=$ASNORG4
+			WAN=$WAN4 && ASNORG=$ASNORG4 && NF=4
 			[[ $L = C ]] && COUNTRY=$(translate "$COUNTRY4") || COUNTRY=$COUNTRY4
 			RESULT=$(curl --user-agent "${UA_Browser}" $INTERFACE -fsL --write-out %{http_code} --output /dev/null --max-time 10 "https://www.netflix.com/title/$RESULT_TITLE"  2>&1)
 			if [[ $RESULT = 200 ]]; then
