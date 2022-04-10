@@ -618,7 +618,7 @@ change_ip(){
 			
 			INTERFACE='--interface CloudflareWARP'
 			[[ -z "$EXPECT" ]] && input_region
-			i=0; j=5
+			i=0; j=10
 			while true
 			do (( i++ )) || true
 			ip_now=$(date +%s); RUNTIME=$((ip_now - ip_start)); DAY=$(( RUNTIME / 86400 )); HOUR=$(( (RUNTIME % 86400 ) / 3600 )); MIN=$(( (RUNTIME % 86400 % 3600) / 60 )); SEC=$(( RUNTIME % 86400 % 3600 % 60 ))
@@ -822,7 +822,7 @@ proxy_onoff(){
 		systemctl stop warp-svc
 		green " ${T[${L}91]} " && exit 0
 
-	else	systemctl start warp-svc
+	else	systemctl start warp-svc; sleep 5
 		if [[ $(warp-cli --accept-tos settings) =~ WarpProxy ]]; then
 			proxy_info
 			ACCOUNT=$(warp-cli --accept-tos account 2>/dev/null)
