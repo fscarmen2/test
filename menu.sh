@@ -843,47 +843,6 @@ proxy_onoff(){
 		exit 0
 		fi
 	fi
-	
-#	if [[ $(warp-cli --accept-tos settings) =~ WarpProxy ]]; then
-#		PROXY=$(warp-cli --accept-tos status 2>/dev/null)
-#		case "$PROXY" in
-#		*Connecting* ) red " ${T[${L}96]} " && exit 1;;
-#		*missing* ) warp-cli --accept-tos register >/dev/null 2>&1 && [[ -e /etc/wireguard/license ]] && warp-cli --accept-tos set-license $(cat /etc/wireguard/license)>/dev/null 2>&1;;
-#		*Connected* ) warp-cli --accept-tos disconnect >/dev/null 2>&1 && warp-cli --accept-tos disable-always-on >/dev/null 2>&1 && [[ ! $(ss -nltp) =~ 'warp-svc' ]] && green " ${T[${L}91]} " && exit 0;;
-#		*Disconnected* ) warp-cli --accept-tos connect >/dev/null 2>&1 && warp-cli --accept-tos enable-always-on >/dev/null 2>&1 && STATUS=1 && sleep 1 && proxy_info
-#			if [[ $STATUS = 1 ]]; then
-#				[[ $(ss -nltp) =~ 'warp-svc' ]] && green " ${T[${L}90]}\n $(eval echo "${T[${L}27]}") " && exit 0
-#				[[ $(warp-cli --accept-tos status 2>/dev/null) =~ Connecting ]] && red " ${T[${L}96]} " && exit 1
-#			fi;;
-#		* ) red " ${T[${L}93]} " && exit 1;;
-#		esac
-#	
-#	else	if [[ $(ip a) =~ 'CloudflareWARP' ]]; then
-#			warp-cli --accept-tos disconnect >/dev/null 2>&1
-#			warp-cli --accept-tos disable-always-on >/dev/null 2>&1
-#			ip -4 rule delete from 172.16.0.2 lookup 51820
-#			ip -4 rule delete table main suppress_prefixlength 0
-#			green " ${T[${L}91]} " && exit 0
-#		else
-#			warp-cli --accept-tos connect >/dev/null 2>&1
-#			warp-cli --accept-tos enable-always-on >/dev/null 2>&1
-#			sleep 5
-#			ip -4 rule add from 172.16.0.2 lookup 51820
-#			ip -4 route add default dev CloudflareWARP table 51820
-#			ip -4 rule add table main suppress_prefixlength 0
-#			INTERFACE='--interface CloudflareWARP'
-#			ip4_info; [[ $L = C && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4")
-#			ACCOUNT=$(warp-cli --accept-tos account 2>/dev/null)
-#			if [[ $ACCOUNT =~ 'Limited' ]]; then
-#			QUOTA=$(expr "$ACCOUNT" : '.*Quota:\s\([0-9]\{1,\}\)\s.*')
-#			[[ $QUOTA -gt 10000000000000 ]] && QUOTA="$((QUOTA/1000000000000)) TiB" ||  QUOTA="$((QUOTA/1000000000)) GiB"
-#			AC='+'
-#			fi
-#			[[ $(ip a) =~ 'CloudflareWARP' ]] && green " ${T[${L}90]} $(eval echo "${T[${L}169]}") "
-#			[[ $ACCOUNT =~ 'Limited' ]] && green " ${T[${L}63]}：$QUOTA "
-#			exit 0
-#		fi
-#	fi
 	}
 
 # WireProxy 开关，先检查是否已安装，再根据当前状态转向相反状态
