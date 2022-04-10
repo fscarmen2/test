@@ -182,18 +182,10 @@ check_warp(){
 		
 		# 在已安装 Client 的前提下，区分模式 Mode
 		if type -P warp-cli >/dev/null 2>&1; then
+			systemctl is-active warp-svc >/dev/null 2>&1 || systemctl start warp-svc
 			if [[ $(warp-cli --accept-tos settings) =~ WarpProxy ]]; then
-				[[ ! $(ss -nltp) =~ 'warp-svc' ]] && warp-cli --accept-tos connect >/dev/null 2>&1
 				[[ $(ss -nltp) =~ 'warp-svc' ]] && CLIENT_PORT=$(ss -nltp | grep warp-svc | grep -oP '127.0*\S+' | cut -d: -f2) && STATUS[2]=1 || STATUS[2]=0
-			
-			else	if [[ ! $(ip a) =~ 'CloudflareWARP' ]]; then
-					warp-cli --accept-tos connect >/dev/null 2>&1
-					warp-cli --accept-tos enable-always-on >/dev/null 2>&1
-					sleep 5
-					ip -4 rule add from 172.16.0.2 lookup 51820
-					ip -4 route add default dev CloudflareWARP table 51820
-					ip -4 rule add table main suppress_prefixlength 0
-				fi
+			else
 				[[ $(ip a) =~ 'CloudflareWARP' ]] && STATUS[2]=1 || STATUS[2]=0
 			fi
 		else STATUS[2]=0
