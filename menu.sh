@@ -233,8 +233,8 @@ T[E111]="Port must be 4-5 digits. Please re-input\(\$i times remaining\):"
 T[C111]="端口必须为4-5位自然数，请重新输入\(剩余\$i次\):"
 T[E112]="Client is not installed."
 T[C112]="Client 未安装"
-T[E113]="Client is installed and disconnected"
-T[C113]="Client 已安装，状态为断开连接"
+T[E113]="Client is installed. Mode is \$CLIENT_MODE. Disconnected"
+T[C113]="Client 已安装，模式为\$CLIENT_MODE 断开状态"
 T[E114]="WARP\$TYPE Interface is on"
 T[C114]="WARP\$TYPE 网络接口已开启"
 T[E115]="WARP Interface is on"
@@ -980,9 +980,9 @@ EOF
 		CLIENT=1 && CLIENT_INSTALLED="${T[${L}92]}"
 		[[ $(systemctl is-active warp-svc 2>/dev/null) = active || $(systemctl is-enabled warp-svc 2>/dev/null) = enabled ]] && CLIENT=2
 		if [[ $(warp-cli --accept-tos settings) =~ WarpProxy ]]; then
-			[[ $CLIENT = 2 ]] && [[ $(ss -nltp) =~ 'warp-svc' ]] && CLIENT=3 && proxy_info
+			[[ $CLIENT = 2 ]] && CLIENT_MODE='Proxy' && [[ $(ss -nltp) =~ 'warp-svc' ]] && CLIENT=3 && proxy_info
 		else
-			[[ $CLIENT = 2 ]] && [[ $(ip a) =~ 'CloudflareWARP' ]] && CLIENT=5 && INTERFACE='--interface CloudflareWARP' && ip4_info
+			[[ $CLIENT = 2 ]] && CLIENT_MODE='WARP' && [[ $(ip a) =~ 'CloudflareWARP' ]] && CLIENT=5 && INTERFACE='--interface CloudflareWARP' && ip4_info
 		fi
 	fi
 
@@ -1843,7 +1843,7 @@ menu(){
 	[[ $TRACE4$TRACE6 =~ on ]] && green "	${T[${L}115]} " 	
 	[[ $PLAN != 3 ]] && green "	${T[${L}116]} "
 	[[ $CLIENT = 0 ]] && green "	${T[${L}112]} "
-	[[ $CLIENT = 2 ]] && green "	${T[${L}113]} "
+	[[ $CLIENT = 2 ]] && green "	$(eval echo "${T[${L}113]}") "
 	[[ $CLIENT = 3 ]] && green "	WARP$AC ${T[${L}24]}	$(eval echo "${T[${L}27]}") "
 	[[ $CLIENT = 5 ]] && green "	WARP$AC ${T[${L}24]}	$(eval echo "${T[${L}169]}") "
 	[[ $WIREPROXY = 0 ]] && green "	${T[${L}160]} "
