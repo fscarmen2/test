@@ -193,8 +193,8 @@ T[E91]="Client is disconnected. It could be connect again by [warp r]"
 T[C91]="已断开 Client，再次连接可以用 warp r"
 T[E92]="(!!! Already installed, do not select.)"
 T[C92]="(!!! 已安装，请勿选择)"
-T[E93]="Client is not installed. It could be installed by [warp c]"
-T[C93]="Client 未安装，如需安装，可以用 warp c"
+T[E93]="Client is not installed."
+T[C93]="Client 未安装"
 T[E94]="Congratulations! WARP\$AC Linux Client is working. Spend time:\$(( end - start )) seconds.\\\n The script runs on today: \$TODAY. Total:\$TOTAL"
 T[C94]="恭喜！WARP\$AC Linux Client 工作中, 总耗时:\$(( end - start ))秒， 脚本当天运行次数:\$TODAY，累计运行次数：\$TOTAL"
 T[E95]="Client works with non-WARP IPv4. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]"
@@ -319,8 +319,8 @@ T[E154]="\n 1. WGCF WARP account\n 2. WARP Linux Client account\n 3. WireProxy a
 T[C154]="\n 1. WGCF WARP 账户\n 2. WARP Linux Client 账户\n 3. WireProxy 账户\n"
 T[E155]="WGCF WARP has not been installed yet."
 T[C155]="WGCF WARP 还未安装"
-T[E156]="Socks5 Proxy Client has not been installed yet."
-T[C156]="Socks5 Proxy 客户端还未安装"
+T[E156]=""
+T[C156]=""
 T[E157]="WireProxy has not been installed yet."
 T[C157]="WireProxy 还未安装"
 T[E158]="WireProxy is disconnected. It could be connect again by [warp y]"
@@ -613,17 +613,7 @@ change_ip(){
 		else	interface_restart(){
 				red " $(eval echo "${T[${L}126]}") " &&	warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1 &&
 				[[ -e /etc/wireguard/license ]] && warp-cli --accept-tos set-license $(cat /etc/wireguard/license) >/dev/null 2>&1 && sleep 2
-				warp-cli --accept-tos disconnect >/dev/null 2>&1
-				warp-cli --accept-tos disable-always-on >/dev/null 2>&1
-				ip -4 rule delete from 172.16.0.2 lookup 51820
-				ip -4 rule delete table main suppress_prefixlength 0
-				sleep 2
-				warp-cli --accept-tos connect >/dev/null 2>&1
-				warp-cli --accept-tos enable-always-on >/dev/null 2>&1
-				sleep 6
-				ip -4 rule add from 172.16.0.2 lookup 51820
-				ip -4 route add default dev CloudflareWARP table 51820
-				ip -4 rule add table main suppress_prefixlength 0
+				systemctl restart warp-svc
 				}
 			
 			INTERFACE='--interface CloudflareWARP'
@@ -827,47 +817,78 @@ onoff(){
 
 # Proxy 开关，先检查是否已安装，再根据当前状态转向相反状态
 proxy_onoff(){
-	! type -P warp-cli >/dev/null 2>&1 && red " ${T[${L}156]} " && exit 1
-	if [[ $(warp-cli --accept-tos settings) =~ WarpProxy ]]; then
-		PROXY=$(warp-cli --accept-tos status 2>/dev/null)
-		case "$PROXY" in
-		*Connecting* ) red " ${T[${L}96]} " && exit 1;;
-		*missing* ) warp-cli --accept-tos register >/dev/null 2>&1 && [[ -e /etc/wireguard/license ]] && warp-cli --accept-tos set-license $(cat /etc/wireguard/license)>/dev/null 2>&1;;
-		*Connected* ) warp-cli --accept-tos disconnect >/dev/null 2>&1 && warp-cli --accept-tos disable-always-on >/dev/null 2>&1 && [[ ! $(ss -nltp) =~ 'warp-svc' ]] && green " ${T[${L}91]} " && exit 0;;
-		*Disconnected* ) warp-cli --accept-tos connect >/dev/null 2>&1 && warp-cli --accept-tos enable-always-on >/dev/null 2>&1 && STATUS=1 && sleep 1 && proxy_info
-			if [[ $STATUS = 1 ]]; then
-				[[ $(ss -nltp) =~ 'warp-svc' ]] && green " ${T[${L}90]}\n $(eval echo "${T[${L}27]}") " && exit 0
-				[[ $(warp-cli --accept-tos status 2>/dev/null) =~ Connecting ]] && red " ${T[${L}96]} " && exit 1
-			fi;;
-		* ) red " ${T[${L}93]} " && exit 1;;
-		esac
-	
-	else	if [[ $(ip a) =~ 'CloudflareWARP' ]]; then
-			warp-cli --accept-tos disconnect >/dev/null 2>&1
-			warp-cli --accept-tos disable-always-on >/dev/null 2>&1
-			ip -4 rule delete from 172.16.0.2 lookup 51820
-			ip -4 rule delete table main suppress_prefixlength 0
-			green " ${T[${L}91]} " && exit 0
-		else
-			warp-cli --accept-tos connect >/dev/null 2>&1
-			warp-cli --accept-tos enable-always-on >/dev/null 2>&1
-			sleep 5
-			ip -4 rule add from 172.16.0.2 lookup 51820
-			ip -4 route add default dev CloudflareWARP table 51820
-			ip -4 rule add table main suppress_prefixlength 0
-			INTERFACE='--interface CloudflareWARP'
-			ip4_info; [[ $L = C && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4")
+	! type -P warp-cli >/dev/null 2>&1 && red " ${T[${L}93]} " && exit 1
+	if systemctl is-active warp-svc >/dev/null 2>&1; then
+		systemctl stop warp-svc
+		green " ${T[${L}91]} " && exit 0
+
+	else	systemctl start warp-svc
+		if [[ $(warp-cli --accept-tos settings) =~ WarpProxy ]]; then
+			proxy_info
 			ACCOUNT=$(warp-cli --accept-tos account 2>/dev/null)
 			if [[ $ACCOUNT =~ 'Limited' ]]; then
-			QUOTA=$(expr "$ACCOUNT" : '.*Quota:\s\([0-9]\{1,\}\)\s.*')
-			[[ $QUOTA -gt 10000000000000 ]] && QUOTA="$((QUOTA/1000000000000)) TiB" ||  QUOTA="$((QUOTA/1000000000)) GiB"
-			AC='+'
+				QUOTA=$(expr "$ACCOUNT" : '.*Quota:\s\([0-9]\{1,\}\)\s.*')
+				[[ $QUOTA -gt 10000000000000 ]] && QUOTA="$((QUOTA/1000000000000)) TiB" ||  QUOTA="$((QUOTA/1000000000)) GiB"
+				AC='+'
 			fi
-			[[ $(ip a) =~ 'CloudflareWARP' ]] && green " ${T[${L}90]} $(eval echo "${T[${L}169]}") "
-			[[ $ACCOUNT =~ 'Limited' ]] && green " ${T[${L}63]}：$QUOTA "
-			exit 0
+			[[ $(ss -nltp) =~ 'warp-svc' ]] && green " ${T[${L}90]}\n $(eval echo "${T[${L}27]}") "
+			[[ -n "$QUOTA" ]] && green " ${T[${L}63]}：$QUOTA "
+		exit 0
+
+		else INTERFACE='--interface CloudflareWARP' && ip4_info
+			[[ $L = C && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4")
+			ACCOUNT=$(warp-cli --accept-tos account 2>/dev/null)
+			if [[ $ACCOUNT =~ 'Limited' ]]; then
+				QUOTA=$(expr "$ACCOUNT" : '.*Quota:\s\([0-9]\{1,\}\)\s.*')
+				[[ $QUOTA -gt 10000000000000 ]] && QUOTA="$((QUOTA/1000000000000)) TiB" ||  QUOTA="$((QUOTA/1000000000)) GiB"
+				AC='+'
+			fi
+			[[ $(ip a) =~ 'CloudflareWARP' ]] && green " ${T[${L}90]}\n $(eval echo "${T[${L}169]}") "
+			[[ -n "$QUOTA" ]] && green " ${T[${L}63]}：$QUOTA "
+		exit 0
 		fi
 	fi
+	
+#	if [[ $(warp-cli --accept-tos settings) =~ WarpProxy ]]; then
+#		PROXY=$(warp-cli --accept-tos status 2>/dev/null)
+#		case "$PROXY" in
+#		*Connecting* ) red " ${T[${L}96]} " && exit 1;;
+#		*missing* ) warp-cli --accept-tos register >/dev/null 2>&1 && [[ -e /etc/wireguard/license ]] && warp-cli --accept-tos set-license $(cat /etc/wireguard/license)>/dev/null 2>&1;;
+#		*Connected* ) warp-cli --accept-tos disconnect >/dev/null 2>&1 && warp-cli --accept-tos disable-always-on >/dev/null 2>&1 && [[ ! $(ss -nltp) =~ 'warp-svc' ]] && green " ${T[${L}91]} " && exit 0;;
+#		*Disconnected* ) warp-cli --accept-tos connect >/dev/null 2>&1 && warp-cli --accept-tos enable-always-on >/dev/null 2>&1 && STATUS=1 && sleep 1 && proxy_info
+#			if [[ $STATUS = 1 ]]; then
+#				[[ $(ss -nltp) =~ 'warp-svc' ]] && green " ${T[${L}90]}\n $(eval echo "${T[${L}27]}") " && exit 0
+#				[[ $(warp-cli --accept-tos status 2>/dev/null) =~ Connecting ]] && red " ${T[${L}96]} " && exit 1
+#			fi;;
+#		* ) red " ${T[${L}93]} " && exit 1;;
+#		esac
+#	
+#	else	if [[ $(ip a) =~ 'CloudflareWARP' ]]; then
+#			warp-cli --accept-tos disconnect >/dev/null 2>&1
+#			warp-cli --accept-tos disable-always-on >/dev/null 2>&1
+#			ip -4 rule delete from 172.16.0.2 lookup 51820
+#			ip -4 rule delete table main suppress_prefixlength 0
+#			green " ${T[${L}91]} " && exit 0
+#		else
+#			warp-cli --accept-tos connect >/dev/null 2>&1
+#			warp-cli --accept-tos enable-always-on >/dev/null 2>&1
+#			sleep 5
+#			ip -4 rule add from 172.16.0.2 lookup 51820
+#			ip -4 route add default dev CloudflareWARP table 51820
+#			ip -4 rule add table main suppress_prefixlength 0
+#			INTERFACE='--interface CloudflareWARP'
+#			ip4_info; [[ $L = C && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4")
+#			ACCOUNT=$(warp-cli --accept-tos account 2>/dev/null)
+#			if [[ $ACCOUNT =~ 'Limited' ]]; then
+#			QUOTA=$(expr "$ACCOUNT" : '.*Quota:\s\([0-9]\{1,\}\)\s.*')
+#			[[ $QUOTA -gt 10000000000000 ]] && QUOTA="$((QUOTA/1000000000000)) TiB" ||  QUOTA="$((QUOTA/1000000000)) GiB"
+#			AC='+'
+#			fi
+#			[[ $(ip a) =~ 'CloudflareWARP' ]] && green " ${T[${L}90]} $(eval echo "${T[${L}169]}") "
+#			[[ $ACCOUNT =~ 'Limited' ]] && green " ${T[${L}63]}：$QUOTA "
+#			exit 0
+#		fi
+#	fi
 	}
 
 # WireProxy 开关，先检查是否已安装，再根据当前状态转向相反状态
