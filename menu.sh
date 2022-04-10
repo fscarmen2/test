@@ -587,13 +587,13 @@ change_ip(){
 		}
 
 	change_client(){
-		if [[ $(warp-cli --accept-tos settings) =~ WarpProxy ]]; then
-			socks5_restart(){
-				red " $(eval echo "${T[${L}126]}") " && warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1 &&
-				[[ -e /etc/wireguard/license ]] && warp-cli --accept-tos set-license $(cat /etc/wireguard/license) >/dev/null 2>&1
-				sleep $j
-				}
+		client_restart(){
+			red " $(eval echo "${T[${L}126]}") " && warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1 &&
+			[[ -e /etc/wireguard/license ]] && warp-cli --accept-tos set-license $(cat /etc/wireguard/license) >/dev/null 2>&1
+			sleep $j
+			}
 
+		if [[ $(warp-cli --accept-tos settings) =~ WarpProxy ]]; then
 			PROXYPORT="$(ss -nltp | grep 'warp' | grep -oP '127.0*\S+' | cut -d: -f2)"
 			[[ -z "$EXPECT" ]] && input_region
 			i=0; j=15
@@ -606,19 +606,12 @@ change_ip(){
 			if [[ $RESULT = 200 ]]; then
 				REGION=$(tr '[:lower:]' '[:upper:]' <<< $(curl --user-agent "${UA_Browser}" -sx socks5h://localhost:$PROXYPORT -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
 				REGION=${REGION:-'US'}
-				echo "$REGION" | grep -qi "$EXPECT" && green " $(eval echo "${T[${L}125]}") " && i=0 && sleep 1h || socks5_restart
-			else socks5_restart
+				echo "$REGION" | grep -qi "$EXPECT" && green " $(eval echo "${T[${L}125]}") " && i=0 && sleep 1h || client_restart
+			else client_restart
 			fi
 			done
 
-		else	interface_restart(){
-				red " $(eval echo "${T[${L}126]}") " &&	warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1 &&
-				[[ -e /etc/wireguard/license ]] && warp-cli --accept-tos set-license $(cat /etc/wireguard/license) >/dev/null 2>&1
-				systemctl restart warp-svc
-				sleep $j
-				}
-			
-			INTERFACE='--interface CloudflareWARP'
+		else	INTERFACE='--interface CloudflareWARP'
 			[[ -z "$EXPECT" ]] && input_region
 			i=0; j=10
 			while true
@@ -631,8 +624,8 @@ change_ip(){
 			if [[ $RESULT = 200 ]]; then
 				REGION=$(tr '[:lower:]' '[:upper:]' <<< $(curl --user-agent "${UA_Browser}" $INTERFACE -fs --max-time 10 --write-out %{redirect_url} --output /dev/null "https://www.netflix.com/title/$REGION_TITLE" | sed 's/.*com\/\([^-/]\{1,\}\).*/\1/g'))
 				REGION=${REGION:-'US'}
-				echo "$REGION" | grep -qi "$EXPECT" && green " $(eval echo "${T[${L}125]}") " && i=0 && sleep 1h || interface_restart
-			else interface_restart
+				echo "$REGION" | grep -qi "$EXPECT" && green " $(eval echo "${T[${L}125]}") " && i=0 && sleep 1h || client_restart
+			else client_restart
 			fi
 			done
 
