@@ -998,7 +998,7 @@ input_license(){
 # 输入 Teams 账户 URL（如有）
 input_url(){
 	[[ -z $URL ]] && reading " ${T[${L}127]} " URL
-	URL=${URL:-'https://gist.githubusercontent.com/fscarmen/ce49ed17bcf6befd02c15aa2605d309c/raw/c46323a1f2fa5b4963ae5ed120b64c88fc2c1f0d/2022.4.12-1.xml'}
+	URL=${URL:-'https://gist.githubusercontent.com/fscarmen/56aaf02d743551737c9973b8be7a3496/raw/61bf63e68e4e91152545679b8f11c72cac215128/2021.12.21'}
 	TEAMS=$(curl -sSL "$URL" | sed "s/\"/\&quot;/g")
 	PRIVATEKEY=$(expr "$TEAMS" : '.*private_key&quot;>\([^<]*\).*')
 	PUBLICKEY=$(expr "$TEAMS" : '.*public_key&quot;:&quot;\([^&]*\).*')
