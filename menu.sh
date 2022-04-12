@@ -1575,7 +1575,7 @@ proxy(){
 				cd ./glibc-2.28/build
 				../configure --prefix=/usr --disable-profile --enable-add-ons --with-headers=/usr/include --with-binutils=/usr/bin
 				make install
-				cd ..; cd ..; rm -rf glibc-2.28*
+				cd ../..; rm -rf glibc-2.28*
 			else	${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
 			fi
 
