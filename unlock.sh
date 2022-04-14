@@ -311,9 +311,14 @@ ASNORG=\$(expr "\$IP_INFO" : '.*asn_org\":\"\([^"]*\).*')
 wgcf_restart(){ systemctl restart wg-quick@wgcf; sleep 2; ss -nltp | grep 'dnsmasq' >/dev/null 2>&1 && systemctl restart dnsmasq >/dev/null 2>&1; sleep 2; check_ip; }
 
 client_restart(){
-	warp-cli --accept-tos delete >/dev/null 2>&1 && warp-cli --accept-tos register >/dev/null 2>&1 &&
+	[[ \$(warp-cli --accept-tos settings) =~ WarpProxy ]] && CLIENT_PROXY=1
+	warp-cli --accept-tos delete >/dev/null 2>&1
+	[[ \$CLIENT_PROXY != 1 ]] && ( ip -4 rule delete from 172.16.0.2/32 lookup 51820; ip -4 rule delete table main suppress_prefixlength 0 )
+	warp-cli --accept-tos register >/dev/null 2>&1 &&
 	[[ -e /etc/wireguard/license ]] && warp-cli --accept-tos set-license \$(cat /etc/wireguard/license) >/dev/null 2>&1
-	sleep 10; check_ip
+	sleep 10
+	[[ \$CLIENT_PROXY != 1 ]] && ( ip -4 rule add from 172.16.0.2 lookup 51820; ip -4 route add default dev CloudflareWARP table 51820; ip -4 rule add table main suppress_prefixlength 0 )
+	check_ip
 }
 
 wireproxy_restart(){ systemctl restart wireproxy; sleep 5; check_ip; }
