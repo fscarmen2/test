@@ -17,7 +17,7 @@ done
 
 # 安装 wireguard-tools
 echo -e "\033[32m (1/3) 安装系统依赖和 wireguard-go \033[0m"
-! type -p wg && brew install wireguard-tools
+! type -p wg >/dev/null 2>&1 && brew install wireguard-tools
 
 echo -e "\033[32m (2/3) 安装 WGCF \033[0m"
 # 判断 wgcf 的最新版本
