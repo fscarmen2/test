@@ -18,8 +18,9 @@ done
 [[ -n $LICENSE && -z $NAME ]] && read -rp " 请自定义 WARP+ 设备名 (如果不输入，默认为 [WARP]): " NAME
 [[ -n $NAME ]] && NAME="${NAME//[[:space:]]/_}" || NAME=${NAME:-'WARP'}
 
-# 安装 wireguard-tools
-echo -e "\033[32m (1/3) 安装 wireguard-tools\033[0m"
+# 安装 brew 和 wireguard-tools
+echo -e "\033[32m (1/3) 安装 brew 和 wireguard-tools\033[0m"
+! type -p brew >/dev/null 2>&1 && /bin/zsh -c "$(curl -fsSL https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)"
 ! type -p wg >/dev/null 2>&1 && brew install wireguard-tools
 
 echo -e "\033[32m (2/3) 安装 WGCF 和 wireguard-go\033[0m"
