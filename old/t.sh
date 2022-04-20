@@ -187,7 +187,7 @@ uninstall(){
 install(){
 	# 进入工作目录
 	cd /usr/local/bin
-	mkdir -p /etc/wireguard/ >/dev/null 2>&1
+	sudo mkdir -p /etc/wireguard/ >/dev/null 2>&1
 
 	# 输入 Warp+ 账户（如有），限制位数为空或者26位以防输入错误
 	[[ -z $LICENSE ]] && reading " ${T[${L}6]} " LICENSE
