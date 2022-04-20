@@ -266,14 +266,11 @@ install(){
 # 传参选项 OPTION
 [[ $1 != '[option]' ]] && OPTION=$(tr '[:upper:]' '[:lower:]' <<< "$1")
 
-# 主程序运行
 statistics_of_run-times
-select_language
-check_operating_system
 
 case "$OPTION" in
-e ) L=E; install;;
-c ) L=C; install;;
+e ) L=E; check_operating_system; install;;
+c ) L=C; check_operating_system; install;;
 u ) uninstall;;
 v ) ver;;
 n ) net;;
