@@ -25,7 +25,6 @@ latest=$(curl -fsSL "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | 
 latest=${latest:-'2.2.12'}
 
 # 安装 wgcf，尽量下载官方的最新版本，如官方 wgcf 下载不成功，将使用 githubusercontents 的 CDN，以更好的支持双栈。并添加执行权限
-curl -o /usr/local/bin/wgcf https://github.com/ViRb3/wgcf/releases/download/v"$latest"/wgcf_"$latest"_darwin_amd64 ||
 curl -o /usr/local/bin/wgcf https://raw.githubusercontents.com/fscarmen/warp/main/wgcf/wgcf_"$latest"_darwin_amd64
 
 # 安装 wireguard-go
