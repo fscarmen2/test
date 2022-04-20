@@ -236,11 +236,13 @@ install(){
   
 	# 修改配置文件 wgcf-profile.conf 的内容,使得 IPv4 的流量均被 WireGuard 接管
 	sed -i '' 's/engage.cloudflareclient.com/162.159.193.10/g' wgcf-profile.conf
-	ln -sf /usr/local/bin/mac.sh /usr/local/bin/warp && green " ${T[${L}27]} " && chmod +x /usr/local/bin/warp
-	echo "$L" >/etc/wireguard/language
+
 
 	# 把 wgcf-profile.conf 复制到/etc/wireguard/ 并命名为 wgcf.conf
-	sudo cp -f wgcf-profile.conf mac.sh /etc/wireguard/
+	sudo cp -f wgcf-profile.conf /etc/wireguard/wgcf.conf
+	sudo cp -f /usr/local/bin/t.sh /etc/wireguard/mac.sh
+	ln -sf /etc/wireguard/mac.sh /usr/local/bin/warp && green " ${T[${L}27]} " && chmod +x /usr/local/bin/warp
+	echo "$L" >/etc/wireguard/language
 
 	# 自动刷直至成功（ warp bug，有时候获取不了ip地址）
 	green " \n${T[${L}12]}\n "
