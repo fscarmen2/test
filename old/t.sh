@@ -60,10 +60,10 @@ sudo cp -f wgcf-profile.conf /etc/wireguard/wgcf.conf
 # 自动刷直至成功（ warp bug，有时候获取不了ip地址）
 echo -e "\033[32m (3/3) 运行 WGCF \033[0m"
 echo -e "\033[33m 后台获取 warp IP 中…… \033[0m"
-wg-quick up wgcf >/dev/null 2>&1
+sudo wg-quick up wgcf >/dev/null 2>&1
 until [[ -n $(curl -s4 https://ip.gs) ]]; do
-	wg-quick down wgcf >/dev/null 2>&1
-	wg-quick up wgcf >/dev/null 2>&1
+	sudo wg-quick down wgcf >/dev/null 2>&1
+	sudo wg-quick up wgcf >/dev/null 2>&1
 done
 
 # 结果提示
