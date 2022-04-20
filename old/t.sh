@@ -20,25 +20,24 @@ echo -e "\033[32m (1/3) 安装系统依赖和 wireguard-go \033[0m"
 brew install wireguard-tools
 
 echo -e "\033[32m (2/3) 安装 WGCF \033[0m"
-
 # 判断 wgcf 的最新版本
-latest=$(wget --no-check-certificate -qO- -T1 -t1 $CDN "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/[ \"v,]//g')
+latest=$( curl -fsSL "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/[ \"v,]//g')
 latest=${latest:-'2.2.12'}
 
 # 安装 wgcf，尽量下载官方的最新版本，如官方 wgcf 下载不成功，将使用 githubusercontents 的 CDN，以更好的支持双栈。并添加执行权限
-wget -T1 -t1 -O /usr/local/bin/wgcf https://github.com/ViRb3/wgcf/releases/download/v"$latest"/wgcf_"$latest"_darwin_amd64 ||
-wget -O /usr/local/bin/wgcf https://raw.githubusercontents.com/fscarmen/warp/main/wgcf/wgcf_"$latest"_darwin_amd64
-chmod +x /usr/local/bin/wgcf
+curl -o /usr/local/bin/wgcf https://github.com/ViRb3/wgcf/releases/download/v"$latest"/wgcf_"$latest"_darwin_amd64 ||
+curl -o /usr/local/bin/wgcf https://raw.githubusercontents.com/fscarmen/warp/main/wgcf/wgcf_"$latest"_darwin_amd64
 
 # 安装 wireguard-go
-wget -N https://raw.githubusercontents.com/fscarmen/warp/main/wireguard-go/wireguard-go_darwin_amd64.tar.gz &&
-tar xzf wireguard-go_darwin_amd64.tar.gz -C /usr/local/bin/ && rm -f wireguard-go_linux_* && chmod +x /usr/local/bin/wireguard-go
+curl -o /usr/local/bin/ https://raw.githubusercontents.com/fscarmen/warp/main/wireguard-go/wireguard-go_darwin_amd64.tar.gz &&
+tar xzf /usr/local/bin/wireguard-go_darwin_amd64.tar.gz -C /usr/local/bin/ && rm -f /usr/local/bin/wireguard-go_darwin_amd64.tar.gz
 
 # 添加执行权限
-chmod +x /usr/bin/wireguard-go /usr/local/bin/wgcf
+chmod +x /usr/local/bin/wireguard-go /usr/local/bin/wgcf
 
 # 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息，为避免文件已存在导致出错，先尝试删掉原文件)
 rm -f wgcf-account.toml
+mkdir -p /etc/wireguard/ >/dev/null 2>&1
 echo -e "\033[33m wgcf 注册中…… \033[0m"
 until [[ -e wgcf-account.toml ]] >/dev/null 2>&1; do
 	wgcf register --accept-tos >/dev/null 2>&1 && break
