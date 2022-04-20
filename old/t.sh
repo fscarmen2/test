@@ -60,6 +60,13 @@ T[E26]="Got the WARP IP successfully."
 T[C26]="已成功获取 WARP 网络"
 T[E27]="Create shortcut [warp] successfully"
 T[C27]="创建快捷 warp 指令成功"
+T[E28]="Successfully synchronized the latest version"
+T[C28]="成功！已同步最新脚本，版本号"
+T[E29]="New features"
+T[C29]="功能新增"
+T[E30]="Upgrade failed. Feedback:[https://github.com/fscarmen/warp/issues]"
+T[C30]="升级失败，问题反馈:[https://github.com/fscarmen/warp/issues]"
+
 
 # 自定义字体彩色，read 函数，友道翻译函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -152,6 +159,15 @@ net(){
 onoff(){ 
 	! type -P wg-quick >/dev/null 2>&1 && red " ${T[${L}21]} " && exit 1
 	[[ -n $(wg 2>/dev/null) ]] && (wg-quick down wgcf >/dev/null 2>&1; green " ${T[${L}22]} ") || net
+}
+
+# 同步脚本至最新版本
+ver(){
+	wget -N -P /etc/wireguard https://raw.githubusercontents.com/fscarmen/warp/main/pc/mac.sh
+	chmod +x /etc/wireguard/mac.sh
+	ln -sf /etc/wireguard/mac.sh /usr/local/bin/warp
+	green " ${T[${L}28]}:$(grep ^VERSION /etc/wireguard/mac.sh | sed "s/.*=//g")  ${T[${L}29]}：$(grep "T\[${L}1]" /etc/wireguard/menu.sh | cut -d \" -f2) " || red " ${T[${L}30]} "
+	exit
 }
 
 uninstall(){
@@ -258,5 +274,8 @@ case "$OPTION" in
 e ) L=E; install;;
 c ) L=C; install;;
 u ) uninstall;;
+v ) ver;;
+n ) net;
+o ) onoff;;
 * ) help;;
 esac
