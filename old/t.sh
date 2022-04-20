@@ -4,7 +4,7 @@
 # 当前脚本版本号和新增功能
 VERSION=1.00
 
-declare -A T
+declare -a T
 
 T[E0]="\n Language:\n  1.English (default) \n  2.简体中文\n"
 T[C0]="${T[E0]}"
