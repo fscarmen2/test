@@ -1,5 +1,7 @@
-##### 为 IPv6 only VPS 添加 WGCF，IPv4走 warp #####
-##### LXC 非完整虚拟化 VPS 主机，选择 "wireguard-go" 方案。##### 
+##### 为 macOS 添加 WGCF，IPv4走 warp #####
+
+mkdir -p /etc/wireguard/ >/dev/null 2>&1
+cd /etc/wireguard/
 
 # 多方式判断操作系统
 sw_vesrs 2>/dev/null | grep -qvi macos && red " 当前操作不是 macOS,脚本退出,问题反馈:[https://github.com/fscarmen/warp/issues] "
@@ -36,7 +38,6 @@ chmod +x /usr/local/bin/wireguard-go /usr/local/bin/wgcf
 
 # 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息，为避免文件已存在导致出错，先尝试删掉原文件)
 rm -f wgcf-account.toml
-mkdir -p /etc/wireguard/ >/dev/null 2>&1
 echo -e "\033[33m wgcf 注册中…… \033[0m"
 until [[ -e wgcf-account.toml ]] >/dev/null 2>&1; do
 	wgcf register --accept-tos >/dev/null 2>&1 && break
