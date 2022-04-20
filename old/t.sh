@@ -13,8 +13,7 @@ until [[ -z $LICENSE || $LICENSE =~ ^[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8
 done
 
 [[ -n $LICENSE && -z $NAME ]] && read -rp " 请自定义 WARP+ 设备名 (如果不输入，默认为 [WARP]): " NAME
-	[[ -n $NAME ]] && NAME="${NAME//[[:space:]]/_}" || NAME=${NAME:-'WARP'}
-fi
+[[ -n $NAME ]] && NAME="${NAME//[[:space:]]/_}" || NAME=${NAME:-'WARP'}
 
 # 安装 wireguard-tools
 echo -e "\033[32m (1/3) 安装系统依赖和 wireguard-go \033[0m"
