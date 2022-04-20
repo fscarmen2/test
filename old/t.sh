@@ -17,11 +17,11 @@ done
 
 # 安装 wireguard-tools
 echo -e "\033[32m (1/3) 安装系统依赖和 wireguard-go \033[0m"
-brew install wireguard-tools
+! type -p wg && brew install wireguard-tools
 
 echo -e "\033[32m (2/3) 安装 WGCF \033[0m"
 # 判断 wgcf 的最新版本
-latest=$( curl -fsSL "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/[ \"v,]//g')
+latest=$(curl -fsSL "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/[ \"v,]//g')
 latest=${latest:-'2.2.12'}
 
 # 安装 wgcf，尽量下载官方的最新版本，如官方 wgcf 下载不成功，将使用 githubusercontents 的 CDN，以更好的支持双栈。并添加执行权限
