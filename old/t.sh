@@ -242,7 +242,7 @@ install(){
 	sudo cp -f wgcf-profile.conf /etc/wireguard/wgcf.conf
 	sudo cp -f /usr/local/bin/t.sh /etc/wireguard/mac.sh
 	ln -sf /etc/wireguard/mac.sh /usr/local/bin/warp && green " ${T[${L}27]} " && chmod +x /usr/local/bin/warp
-	echo "$L" >/etc/wireguard/language
+	sudo echo "$L" >/etc/wireguard/language
 
 	# 自动刷直至成功（ warp bug，有时候获取不了ip地址）
 	green " \n${T[${L}12]}\n "
