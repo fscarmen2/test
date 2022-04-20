@@ -1,7 +1,7 @@
 ##### 为 macOS 添加 WGCF，IPv4走 warp #####
 
-mkdir -p /etc/wireguard/ >/dev/null 2>&1
-cd /etc/wireguard/
+# 进入工作目录
+cd /usr/local/bin
 
 # 多方式判断操作系统
 sw_vesrs 2>/dev/null | grep -qvi macos && red " 当前操作不是 macOS,脚本退出,问题反馈:[https://github.com/fscarmen/warp/issues] "
