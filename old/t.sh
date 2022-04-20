@@ -256,7 +256,6 @@ install(){
 	red "\n==============================================================\n"
 	yellow " ${T[${L}18]}\n " && help
 	[[ $TRACE4$TRACE6 = offoff ]] && red " ${T[${L}19]} "
-	fi
 
 	# 删除临时文件
 	rm -f mac.sh wgcf-account.toml wgcf-profile.conf
