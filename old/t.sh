@@ -2,6 +2,7 @@
 
 # 进入工作目录
 cd /usr/local/bin
+mkdir -p /etc/wireguard/ >/dev/null 2>&1
 
 # 多方式判断操作系统
 sw_vesrs 2>/dev/null | grep -qvi macos && red " 当前操作不是 macOS,脚本退出,问题反馈:[https://github.com/fscarmen/warp/issues] "
@@ -18,10 +19,10 @@ done
 [[ -n $NAME ]] && NAME="${NAME//[[:space:]]/_}" || NAME=${NAME:-'WARP'}
 
 # 安装 wireguard-tools
-echo -e "\033[32m (1/3) 安装系统依赖和 wireguard-go \033[0m"
+echo -e "\033[32m (1/3) 安装系统依赖\033[0m"
 ! type -p wg >/dev/null 2>&1 && brew install wireguard-tools
 
-echo -e "\033[32m (2/3) 安装 WGCF \033[0m"
+echo -e "\033[32m (2/3) 安装 WGCF 和 wireguard-go\033[0m"
 # 判断 wgcf 的最新版本
 latest=$(curl -fsSL "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/[ \"v,]//g')
 latest=${latest:-'2.2.12'}
