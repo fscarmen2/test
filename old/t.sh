@@ -175,7 +175,7 @@ uninstall(){
 	# 卸载 WGCF
 	wg-quick down wgcf >/dev/null 2>&1
 	brew uninstall wireguard-tools
-	rm -rf /usr/local/bin/wgcf /etc/wireguard /usr/local/bin/wireguard-go
+	sudo rm -rf /usr/local/bin/wgcf /etc/wireguard /usr/local/bin/wireguard-go
 	# 显示卸载结果
 	ip4_info; [[ $L = C && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4")
 	ip6_info; [[ $L = C && -n "$COUNTRY6" ]] && COUNTRY6=$(translate "$COUNTRY6")
@@ -274,7 +274,7 @@ e ) L=E; install;;
 c ) L=C; install;;
 u ) uninstall;;
 v ) ver;;
-n ) net;
+n ) net;;
 o ) onoff;;
 * ) help;;
 esac
