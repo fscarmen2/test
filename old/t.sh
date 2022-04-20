@@ -46,7 +46,7 @@ done
 
 # 如有 Warp+ 账户，修改 license 并升级
 [[ -n $LICENSE ]] && echo -e "\033[33m 升级 Warp+ 账户 \033[0m" && sed -i '' "s/license_key.*/license_key = \"$LICENSE\"/g" wgcf-account.toml &&
-( wgcf update --name "$NAME" > /etc/wireguard/info.log 2>&1 || echo -e "\033[31m 升级失败，Warp+ 账户错误或者已激活超过5台设备，自动更换免费 Warp 账户继续\033[0m " )
+( wgcf update --name "$NAME" | sudo tee /etc/wireguard/info.log 2>&1 || echo -e "\033[31m 升级失败，Warp+ 账户错误或者已激活超过5台设备，自动更换免费 Warp 账户继续\033[0m " )
 
 # 生成 Wire-Guard 配置文件 (wgcf-profile.conf)
 wgcf generate >/dev/null 2>&1
