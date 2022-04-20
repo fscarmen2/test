@@ -160,7 +160,7 @@ net(){
 # WARP 开关，先检查是否已安装，再根据当前状态转向相反状态
 onoff(){ 
 	! type -P wg-quick >/dev/null 2>&1 && red " ${T[${L}21]} " && exit 1
-	[[ -n $(wg 2>/dev/null) ]] && (wg-quick down wgcf >/dev/null 2>&1; green " ${T[${L}22]} ") || net
+	sudo wg >/dev/null 2>&1 && (wg-quick down wgcf >/dev/null 2>&1; green " ${T[${L}22]} ") || net
 }
 
 # 同步脚本至最新版本
