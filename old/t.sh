@@ -212,8 +212,8 @@ install(){
 	green " \n${T[${L}11]}\n "
 	latest=$(curl -fsSL "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/[ \"v,]//g')
 	latest=${latest:-'2.2.13'}
-	curl -o /usr/local/bin/wgcf https://github.com/ViRb3/wgcf/releases/download/v"$latest"/wgcf_"$latest"_darwin_amd64 ||
-	curl -o /usr/local/bin/wgcf https://raw.githubusercontents.com/fscarmen/warp/main/wgcf/wgcf_"$latest"_darwin_amd64
+	curl -m8 -o /usr/local/bin/wgcf https://github.com/ViRb3/wgcf/releases/download/v"$latest"/wgcf_"$latest"_darwin_amd64 ||
+	curl -m8 -o /usr/local/bin/wgcf https://raw.githubusercontents.com/fscarmen/warp/main/wgcf/wgcf_"$latest"_darwin_amd64
 
 	# 安装 wireguard-go
 	curl -o /usr/local/bin/wireguard-go_darwin_amd64.tar.gz https://raw.githubusercontents.com/fscarmen/warp/main/wireguard-go/wireguard-go_darwin_amd64.tar.gz &&
