@@ -19,7 +19,7 @@ done
 [[ -n $NAME ]] && NAME="${NAME//[[:space:]]/_}" || NAME=${NAME:-'WARP'}
 
 # 安装 wireguard-tools
-echo -e "\033[32m (1/3) 安装系统依赖\033[0m"
+echo -e "\033[32m (1/3) 安装 wireguard-tools\033[0m"
 ! type -p wg >/dev/null 2>&1 && brew install wireguard-tools
 
 echo -e "\033[32m (2/3) 安装 WGCF 和 wireguard-go\033[0m"
