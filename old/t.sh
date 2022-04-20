@@ -176,7 +176,7 @@ uninstall(){
 	unset IP4 IP6 WAN4 WAN6 COUNTRY4 COUNTRY6 ASNORG4 ASNORG6
 	# 卸载 WGCF
 	wg-quick down wgcf >/dev/null 2>&1
-	brew uninstall wireguard-tools
+	type -p wg >/dev/null 2>&1 && brew uninstall wireguard-tools
 	sudo rm -rf /usr/local/bin/wgcf /etc/wireguard /usr/local/bin/wireguard-go
 	# 显示卸载结果
 	ip4_info; [[ $L = C && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4")
