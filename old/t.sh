@@ -29,7 +29,7 @@ curl -o /usr/local/bin/wgcf https://github.com/ViRb3/wgcf/releases/download/v"$l
 curl -o /usr/local/bin/wgcf https://raw.githubusercontents.com/fscarmen/warp/main/wgcf/wgcf_"$latest"_darwin_amd64
 
 # 安装 wireguard-go
-curl -o /usr/local/bin/ https://raw.githubusercontents.com/fscarmen/warp/main/wireguard-go/wireguard-go_darwin_amd64.tar.gz &&
+curl -o /usr/local/bin/wireguard-go_darwin_amd64.tar.gz https://raw.githubusercontents.com/fscarmen/warp/main/wireguard-go/wireguard-go_darwin_amd64.tar.gz &&
 tar xzf /usr/local/bin/wireguard-go_darwin_amd64.tar.gz -C /usr/local/bin/ && rm -f /usr/local/bin/wireguard-go_darwin_amd64.tar.gz
 
 # 添加执行权限
