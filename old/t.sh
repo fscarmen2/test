@@ -55,7 +55,7 @@ wgcf generate >/dev/null 2>&1
 sed -i '' 's/engage.cloudflareclient.com/162.159.193.10/g' wgcf-profile.conf
 
 # 把 wgcf-profile.conf 复制到/etc/wireguard/ 并命名为 wgcf.conf
-cp -f wgcf-profile.conf /etc/wireguard/wgcf.conf
+sudo cp -f wgcf-profile.conf /etc/wireguard/wgcf.conf
 
 # 自动刷直至成功（ warp bug，有时候获取不了ip地址）
 echo -e "\033[32m (3/3) 运行 WGCF \033[0m"
