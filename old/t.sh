@@ -165,9 +165,9 @@ onoff(){
 
 # 同步脚本至最新版本
 ver(){
-	wget -N -P /etc/wireguard https://raw.githubusercontents.com/fscarmen/warp/main/pc/mac.sh
+	sudo wget -N -P /etc/wireguard https://raw.githubusercontents.com/fscarmen/warp/main/pc/mac.sh
 	chmod +x /etc/wireguard/mac.sh
-	ln -sf /etc/wireguard/mac.sh /usr/local/bin/warp
+	sudo ln -sf /etc/wireguard/mac.sh /usr/local/bin/warp
 	green " ${T[${L}28]}:$(grep ^VERSION /etc/wireguard/mac.sh | sed "s/.*=//g")  ${T[${L}29]}：$(grep "T\[${L}1]" /etc/wireguard/menu.sh | cut -d \" -f2) " || red " ${T[${L}30]} "
 	exit
 }
