@@ -267,9 +267,13 @@ install(){
 		wgcf register --accept-tos >/dev/null 2>&1 && break
 	done
 
-	# 如有 Warp+ 账户，修改 license 并升级
+	# 如有 WARP+ 账户，修改 license 并升级
 	[[ -n $LICENSE ]] && yellow " \n${T[${L}13]}\n " && sudo sed -i '' "s/license_key.*/license_key = \"$LICENSE\"/g" wgcf-account.toml &&
-	( wgcf update --name "$NAME" | sudo tee /etc/wireguard/info.log 2>&1 || red " \n${T[${L}14]}\n " )
+	( wgcf update --name "$NAME" | sudo tee /etc/wireguard/info.log >/dev/null 2>&1 || red " \n${T[${L}14]}\n " )
+
+	# 如有 Teams，改为 Teams 账户信息
+	[[ $CONFIRM = [Yy] ]] && echo "$TEAMS" | sudo tee /etc/wireguard/info.log >/dev/null 2>&1
+	sudo sed -i '' "s#PrivateKey.*#PrivateKey = $PRIVATEKEY#g;s#Address.*32#Address = ${ADDRESS4}/32#g;s#Address.*128#Address = ${ADDRESS6}/128#g;s#PublicKey.*#PublicKey = $PUBLICKEY#g" /etc/wireguard/wgcf.conf
 
 	# 生成 Wire-Guard 配置文件 (wgcf-profile.conf)
 	wgcf generate >/dev/null 2>&1
@@ -277,13 +281,12 @@ install(){
 	# 修改配置文件 wgcf-profile.conf 的内容,使得 IPv4 的流量均被 WireGuard 接管
 	sudo sed -i '' 's/engage.cloudflareclient.com/162.159.193.10/g' wgcf-profile.conf
 
-
 	# 把 wgcf-profile.conf 复制到/etc/wireguard/ 并命名为 wgcf.conf
 	sudo cp -f wgcf-profile.conf /etc/wireguard/wgcf.conf
 	sudo mv -f wgcf-account.toml wgcf-profile.conf mac.sh /etc/wireguard >/dev/null 2>&1
 	ln -sf /etc/wireguard/mac.sh /usr/local/bin/warp && green " ${T[${L}27]} "
 	sudo chmod +x /usr/local/bin/warp
-	echo "$L" 2>&1 | sudo tee /etc/wireguard/language
+	echo "$L" | sudo tee /etc/wireguard/language >/dev/null 2>&1
 
 	# 自动刷直至成功（ warp bug，有时候获取不了ip地址）
 	green "\n ${T[${L}12]}\n "
@@ -360,7 +363,7 @@ update(){
 	1 ) update_license
 	cd /etc/wireguard || exit
 	sudo sed -i '' "s#license_key.*#license_key = \"$LICENSE\"#g" wgcf-account.toml &&
-	wgcf update --name "$NAME" 2>&1 | sudo tee /etc/wireguard/info.log &&
+	wgcf update --name "$NAME" | sudo tee /etc/wireguard/info.log >/dev/null 2>&1 &&
 	(wgcf generate >/dev/null 2>&1
 	sudo sed -i '' "2s#.*#$(sed -ne 2p wgcf-profile.conf)#;3s#.*#$(sed -ne 3p wgcf-profile.conf)#;4s#.*#$(sed -ne 4p wgcf-profile.conf)#" wgcf.conf
 	wg-quick down wgcf >/dev/null 2>&1
@@ -369,7 +372,7 @@ update(){
 	green " ${T[${L}35]}\n ${T[${L}36]}：$(grep 'Device name' /etc/wireguard/info.log | awk '{ print $NF }')\n ${T[${L}37]}：$(grep Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }')" ) || red " ${T[${L}38]} ";;
 
 	2 ) input_url
-	[[ $CONFIRM = [Yy] ]] && (echo "$TEAMS" 2>&1 | sudo tee /etc/wireguard/info.log
+	[[ $CONFIRM = [Yy] ]] && (echo "$TEAMS" | sudo tee /etc/wireguard/info.log >/dev/null 2>&1
 	sudo sed -i '' "s#PrivateKey.*#PrivateKey = $PRIVATEKEY#g;s#Address.*32#Address = ${ADDRESS4}/32#g;s#Address.*128#Address = ${ADDRESS6}/128#g;s#PublicKey.*#PublicKey = $PUBLICKEY#g" /etc/wireguard/wgcf.conf
 	wg-quick down wgcf >/dev/null 2>&1; net
 	[[ $(curl -ks4 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g") = plus || $(curl -ks6 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g") = plus ]] && green " ${T[${L}39]} ");;
