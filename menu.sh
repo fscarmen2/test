@@ -1,5 +1,4 @@
-#!/bin/bash
-export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/sbin:/bin
+#!/usr/bin/env bash
 export LANG=en_US.UTF-8
 
 # 当前脚本版本号和新增功能
