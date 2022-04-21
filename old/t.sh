@@ -104,6 +104,12 @@ T[E47]="\\\n Please confirm\\\n Private key\\\t: \$PRIVATEKEY \$MATCH1\\\n Publi
 T[C47]="\\\n 请确认Teams 信息\\\n Private key\\\t: \$PRIVATEKEY \$MATCH1\\\n Public key\\\t: \$PUBLICKEY \$MATCH2\\\n Address IPv4\\\t: \$ADDRESS4/32 \$MATCH3\\\n Address IPv6\\\t: \$ADDRESS6/128 \$MATCH4\\\n"
 T[E48]="comfirm please enter [y] , and other keys to use free account:"
 T[C48]="确认请按 y ，其他按键则使用免费账户:"
+T[E49]="\n Is there a WARP+ or Teams account?\n 1. WARP+\n 2. Teams\n 3. use free account (default)\n"
+T[C49]="\n 如有 WARP+ 或 Teams 账户请选择\n 1. WARP+\n 2. Teams\n 3. 使用免费账户 (默认)\n"
+T[E50]="If there is a WARP+ License, please enter it, otherwise press Enter to continue:"
+T[C50]="如有 WARP+ License 请输入，没有可回车继续:"
+T[E51]="License should be 26 characters, please re-enter WARP+ License. Otherwise press Enter to continue. \(\$i times remaining\):"
+T[C51]="License 应为26位字符，请重新输入 WARP+ License，没有可回车继续\(剩余\$i次\):"
 
 # 自定义字体彩色，read 函数，友道翻译函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -224,13 +230,12 @@ install(){
 	sudo rm -rf wgcf wireguard-go wgcf-account.toml wgcf-profile.conf /etc/wireguard
 	sudo mkdir -p /etc/wireguard/ >/dev/null 2>&1
 
-	# 输入 Warp+ 账户（如有），限制位数为空或者26位以防输入错误
-	[[ -z $LICENSE ]] && reading " ${T[${L}6]} " LICENSE
-	i=5
-	until [[ -z $LICENSE || $LICENSE =~ ^[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}$ ]]
-		do	(( i-- )) || true
-			[[ $i = 0 ]] && red " ${T[${L}7]} " && exit 1 || reading " $(eval echo "${T[${L}8]}") " LICENSE
-	done
+	# 询问是否有 WARP+ 或 Teams 账户
+	[[ -z $LICENSETYPE ]] && yellow " ${T[${L}49]}" && reading " ${T[${L}3]} " LICENSETYPE
+	case $LICENSETYPE in
+	1 ) input_license;;	
+	2 ) input_url;;
+	esac
 
 	[[ -n $LICENSE && -z $NAME ]] && reading " ${T[${L}9]} " NAME
 	[[ -n $NAME ]] && NAME="${NAME//[[:space:]]/_}" || NAME=${NAME:-'WARP'}
@@ -301,6 +306,18 @@ install(){
 	rm -f mac.sh wgcf-account.toml wgcf-profile.conf
 }
 
+# 输入 WARP+ 账户（如有），限制位数为空或者26位以防输入错误
+input_license(){
+	[[ -z $LICENSE ]] && reading " ${T[${L}50]} " LICENSE
+	i=5
+	until [[ -z $LICENSE || $LICENSE =~ ^[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}$ ]]
+		do	(( i-- )) || true
+			[[ $i = 0 ]] && red " ${T[${L}29]} " && exit 1 || reading " $(eval echo "${T[${L}51]}") " LICENSE
+	done
+	[[ -n $LICENSE && -z $NAME ]] && reading " ${T[${L}43]} " NAME
+	[[ -n $NAME ]] && NAME="${NAME//[[:space:]]/_}" || NAME=${NAME:-'WARP'}
+}
+
 # 升级 WARP+ 账户（如有），限制位数为空或者26位以防输入错误，WARP interface 可以自定义设备名(不允许字符串间有空格，如遇到将会以_代替)
 update_license(){
 	[[ -z $LICENSE ]] && reading " ${T[${L}41]} " LICENSE
@@ -309,7 +326,7 @@ update_license(){
 		do	(( i-- )) || true
 			[[ $i = 0 ]] && red " ${T[${L}7]} " && exit 1 || reading " $(eval echo "${T[${L}42]}") " LICENSE
 	done
-	[[ -z $NAME ]] && reading " ${T[${L}43]} " NAME
+	[[ -n $LICENSE && -z $NAME ]] && reading " ${T[${L}43]} " NAME
 	[[ -n $NAME ]] && NAME="${NAME//[[:space:]]/_}" || NAME=${NAME:-'WARP'}
 }
 
