@@ -267,14 +267,14 @@ install(){
 	done
 
 	# 如有 Warp+ 账户，修改 license 并升级
-	[[ -n $LICENSE ]] && yellow " \n${T[${L}13]}\n " && sed -i '' "s/license_key.*/license_key = \"$LICENSE\"/g" wgcf-account.toml &&
+	[[ -n $LICENSE ]] && yellow " \n${T[${L}13]}\n " && sudo sed -i '' "s/license_key.*/license_key = \"$LICENSE\"/g" wgcf-account.toml &&
 	( wgcf update --name "$NAME" | sudo tee /etc/wireguard/info.log 2>&1 || red " \n${T[${L}14]}\n " )
 
 	# 生成 Wire-Guard 配置文件 (wgcf-profile.conf)
 	wgcf generate >/dev/null 2>&1
   
 	# 修改配置文件 wgcf-profile.conf 的内容,使得 IPv4 的流量均被 WireGuard 接管
-	sed -i '' 's/engage.cloudflareclient.com/162.159.193.10/g' wgcf-profile.conf
+	sudo sed -i '' 's/engage.cloudflareclient.com/162.159.193.10/g' wgcf-profile.conf
 
 
 	# 把 wgcf-profile.conf 复制到/etc/wireguard/ 并命名为 wgcf.conf
@@ -346,10 +346,10 @@ update(){
 	case $LICENSETYPE in
 	1 ) update_license
 	cd /etc/wireguard || exit
-	sed -i '' "s#license_key.*#license_key = \"$LICENSE\"#g" wgcf-account.toml &&
+	sudo sed -i '' "s#license_key.*#license_key = \"$LICENSE\"#g" wgcf-account.toml &&
 	wgcf update --name "$NAME" | sudo tee /etc/wireguard/info.log 2>&1 &&
 	(wgcf generate >/dev/null 2>&1
-	sed -i '' "2s#.*#$(sed -ne 2p wgcf-profile.conf)#;3s#.*#$(sed -ne 3p wgcf-profile.conf)#;4s#.*#$(sed -ne 4p wgcf-profile.conf)#" wgcf.conf
+	sudo sed -i '' "2s#.*#$(sed -ne 2p wgcf-profile.conf)#;3s#.*#$(sed -ne 3p wgcf-profile.conf)#;4s#.*#$(sed -ne 4p wgcf-profile.conf)#" wgcf.conf
 	wg-quick down wgcf >/dev/null 2>&1
 	net
 	[[ $(curl -ks4 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g") = plus || $(curl -ks6 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g") = plus ]] &&
@@ -357,7 +357,7 @@ update(){
 
 	2 ) input_url
 	[[ $CONFIRM = [Yy] ]] && (echo "$TEAMS" | sudo tee /etc/wireguard/info.log 2>&1
-	sed -i '' "s#PrivateKey.*#PrivateKey = $PRIVATEKEY#g;s#Address.*32#Address = ${ADDRESS4}/32#g;s#Address.*128#Address = ${ADDRESS6}/128#g;s#PublicKey.*#PublicKey = $PUBLICKEY#g" /etc/wireguard/wgcf.conf
+	sudo sed -i '' "s#PrivateKey.*#PrivateKey = $PRIVATEKEY#g;s#Address.*32#Address = ${ADDRESS4}/32#g;s#Address.*128#Address = ${ADDRESS6}/128#g;s#PublicKey.*#PublicKey = $PUBLICKEY#g" /etc/wireguard/wgcf.conf
 	wg-quick down wgcf >/dev/null 2>&1; net
 	[[ $(curl -ks4 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g") = plus || $(curl -ks6 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g") = plus ]] && green " ${T[${L}39]} ");;
 
