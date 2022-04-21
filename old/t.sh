@@ -4,7 +4,7 @@
 # 当前脚本版本号和新增功能
 VERSION=1.00
 
-declare -A T >/dev/null 2>&1
+declare -A T
 
 T[E0]="\n Language:\n  1.English (default) \n  2.简体中文\n"
 T[C0]="${T[E0]}"
@@ -160,7 +160,7 @@ net(){
 # WARP 开关，先检查是否已安装，再根据当前状态转向相反状态
 onoff(){ 
 	! type -P wg-quick >/dev/null 2>&1 && red " ${T[${L}21]} " && exit 1
-	[[ -n $(sudo wg 2>/dev/null) ]] && (wg-quick down wgcf >/dev/null 2>&1; if [[ $L = E ]]; then green " ${T[E22]} "; else green " ${T[C22]} "; fi) || net
+	[[ -n $(sudo wg 2>/dev/null) ]] && (wg-quick down wgcf >/dev/null 2>&1; green " ${T[${L}22]} ") || net
 }
 
 # 同步脚本至最新版本
@@ -168,11 +168,7 @@ ver(){
 	sudo wget -N -P /etc/wireguard https://raw.githubusercontents.com/fscarmen/warp/main/pc/mac.sh
 	chmod +x /etc/wireguard/mac.sh
 	sudo ln -sf /etc/wireguard/mac.sh /usr/local/bin/warp
-	if [[ $L = E ]]; then
-	green " ${T[E28]}:$(grep ^VERSION /etc/wireguard/mac.sh | sed "s/.*=//g")  ${T[E29]}：$(grep "T\[${L}1]" /etc/wireguard/menu.sh | cut -d \" -f2) " || red " ${T[E30]} "
-	else
-	green " ${T[C28]}:$(grep ^VERSION /etc/wireguard/mac.sh | sed "s/.*=//g")  ${T[C29]}：$(grep "T\[${L}1]" /etc/wireguard/menu.sh | cut -d \" -f2) " || red " ${T[C30]} "
-	fi
+	green " ${T[${L}28]}:$(grep ^VERSION /etc/wireguard/mac.sh | sed "s/.*=//g")  ${T[${L}29]}：$(grep "T\[${L}1]" /etc/wireguard/menu.sh | cut -d \" -f2) " || red " ${T[${L}30]} "
 	exit
 }
 
@@ -185,11 +181,7 @@ uninstall(){
 	# 显示卸载结果
 	ip4_info; [[ $L = C && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4")
 	ip6_info; [[ $L = C && -n "$COUNTRY6" ]] && COUNTRY6=$(translate "$COUNTRY6")
-	if [[ $L = E ]]; then
-	green " ${T[E4]}\n IPv4：$WAN4 $COUNTRY4 $ASNORG4\n IPv6：$WAN6 $COUNTRY6 $ASNORG6 "
-	else
-	green " ${T[C4]}\n IPv4：$WAN4 $COUNTRY4 $ASNORG4\n IPv6：$WAN6 $COUNTRY6 $ASNORG6 "
-	fi
+	green " ${T[${L}4]}\n IPv4：$WAN4 $COUNTRY4 $ASNORG4\n IPv6：$WAN6 $COUNTRY6 $ASNORG6 "
 }
 
 install(){
