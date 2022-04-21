@@ -223,8 +223,9 @@ uninstall(){
 }
 
 install(){
-	# 进入工作目录
+	# 进入工作目录，先删除之前安装，可能导致失败的文件
 	cd /usr/local/bin || exit
+	sudo rm -rf wgcf wireguard-go wgcf-account.toml wgcf-profile.conf /etc/wireguard
 	sudo mkdir -p /etc/wireguard/ >/dev/null 2>&1
 
 	# 输入 Warp+ 账户（如有），限制位数为空或者26位以防输入错误
