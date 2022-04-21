@@ -4,7 +4,7 @@
 # 当前脚本版本号和新增功能
 VERSION=1.00
 
-declare -a T >/dev/null 2>&1
+declare -A T >/dev/null 2>&1
 
 T[E0]="\n Language:\n  1.English (default) \n  2.简体中文\n"
 T[C0]="${T[E0]}"
@@ -220,7 +220,7 @@ install(){
 	green " \n${T[${L}11]}\n "
 	latest=$(curl -fsSL "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/[ \"v,]//g')
 	latest=${latest:-'2.2.13'}
-	curl -m8 -o /usr/local/bin/wgcf https://raw.githubusercontents.com/fscarmen/warp/main/wgcf/wgcf_"$lates"_darwin_amd64
+	curl -m8 -o /usr/local/bin/wgcf https://raw.githubusercontents.com/fscarmen/warp/main/wgcf/wgcf_"$latest"_darwin_amd64
 
 	# 安装 wireguard-go
 	curl -o /usr/local/bin/wireguard-go_darwin_amd64.tar.gz https://raw.githubusercontents.com/fscarmen/warp/main/wireguard-go/wireguard-go_darwin_amd64.tar.gz &&
