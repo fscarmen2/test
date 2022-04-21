@@ -138,6 +138,7 @@ help(){	yellow " ${T[${L}20]} "; }
 
 check_operating_system(){
 	sw_vesrs 2>/dev/null | grep -qvi macos && red " ${T[${L}5]} " && exit 1
+	ARCHITECTURE=$(uname -m | sed s/x86_64/amd64/)
 }
 
 # 检测 IPv4 IPv6 信息，WARP Ineterface 开启，普通还是 Plus账户 和 IP 信息
@@ -252,11 +253,11 @@ install(){
 	green "\n ${T[${L}11]}\n "
 	latest=$(curl -fsSL "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/[ \"v,]//g')
 	latest=${latest:-'2.2.13'}
-	[[ ! -e /usr/local/bin/wgcf ]] && curl -m8 -o /usr/local/bin/wgcf https://raw.githubusercontents.com/fscarmen/warp/main/wgcf/wgcf_"$latest"_darwin_amd64
+	[[ ! -e /usr/local/bin/wgcf ]] && curl -m8 -o /usr/local/bin/wgcf https://raw.githubusercontents.com/fscarmen/warp/main/wgcf/wgcf_"$latest"_darwin_"$ARCHITECTURE"
 
 	# 安装 wireguard-go
-	[[ ! -e /usr/local/bin/wireguard-go ]] && curl -o /usr/local/bin/wireguard-go_darwin_amd64.tar.gz https://raw.githubusercontents.com/fscarmen/warp/main/wireguard-go/wireguard-go_darwin_amd64.tar.gz &&
-	tar xzf /usr/local/bin/wireguard-go_darwin_amd64.tar.gz -C /usr/local/bin/ && rm -f /usr/local/bin/wireguard-go_darwin_amd64.tar.gz
+	[[ ! -e /usr/local/bin/wireguard-go ]] && curl -o /usr/local/bin/wireguard-go_darwin_"$ARCHITECTURE".tar.gz https://raw.githubusercontents.com/fscarmen/warp/main/wireguard-go/wireguard-go_darwin_"$ARCHITECTURE".tar.gz &&
+	tar xzf /usr/local/bin/wireguard-go_darwin_"$ARCHITECTURE".tar.gz -C /usr/local/bin/ && rm -f /usr/local/bin/wireguard-go_darwin_"$ARCHITECTURE".tar.gz
 
 	# 添加执行权限
 	sudo chmod +x /usr/local/bin/wireguard-go /usr/local/bin/wgcf
