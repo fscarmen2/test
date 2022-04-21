@@ -204,7 +204,7 @@ onoff(){
 # 同步脚本至最新版本
 ver(){
 	sudo wget -N -P /etc/wireguard https://raw.githubusercontents.com/fscarmen/warp/main/pc/mac.sh
-	chmod +x /etc/wireguard/mac.sh
+	sudo chmod +x /etc/wireguard/mac.sh
 	sudo ln -sf /etc/wireguard/mac.sh /usr/local/bin/warp
 	green " ${T[${L}28]}:$(grep ^VERSION /etc/wireguard/mac.sh | sed "s/.*=//g")  ${T[${L}29]}：$(grep "T\[${L}1]" /etc/wireguard/mac.sh | cut -d \" -f2) " || red " ${T[${L}30]} "
 	exit
@@ -257,7 +257,7 @@ install(){
 	tar xzf /usr/local/bin/wireguard-go_darwin_amd64.tar.gz -C /usr/local/bin/ && rm -f /usr/local/bin/wireguard-go_darwin_amd64.tar.gz
 
 	# 添加执行权限
-	chmod +x /usr/local/bin/wireguard-go /usr/local/bin/wgcf
+	sudo chmod +x /usr/local/bin/wireguard-go /usr/local/bin/wgcf
 
 	# 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息，为避免文件已存在导致出错，先尝试删掉原文件)
 	rm -f wgcf-account.toml
@@ -278,9 +278,9 @@ install(){
 
 	# 把 wgcf-profile.conf 复制到/etc/wireguard/ 并命名为 wgcf.conf
 	sudo cp -f wgcf-profile.conf /etc/wireguard/wgcf.conf
-	sudo cp -f wgcf-profile.conf /etc/wireguard/wgcf-profile.conf
-	sudo cp -f /usr/local/bin/mac.sh /etc/wireguard/mac.sh
-	ln -sf /etc/wireguard/mac.sh /usr/local/bin/warp && green " ${T[${L}27]} " && chmod +x /usr/local/bin/warp
+	sudo mv -f wgcf-account.toml wgcf-profile.conf mac.sh /etc/wireguard >/dev/null 2>&1
+	ln -sf /etc/wireguard/mac.sh /usr/local/bin/warp && green " ${T[${L}27]} "
+	sudo chmod +x /usr/local/bin/warp
 	echo "$L" 2>&1 | sudo tee /etc/wireguard/language
 
 	# 自动刷直至成功（ warp bug，有时候获取不了ip地址）
