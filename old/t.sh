@@ -272,12 +272,12 @@ install(){
 	[[ -n $LICENSE ]] && yellow " \n${T[${L}13]}\n " && sudo sed -i '' "s/license_key.*/license_key = \"$LICENSE\"/g" wgcf-account.toml &&
 	( wgcf update --name "$NAME" | sudo tee /etc/wireguard/info.log >/dev/null 2>&1 || red " \n${T[${L}14]}\n " )
 
+	# 生成 Wire-Guard 配置文件 (wgcf-profile.conf)
+	wgcf generate >/dev/null 2>&1
+
 	# 如有 Teams，改为 Teams 账户信息
 	[[ $CONFIRM = [Yy] ]] && echo "$TEAMS" | sudo tee /etc/wireguard/info.log >/dev/null 2>&1
 	sudo sed -i '' "s#PrivateKey.*#PrivateKey = $PRIVATEKEY#g;s#Address.*32#Address = ${ADDRESS4}/32#g;s#Address.*128#Address = ${ADDRESS6}/128#g;s#PublicKey.*#PublicKey = $PUBLICKEY#g" wgcf-profile.conf
-
-	# 生成 Wire-Guard 配置文件 (wgcf-profile.conf)
-	wgcf generate >/dev/null 2>&1
   
 	# 修改配置文件 wgcf-profile.conf 的内容,使得 IPv4 的流量均被 WireGuard 接管
 	sudo sed -i '' 's/engage.cloudflareclient.com/162.159.193.10/g' wgcf-profile.conf
