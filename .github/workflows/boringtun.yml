@@ -27,7 +27,7 @@ jobs:
   
       - name: Git clone BoringTun
         run: |
-          ls
+          ls -aR
           
       - name: Release binaries 
         uses: softprops/action-gh-release@v1
