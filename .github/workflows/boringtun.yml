@@ -25,8 +25,8 @@ jobs:
         with:
           use-cross: true
           command: build
-          args: --release --bin boringtun-cli --all-features
-          target: ${{ matrix.target }}
+          args: --release --bin boringtun-cli --all-features --target ${{ matrix.target }}
+          
       - name: Archives boringtun-cli
         run: |
           tar czvf boringtun-cli_${{ matrix.target }}.tar.gz ./target/release/boringtun-cli 
