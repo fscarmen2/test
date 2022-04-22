@@ -25,12 +25,16 @@ jobs:
         with:
           use-cross: true
           command: build
-          args: --release --bin boringtun-cli_${{ matrix.target }} --all-features
+          args: --release --bin boringtun-cli --all-features
+         
+      - name: Archives boringtun-cli
+        run: |
+          tar czvf boringtun-cli_${{ matrix.target }}.tar.gz ./target/release/boringtun-cli 
           
       - name: Release binaries 
         uses: softprops/action-gh-release@v1
         with:
           tag_name: BoringTun
-          files: ./target/release/boringtun-cli_${{ matrix.target }}
+          files: ./boringtun-cli_${{ matrix.target }}.tar.gz
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
