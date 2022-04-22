@@ -7,6 +7,9 @@ jobs:
   BoringTun:
     name: Cross compile BoringTun
     runs-on: ubuntu-latest
+    strategy: 
+      matrix:
+        target: [ aarch64-unknown-linux-gnu, armv7-unknown-linux-gnueabihf, i686-unknown-linux-gnu, i686-unknown-linux-musl, mips-unknown-linux-gnu, mips64-unknown-linux-gnuabi64, mips64el-unknown-linux-gnuabi64, mipsel-unknown-linux-gnu, powerpc-unknown-linux-gnu, powerpc64-unknown-linux-gnu, powerpc64le-unknown-linux-gnu, arm-unknown-linux-gnueabi, x86_64-unknown-linux-gnu, x86_64-unknown-linux-musl]
     steps:
       - name: Check code
         uses: actions/checkout@v2
@@ -17,7 +20,6 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
-          target: aarch64-unknown-linux-gnu
           override: true
       - uses: actions-rs/cargo@v1
         with:
