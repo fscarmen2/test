@@ -20,12 +20,13 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
+          target: ${{ matrix.target }}
           override: true
       - uses: actions-rs/cargo@v1
         with:
           use-cross: true
           command: build
-          args: --release --bin boringtun-cli --all-features --target=${{ matrix.target }}
+          args: --release --bin boringtun-cli --all-features
          
       - name: Archives boringtun-cli
         run: |
