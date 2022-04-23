@@ -18,8 +18,8 @@ jobs:
           git clone https://github.com/cloudflare/boringtun
           cp -r boringtun/* .
           bash <(curl -sSf https://sh.rustup.rs) -y
-          ./.cargo/bin/rustup target add ${{ matrix.target }}
-          ./.cargo/bin/rustup show
+          $HOME/.cargo/bin/rustup target add ${{ matrix.target }}
+          $HOME/.cargo/bin/rustup show
           
       - uses: actions-rs/toolchain@v1
         with:
