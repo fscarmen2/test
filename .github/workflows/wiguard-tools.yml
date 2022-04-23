@@ -4,43 +4,30 @@ on:
   workflow_dispatch:
 
 jobs:
-  WireGuard-go:
-
-    name: Cross compile wireguard-tools
-
+  builds-for-windows:
     runs-on: ubuntu-20.04
-
-    env:
-      workdir: ./wireguard-tools-source
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@master
-        with:
-          fetch-depth: 0
-
-      - name: Git clone wireguard-tools
+      - name: clone repository
         run: |
-          git clone https://git.zx2c4.com/wireguard-tools ${{ env.workdir }}
-          cp ./.github/wireguard-tools-releaser.yml ${{ env.workdir }}/.goreleaser.yml
-
-      - name: Set up GoReleaser
-        uses: actions/setup-go@v2
+          git clone https://git.zx2c4.com/wireguard-tools
+          cd wireguard-tools
+      - name: setup Deno
+        uses: denoland/setup-deno@v1.1.0
         with:
-          go-version: "1.18"
-
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v2
+          deno-version: canary
+      - name: create build directory
+        run: mkdir build
+      - name: compile binary for windows
+        run: deno compile --allow-read --allow-write --allow-run --allow-env --unstable --target x86_64-pc-windows-msvc --output ./build/wg-quick ./src/wg-quick.ts
+      - uses: actions/upload-artifact@v2
         with:
-          distribution: goreleaser
-          workdir: ${{ env.workdir }}
-          version: latest
-          args: release --rm-dist
+          name: wg-quick
+          path: build/wg-quick.exe
           
       - name: Release binaries 
         uses: softprops/action-gh-release@v1
         with:
           tag_name: wireguard-tools
-          files: ${{ env.workdir }}/dist/*.tar.gz
+          files: ./build/wg-quick*
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
