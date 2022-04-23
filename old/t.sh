@@ -28,8 +28,8 @@ T[E9]="Please customize the WARP+ device name (Default is [WARP] if left blank):
 T[C9]="请自定义 WARP+ 设备名 (如果不输入，默认为 [WARP]):"
 T[E10]="Step 1/3: Install brew and wireguard-tools"
 T[C10]="进度 1/3：安装 brew 和 wireguard-tools"
-T[E11]="Step 2/3: Install WGCF and wireguard-go"
-T[C11]="进度 2/3：安装 WGCF 和 wireguard-go"
+T[E11]="Step 2/3: Install WGCF and BoringTun"
+T[C11]="进度 2/3：安装 WGCF 和 BoringTun"
 T[E12]="Step 3/3: Running WARP"
 T[C12]="进度 3/3：运行 WARP"
 T[E13]="Update WARP+ account..."
@@ -141,6 +141,11 @@ check_operating_system(){
 	ARCHITECTURE=$(uname -m | sed s/x86_64/amd64/)
 }
 
+# 定义 BoringTun 的启动和关闭
+up(){ sudo WG_QUICK_USERSPACE_IMPLEMENTATION=boringtun-cli WG_SUDO=1 wg-quick up wgcf >/dev/null 2>&1; }
+down(){ sudo WG_QUICK_USERSPACE_IMPLEMENTATION=boringtun-cli WG_SUDO=1 wg-quick down wgcf >/dev/null 2>&1; }
+
+
 # 检测 IPv4 IPv6 信息，WARP Ineterface 开启，普通还是 Plus账户 和 IP 信息
 ip4_info(){
 	unset IP4 LAN4 COUNTRY4 ASNORG4 TRACE4 PLUS4 WARPSTATUS4
@@ -174,20 +179,19 @@ net(){
 	[[ ! $(type -P wg-quick) || ! -e /etc/wireguard/wgcf.conf ]] && red " ${T[${L}23]} " && exit 1
 	i=1;j=5
 	yellow " $(eval echo "${T[${L}24]}")\n $(eval echo "${T[${L}25]}") "
-	sudo wg-quick up wgcf >/dev/null 2>&1
+	up
 	ip4_info; ip6_info
 	until [[ $TRACE4$TRACE6 =~ on|plus ]]
 		do	(( i++ )) || true
 			yellow " $(eval echo "${T[${L}25]}") "
-			sudo wg-quick down wgcf >/dev/null 2>&1
-			sudo wg-quick up wgcf >/dev/null 2>&1
+			down; up
 			ip4_info; ip6_info
 			if [[ $i = "$j" ]]; then
 				if [[ $LICENSETYPE = 2 ]]; then 
 				unset LICENSETYPE && i=0 && green " ${T[${L}129]} " &&
 				cp -f /etc/wireguard/wgcf-profile.conf /etc/wireguard/wgcf.conf
 				else
-				wg-quick down wgcf >/dev/null 2>&1
+				down
 				red " $(eval echo "${T[${L}13]}") " && exit 1
 				fi
 			fi
@@ -201,7 +205,7 @@ net(){
 # WARP 开关，先检查是否已安装，再根据当前状态转向相反状态
 onoff(){ 
 	! type -p wg-quick >/dev/null 2>&1 && red " ${T[${L}21]} " && exit 1
-	[[ -n $(sudo wg 2>/dev/null) ]] && (wg-quick down wgcf >/dev/null 2>&1; green " ${T[${L}22]} ") || net
+	[[ -n $(sudo wg 2>/dev/null) ]] && (down; green " ${T[${L}22]} ") || net
 }
 
 # 同步脚本至最新版本
@@ -216,9 +220,9 @@ ver(){
 uninstall(){
 	unset IP4 IP6 WAN4 WAN6 COUNTRY4 COUNTRY6 ASNORG4 ASNORG6
 	# 卸载 WGCF
-	wg-quick down wgcf >/dev/null 2>&1
+	down
 	type -p wg >/dev/null 2>&1 && brew uninstall wireguard-tools
-	sudo rm -rf /usr/local/bin/wgcf /etc/wireguard /usr/local/bin/wireguard-go
+	sudo rm -rf /usr/local/bin/wgcf /etc/wireguard /usr/local/bin/boringtun
 	# 显示卸载结果
 	ip4_info; [[ $L = C && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4")
 	ip6_info; [[ $L = C && -n "$COUNTRY6" ]] && COUNTRY6=$(translate "$COUNTRY6")
@@ -228,7 +232,7 @@ uninstall(){
 install(){
 	# 进入工作目录，先删除之前安装，可能导致失败的文件
 	cd /usr/local/bin || exit
-	sudo rm -rf wgcf wireguard-go wgcf-account.toml wgcf-profile.conf /etc/wireguard
+	sudo rm -rf wgcf boringtun wgcf-account.toml wgcf-profile.conf /etc/wireguard
 	sudo mkdir -p /etc/wireguard/ >/dev/null 2>&1
 
 	# 询问是否有 WARP+ 或 Teams 账户
@@ -255,12 +259,11 @@ install(){
 	latest=${latest:-'2.2.13'}
 	[[ ! -e /usr/local/bin/wgcf ]] && curl -o /usr/local/bin/wgcf https://raw.githubusercontents.com/fscarmen/warp/main/wgcf/wgcf_"$latest"_darwin_"$ARCHITECTURE"
 
-	# 安装 wireguard-go
-	[[ ! -e /usr/local/bin/wireguard-go ]] && curl -o /usr/local/bin/wireguard-go_darwin_"$ARCHITECTURE".tar.gz https://raw.githubusercontents.com/fscarmen/warp/main/wireguard-go/wireguard-go_darwin_"$ARCHITECTURE".tar.gz &&
-	tar xzf /usr/local/bin/wireguard-go_darwin_"$ARCHITECTURE".tar.gz -C /usr/local/bin/ && rm -f /usr/local/bin/wireguard-go_darwin_"$ARCHITECTURE".tar.gz
+	# 安装 BoringTun
+	[[ ! -e /usr/local/bin/boringtun ]] && curl -o /usr/local/bin/boringtun https://raw.githubusercontents.com/fscarmen/test/main/boringtun
 
 	# 添加执行权限
-	sudo chmod +x /usr/local/bin/wireguard-go /usr/local/bin/wgcf
+	sudo chmod +x /usr/local/bin/boringtun /usr/local/bin/wgcf
 
 	# 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息，为避免文件已存在导致出错，先尝试删掉原文件)
 	rm -f wgcf-account.toml
@@ -367,15 +370,14 @@ update(){
 	wgcf update --name "$NAME" | sudo tee /etc/wireguard/info.log >/dev/null 2>&1 &&
 	(wgcf generate >/dev/null 2>&1
 	sudo sed -i '' "2s#.*#$(sed -ne 2p wgcf-profile.conf)#;3s#.*#$(sed -ne 3p wgcf-profile.conf)#;4s#.*#$(sed -ne 4p wgcf-profile.conf)#" wgcf.conf
-	wg-quick down wgcf >/dev/null 2>&1
-	net
+	down; net
 	[[ $(curl -ks4 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g") = plus || $(curl -ks6 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g") = plus ]] &&
 	green " ${T[${L}35]}\n ${T[${L}36]}：$(grep 'Device name' /etc/wireguard/info.log | awk '{ print $NF }')\n ${T[${L}37]}：$(grep Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }')" ) || red " ${T[${L}38]} ";;
 
 	2 ) input_url
 	[[ $CONFIRM = [Yy] ]] && (echo "$TEAMS" | sudo tee /etc/wireguard/info.log >/dev/null 2>&1
 	sudo sed -i '' "s#PrivateKey.*#PrivateKey = $PRIVATEKEY#g;s#Address.*32#Address = ${ADDRESS4}/32#g;s#Address.*128#Address = ${ADDRESS6}/128#g;s#PublicKey.*#PublicKey = $PUBLICKEY#g" /etc/wireguard/wgcf.conf
-	wg-quick down wgcf >/dev/null 2>&1; net
+	down; net
 	[[ $(curl -ks4 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g") = plus || $(curl -ks6 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g") = plus ]] && green " ${T[${L}39]} ");;
 
 	* ) red " ${T[${L}40]} [1-2] "; sleep 1; update
