@@ -282,7 +282,7 @@ install(){
 	sudo sed -i '' "s#PrivateKey.*#PrivateKey = $PRIVATEKEY#g;s#Address.*32#Address = ${ADDRESS4}/32#g;s#Address.*128#Address = ${ADDRESS6}/128#g;s#PublicKey.*#PublicKey = $PUBLICKEY#g" wgcf-profile.conf
   
 	# 修改配置文件 wgcf-profile.conf 的内容, 更换 Endpoint 和 DNS
-  sudo sed -i '' 's/engage.cloudflareclient.com/162.159.193.10/g; s/1.1.1.1/8.8.8.8,&/g' wgcf-profile.conf
+  	sudo sed -i '' 's/engage.cloudflareclient.com/162.159.193.10/g;s/1.1.1.1/8.8.8.8,&/g' wgcf-profile.conf
 
 	# 把 wgcf-profile.conf 复制到/etc/wireguard/ 并命名为 wgcf.conf
 	sudo cp -f wgcf-profile.conf /etc/wireguard/wgcf.conf
