@@ -1,5 +1,5 @@
-#!/bin/bash
-export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/root/bin:/sbin:/bin
+#!/usr/bin/env bash
+
 export LANG=en_US.UTF-8
 
 # 当前脚本版本号和新增功能
@@ -57,8 +57,8 @@ T[E21]="Media unlock daemon installed successfully. A jobs has been created, che
 T[C21]="\n 媒体解锁守护进程已安装成功，已创建一个jobs，查看 [pgrep -laf warp_unlock]，关闭 [kill -9 \$(pgrep -f warp_unlock)]，VPS 重启仍生效。进入任务运行日志将保存在 /root/result.log\n"
 T[E22]="The script runs on today: \$TODAY. Total:\$TOTAL\\\n"
 T[C22]="脚本当天运行次数:\$TODAY，累计运行次数：\$TOTAL\\\n"
-T[E23]="Please choose to brush WARP IP:\n 1. WARP IPv4 Interface (Default)\n 2. WARP IPv6 Interface\n"
-T[C23]="\n 请选择刷 WARP IP 方式:\n 1. WARP IPv4 网络接口 (默认)\n 2. WARP IPv6 网络接口\n"
+T[E23]="Please choose to brush WARP IP:\n 1. WARP IPv4 Interface\n 2. WARP IPv6 Interface\n"
+T[C23]="\n 请选择刷 WARP IP 方式:\n 1. WARP IPv4 网络接口\n 2. WARP IPv6 网络接口\n"
 T[E24]="No WARP method specified."
 T[C24]="没有指定的 WARP 方式"
 T[E25]="No unlock method specified."
@@ -113,8 +113,8 @@ yellow(){ echo -e "\033[33m\033[01m$1\033[0m"; }
 reading(){ read -rp "$(green "$1")" "$2"; }
 translate(){ [[ -n "$1" ]] && curl -ksm8 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=${1//[[:space:]]/}" | cut -d \" -f18 2>/dev/null; }
 check_dependencies(){ for c in $@; do
-type -P $c >/dev/null 2>&1 || (yellow " $(eval echo "${T[${L}7]}") " && ${PACKAGE_INSTALL[b]} "$c") || (yellow " $(eval echo "${T[${L}8]}") " && ${PACKAGE_UPDATE[b]} && ${PACKAGE_INSTALL[b]} "$c")
-! type -P $c >/dev/null 2>&1 && yellow " $(eval echo "${T[${L}9]}") " && exit 1; done;	 }
+type -p $c >/dev/null 2>&1 || (yellow " $(eval echo "${T[${L}7]}") " && ${PACKAGE_INSTALL[b]} "$c") || (yellow " $(eval echo "${T[${L}8]}") " && ${PACKAGE_UPDATE[b]} && ${PACKAGE_INSTALL[b]} "$c")
+! type -p $c >/dev/null 2>&1 && yellow " $(eval echo "${T[${L}9]}") " && exit 1; done;	 }
 
 # 脚本当天及累计运行次数统计
 statistics_of_run-times(){
@@ -133,13 +133,13 @@ select_laguage(){
 
 check_system_info(){
 # 多方式判断操作系统，试到有值为止。只支持 Debian 10/11、Ubuntu 18.04/20.04 或 CentOS 7/8 ,如非上述操作系统，退出脚本
-CMD=(	"$(grep -i pretty_name /etc/os-release 2>/dev/null | cut -d \" -f2)"
-	"$(hostnamectl 2>/dev/null | grep -i system | cut -d : -f2)"
-	"$(lsb_release -sd 2>/dev/null)"
-	"$(grep -i description /etc/lsb-release 2>/dev/null | cut -d \" -f2)"
-	"$(grep . /etc/redhat-release 2>/dev/null)"
-	"$(grep . /etc/issue 2>/dev/null | cut -d \\ -f1 | sed '/^[ ]*$/d')"
-	)
+	CMD=(	"$(grep -i pretty_name /etc/os-release 2>/dev/null | cut -d \" -f2)"
+		"$(hostnamectl 2>/dev/null | grep -i system | cut -d : -f2)"
+		"$(lsb_release -sd 2>/dev/null)"
+		"$(grep -i description /etc/lsb-release 2>/dev/null | cut -d \" -f2)"
+		"$(grep . /etc/redhat-release 2>/dev/null)"
+		"$(grep . /etc/issue 2>/dev/null | cut -d \\ -f1 | sed '/^[ ]*$/d')"
+		)
 
 	for a in "${CMD[@]}"; do
 		SYS="$a" && [[ -n $SYS ]] && break
@@ -156,6 +156,13 @@ CMD=(	"$(grep -i pretty_name /etc/os-release 2>/dev/null | cut -d \" -f2)"
 	[[ -z $SYSTEM ]] && red " ${T[${L}5]} " && exit 1
 }
 
+# 检查是否有安装任一版本的 python 依赖，如全部没有，则安装 python3
+check_python(){
+	PY=("python3" "python" "python2")
+	for g in "${PY[@]}"; do type -p $g >/dev/null 2>&1 && PYTHON=$g && break; done
+	[ -z "$PYTHON" ] && PYTHON=python3 && check_dependencies $PYTHON
+}
+
 # 检查解锁是否已运行，如果是则判断模式，以前给更换模式赋值
 check_unlock_running(){
 	[ -e /etc/wireguard/warp_unlock.sh ] &&
@@ -165,13 +172,14 @@ check_unlock_running(){
 	USERID=$(grep -s "USERID=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2) &&
 	CUSTOM=$(grep -s "CUSTOM=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2) &&
 	NIC=$(grep -s "NIC=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2) &&
-	RESTART=$(grep -s "RESTART=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
+	RESTART=$(grep -s "RESTART=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2) &&
+	PYTHON=$(grep -s "PYTHON=" /etc/wireguard/warp_unlock.sh | cut -d \" -f2)
 }
 
 # 判断是否已经安装 WARP 网络接口或者 Socks5 代理,如已经安装组件尝试启动。再分情况作相应处理
 check_warp(){
 	if [[ -z "${STATUS[@]}" ]]; then
-		if type -P wg-quick >/dev/null 2>&1; then
+		if type -p wg-quick >/dev/null 2>&1; then
 			[[ -z $(wg 2>/dev/null) ]] && wg-quick up wgcf >/dev/null 2>&1
 			TRACE4=$(curl -ks4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
 			TRACE6=$(curl -ks6m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
@@ -181,7 +189,7 @@ check_warp(){
 		fi
 		
 		# 在已安装 Client 的前提下，区分模式 Mode
-		if type -P warp-cli >/dev/null 2>&1; then
+		if type -p warp-cli >/dev/null 2>&1; then
 			! systemctl is-active warp-svc >/dev/null 2>&1 && systemctl start warp-svc && sleep 5
 			if [[ $(warp-cli --accept-tos settings) =~ WarpProxy ]]; then
 				[[ $(ss -nltp) =~ 'warp-svc' ]] && CLIENT_PORT=$(ss -nltp | grep warp-svc | grep -oP '127.0*\S+' | cut -d: -f2) && STATUS[2]=1 || STATUS[2]=0
@@ -191,7 +199,7 @@ check_warp(){
 		else STATUS[2]=0
 		fi
 
-		type -P wireproxy >/dev/null 2>&1 && [[ ! $(ss -nltp) =~ 'wireproxy' ]] && systemctl restart wireproxy
+		type -p wireproxy >/dev/null 2>&1 && [[ ! $(ss -nltp) =~ 'wireproxy' ]] && systemctl restart wireproxy
 		[[ $(ss -nltp) =~ 'wireproxy' ]] && WIREPROXY_PORT=$(ss -nltp | grep wireproxy | grep -oP '127.0*\S+' | cut -d: -f2) && STATUS[3]=1 || STATUS[3]=0
 	fi
 
@@ -275,7 +283,7 @@ sh -c "$TASK"
 # 感谢以下两位作者: lmc999 [https://github.com/lmc999/RegionRestrictionCheck] 和 luoxue-bot [https://github.com/luoxue-bot/warp_auto_change_ip]
 # 根据 lmc999 脚本检测 Netflix Title，如获取不到，使用兜底默认值
 cat <<EOF >/etc/wireguard/warp_unlock.sh
-#!/bin/bash
+#!/usr/bin/env bash
 MODE="$CHOOSE1"
 EXPECT="$EXPECT"
 TOKEN="$TOKEN"
@@ -284,6 +292,7 @@ CUSTOM="$CUSTOM"
 NIC="$NIC"
 RESTART="$RESTART"
 LOG_LIMIT="1000"
+PYTHON="$PYTHON"
 UNLOCK_STATUS='Yes 🎉'
 NOT_UNLOCK_STATUS='No 😰'
 LMC999=\$(curl -sSLm4 https://raw.githubusercontent.com/lmc999/RegionRestrictionCheck/main/check.sh)
@@ -343,24 +352,24 @@ R[1]=""
 PreAssertion=\$(curl \$NIC --user-agent "\${UA_Browser}" -s --max-time 10 -X POST "https://global.edge.bamgrid.com/devices" -H "authorization: Bearer ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84" -H "content-type: application/json; charset=UTF-8" -d '{"deviceFamily":"browser","applicationRuntime":"chrome","deviceProfile":"windows","attributes":{}}' 2>&1)
 [[ "\$PreAssertion" == "curl"* ]] && R[1]="\$NOT_UNLOCK_STATUS"
 if [[ \${R[1]} != "\$NOT_UNLOCK_STATUS" ]]; then
-assertion=\$(echo \$PreAssertion | python -m json.tool 2> /dev/null | grep assertion | cut -f4 -d'"')
-PreDisneyCookie=\$(curl -s --max-time 10 "https://raw.githubusercontent.com/lmc999/RegionRestrictionCheck/main/cookies" | sed -n '1p')
+assertion=\$(echo \$PreAssertion | \$PYTHON -m json.tool 2> /dev/null | grep assertion | cut -f4 -d'"')
+PreDisneyCookie=\$(curl \$NIC --max-time 10 "https://raw.githubusercontent.com/lmc999/RegionRestrictionCheck/main/cookies" | sed -n '1p')
 disneycookie=\$(echo \$PreDisneyCookie | sed "s/DISNEYASSERTION/\${assertion}/g")
 TokenContent=\$(curl \$NIC --user-agent "\${UA_Browser}" -s --max-time 10 -X POST "https://global.edge.bamgrid.com/token" -H "authorization: Bearer ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84" -d "\$disneycookie")
-isBanned=\$(echo \$TokenContent | python -m json.tool 2> /dev/null | grep 'forbidden-location')
+isBanned=\$(echo \$TokenContent | \$PYTHON -m json.tool 2> /dev/null | grep 'forbidden-location')
 is403=\$(echo \$TokenContent | grep '403 ERROR')
 [[ -n "\$isBanned\$is403" ]] && R[1]="\$NOT_UNLOCK_STATUS"
 fi
 
 if [[ \${R[1]} != "\$NOT_UNLOCK_STATUS" ]]; then
 fakecontent=\$(curl -s --max-time 10 "https://raw.githubusercontent.com/lmc999/RegionRestrictionCheck/main/cookies" | sed -n '8p')
-refreshToken=\$(echo \$TokenContent | python -m json.tool 2> /dev/null | grep 'refresh_token' | awk '{print \$2}' | cut -f2 -d'"')
+refreshToken=\$(echo \$TokenContent | \$PYTHON -m json.tool 2> /dev/null | grep 'refresh_token' | awk '{print \$2}' | cut -f2 -d'"')
 disneycontent=\$(echo \$fakecontent | sed "s/ILOVEDISNEY/\${refreshToken}/g")
 tmpresult=\$(curl \$NIC --user-agent "\${UA_Browser}" -X POST -sSL --max-time 10 "https://disney.api.edge.bamgrid.com/graph/v1/device/graphql" -H "authorization: ZGlzbmV5JmJyb3dzZXImMS4wLjA.Cu56AgSfBTDag5NiRA81oLHkDZfu5L3CKadnefEAY84" -d "\$disneycontent" 2>&1)
 previewcheck=\$(curl \$NIC -s -o /dev/null -L --max-time 10 -w '%{url_effective}\n' "https://disneyplus.com" | grep preview)
 isUnabailable=\$(echo \$previewcheck | grep 'unavailable')      
-region=\$(echo \$tmpresult | python -m json.tool 2> /dev/null | grep 'countryCode' | cut -f4 -d'"')
-inSupportedLocation=\$(echo \$tmpresult | python -m json.tool 2> /dev/null | grep 'inSupportedLocation' | awk '{print \$2}' | cut -f1 -d',')
+region=\$(echo \$tmpresult | \$PYTHON -m json.tool 2> /dev/null | grep 'countryCode' | cut -f4 -d'"')
+inSupportedLocation=\$(echo \$tmpresult | \$PYTHON -m json.tool 2> /dev/null | grep 'inSupportedLocation' | awk '{print \$2}' | cut -f1 -d',')
 [[ "\$region" == "JP" || ( -n "\$region" && "\$inSupportedLocation" == "true" ) ]] && R[1]="\$UNLOCK_STATUS" || R[1]="\$NOT_UNLOCK_STATUS"
 fi
 CONTENT="Disney+: \${R[1]}."
@@ -396,8 +405,8 @@ result_output(){
 # 卸载
 uninstall(){
 	screen -QX u quit >/dev/null 2>&1 && screen -wipe >/dev/null 2>&1
-	type -P wg-quick >/dev/null 2>&1 && systemctl restart wgcf >/dev/null 2>&1
-	type -P warp-cli >/dev/null 2>&1 && ( warp-cli --accept-tos delete >/dev/null 2>&1; sleep 1; warp-cli --accept-tos register >/dev/null 2>&1 )
+	type -p wg-quick >/dev/null 2>&1 && systemctl restart wgcf >/dev/null 2>&1
+	type -p warp-cli >/dev/null 2>&1 && ( warp-cli --accept-tos delete >/dev/null 2>&1; sleep 1; warp-cli --accept-tos register >/dev/null 2>&1 )
 	sed -i '/warp_unlock.sh/d' /etc/crontab
 	kill -9 $(pgrep -f warp_unlock.sh) >/dev/null 2>&1
 	rm -f /etc/wireguard/warp_unlock.sh /root/result.log /etc/wireguard/status.log /etc/systemd/system/warp_unlock.service
@@ -451,6 +460,7 @@ done
 check_system_info
 check_unlock_running
 check_dependencies curl
+check_python
 check_warp
 MODE2=("while true; do" "sleep 1h; done")
 [ -n "$UNLOCK_MODE_NOW" ] && MENU_SHOW="$(eval echo "${T[${L}19]}")${T[${L}12]}" || MENU_SHOW="${T[${L}12]}"
