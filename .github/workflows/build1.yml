@@ -1,53 +1,57 @@
-name: Build Wireguard-go
+name: "Build and push images"
 
 on:
   workflow_dispatch:
 
 jobs:
-  binaries:
-    runs-on: ubuntu-20.04
-    strategy:
-      matrix:
-        # build and publish in parallel: linux/386, linux/amd64, linux/arm64, windows/386, windows/amd64, darwin/amd64, darwin/arm64
-        goos: [linux]
-        goarch: [amd64, arm64]
-        exclude:
-          - goarch: "386"
-            goos: darwin
-          - goarch: arm64
-            goos: windows
-    
-    env:
-        workdir: ./wireguard
+  Building:
+      runs-on: ubuntu-latest
+      name: "Build Netflix unlock images"
+      env:
+        DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+        DOCKERHUB_REPOSITORY: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest
 
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      steps:
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1.2.0
 
-      - name: Set up GoReleaser
-        uses: actions/setup-go@v2
-        with:
-          go-version: "1.18"
- 
-      - name: Build WireGuard-go
-        run: |
-            mkdir -p /opt/release/
-            git clone https://git.zx2c4.com/wireguard-go "${{ env.workdir }}"
-#            cd wireguard
-#            go build -v -o "/opt/release/wireguard-go-${{ matrix.goos }}-${{ matrix.goarch }}"
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1.6.0
 
-      - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v2
+      - name: Login to DockerHub
+        uses: docker/login-action@v1.14.1
         with:
-          distribution: goreleaser
-          workdir: ${{ env.workdir }}
-          version: latest
-          args: release --rm-dist
- 
-      - name: Release binaries 
-        uses: softprops/action-gh-release@v1
+          username: ${{ env.DOCKER_USERNAME }}
+          password: ${{ env.DOCKER_PASSWORD }}
+
+      - name: Build and push images to Docker hub
+        uses: docker/build-push-action@v2.9.0
         with:
-            tag_name: wireguard
-            files: /opt/release/*
-        env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          push: true
+          platforms: linux/amd64,linux/arm64,linux/s390x
+          tags: ${{ env.DOCKERHUB_REPOSITORY }}
+
+      - name: Test container
+        run:  |
+            docker run --rm -id \
+            --name ${{ secrets.DOCKER_REPO }} \
+            --sysctl net.ipv6.conf.all.disable_ipv6=0 \
+            --privileged --cap-add net_admin \
+            --cap-add sys_module \
+            --log-opt max-size=1m \
+            -v /lib/modules:/lib/modules \
+            -v /etc/wireguard:/etc/wireguard \
+            ${DOCKERHUB_REPOSITORY}
+
+            docker exec -i ${{ secrets.DOCKER_REPO }} wget -O wgcf https://github.com/ViRb3/wgcf/releases/download/v2.2.11/wgcf_2.2.11_linux_amd64
+            docker exec -i ${{ secrets.DOCKER_REPO }} chmod +x wgcf
+            docker exec -i ${{ secrets.DOCKER_REPO }} ./wgcf register --accept-tos
+            docker exec -i ${{ secrets.DOCKER_REPO }} ./wgcf generate -p /etc/wireguard/wgcf.conf
+            docker exec -i ${{ secrets.DOCKER_REPO }} sed -i "s/engage.cloudflareclient.com/162.159.193.1/;s/AllowedIPs = ::/#&/" /etc/wireguard/wgcf.conf
+            docker exec -i ${{ secrets.DOCKER_REPO }} rm -rf wgcf wgcf-account.toml
+            docker exec -i ${{ secrets.DOCKER_REPO }} wg-quick up wgcf
+            docker exec -i ${{ secrets.DOCKER_REPO }} wget -qO- https://ip.gs/json
+            docker exec -i ${{ secrets.DOCKER_REPO }} nohup ./gost -L :40000 >/dev/null 2>&1 &
+            docker exec -i ${{ secrets.DOCKER_REPO }} ss -nltp
+            docker stop ${{ secrets.DOCKER_REPO }}
