@@ -1,15 +1,16 @@
 FROM alpine
 
-ENV DIR=/etc/wireguard
+ENV DIR=/unlock
 
 WORKDIR $DIR
 
-RUN apk add --no-cache net-tools iproute2 openresolv wireguard-tools openrc iptables \
-  && rm -rf /var/cache/apk/* \
-  && arch=$(arch | sed s/aarch64/arm64/ | sed s/x86_64/amd64/) \
-  && latest=$(wget -qO- "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/[ \"v,]//g') \
-  && wget -O wgcf https://github.com/ViRb3/wgcf/releases/download/v$latest/wgcf_"$latest"_linux_$arch \
-  && echo -e "./wgcf register --accept-tos\n./wgcf generate -p wgcf.conf\nrm -rf wgcf-account.toml\nwg-quick up wgcf; sleep 999999h" > run.sh \
-  && chmod +x run.sh wgcf
+RUN apk add --no-cache wireguard-tools curl \
+ && rm -rf /var/cache/apk/* \
+ && arch=$(arch | sed s/aarch64/armv8/ | sed s/x86_64/amd64/) \
+ && latest=$(curl -sSL "https://api.github.com/repos/ginuerzh/gost/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/[ \"v,]//g') \
+ && wget -O gost.gz https://github.com/ginuerzh/gost/releases/download/v$latest/gost-linux-"$arch"-"$latest".gz \
+ && gzip -d gost.gz \
+ && echo -e "wg-quick up wgcf\n./gost -L :40000" > run.sh \
+ && chmod +x gost run.sh
 
 ENTRYPOINT ./run.sh
