@@ -113,8 +113,8 @@ yellow(){ echo -e "\033[33m\033[01m$1\033[0m"; }
 reading(){ read -rp "$(green "$1")" "$2"; }
 translate(){ [[ -n "$1" ]] && curl -ksm8 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=${1//[[:space:]]/}" | cut -d \" -f18 2>/dev/null; }
 check_dependencies(){ for c in $@; do
-type -P $c >/dev/null 2>&1 || (yellow " $(eval echo "${T[${L}7]}") " && ${PACKAGE_INSTALL[b]} "$c") || (yellow " $(eval echo "${T[${L}8]}") " && ${PACKAGE_UPDATE[b]} && ${PACKAGE_INSTALL[b]} "$c")
-! type -P $c >/dev/null 2>&1 && yellow " $(eval echo "${T[${L}9]}") " && exit 1; done;	 }
+type -p $c >/dev/null 2>&1 || (yellow " $(eval echo "${T[${L}7]}") " && ${PACKAGE_INSTALL[b]} "$c") || (yellow " $(eval echo "${T[${L}8]}") " && ${PACKAGE_UPDATE[b]} && ${PACKAGE_INSTALL[b]} "$c")
+! type -p $c >/dev/null 2>&1 && yellow " $(eval echo "${T[${L}9]}") " && exit 1; done;	 }
 
 # 脚本当天及累计运行次数统计
 statistics_of_run-times(){
@@ -179,7 +179,7 @@ check_unlock_running(){
 # 判断是否已经安装 WARP 网络接口或者 Socks5 代理,如已经安装组件尝试启动。再分情况作相应处理
 check_warp(){
 	if [[ -z "${STATUS[@]}" ]]; then
-		if type -P wg-quick >/dev/null 2>&1; then
+		if type -p wg-quick >/dev/null 2>&1; then
 			[[ -z $(wg 2>/dev/null) ]] && wg-quick up wgcf >/dev/null 2>&1
 			TRACE4=$(curl -ks4m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
 			TRACE6=$(curl -ks6m8 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g")
@@ -189,7 +189,7 @@ check_warp(){
 		fi
 		
 		# 在已安装 Client 的前提下，区分模式 Mode
-		if type -P warp-cli >/dev/null 2>&1; then
+		if type -p warp-cli >/dev/null 2>&1; then
 			! systemctl is-active warp-svc >/dev/null 2>&1 && systemctl start warp-svc && sleep 5
 			if [[ $(warp-cli --accept-tos settings) =~ WarpProxy ]]; then
 				[[ $(ss -nltp) =~ 'warp-svc' ]] && CLIENT_PORT=$(ss -nltp | grep warp-svc | grep -oP '127.0*\S+' | cut -d: -f2) && STATUS[2]=1 || STATUS[2]=0
@@ -199,7 +199,7 @@ check_warp(){
 		else STATUS[2]=0
 		fi
 
-		type -P wireproxy >/dev/null 2>&1 && [[ ! $(ss -nltp) =~ 'wireproxy' ]] && systemctl restart wireproxy
+		type -p wireproxy >/dev/null 2>&1 && [[ ! $(ss -nltp) =~ 'wireproxy' ]] && systemctl restart wireproxy
 		[[ $(ss -nltp) =~ 'wireproxy' ]] && WIREPROXY_PORT=$(ss -nltp | grep wireproxy | grep -oP '127.0*\S+' | cut -d: -f2) && STATUS[3]=1 || STATUS[3]=0
 	fi
 
@@ -405,8 +405,8 @@ result_output(){
 # 卸载
 uninstall(){
 	screen -QX u quit >/dev/null 2>&1 && screen -wipe >/dev/null 2>&1
-	type -P wg-quick >/dev/null 2>&1 && systemctl restart wgcf >/dev/null 2>&1
-	type -P warp-cli >/dev/null 2>&1 && ( warp-cli --accept-tos delete >/dev/null 2>&1; sleep 1; warp-cli --accept-tos register >/dev/null 2>&1 )
+	type -p wg-quick >/dev/null 2>&1 && systemctl restart wgcf >/dev/null 2>&1
+	type -p warp-cli >/dev/null 2>&1 && ( warp-cli --accept-tos delete >/dev/null 2>&1; sleep 1; warp-cli --accept-tos register >/dev/null 2>&1 )
 	sed -i '/warp_unlock.sh/d' /etc/crontab
 	kill -9 $(pgrep -f warp_unlock.sh) >/dev/null 2>&1
 	rm -f /etc/wireguard/warp_unlock.sh /root/result.log /etc/wireguard/status.log /etc/systemd/system/warp_unlock.service
