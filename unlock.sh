@@ -460,6 +460,7 @@ done
 check_system_info
 check_unlock_running
 check_dependencies curl
+check_python
 check_warp
 MODE2=("while true; do" "sleep 1h; done")
 [ -n "$UNLOCK_MODE_NOW" ] && MENU_SHOW="$(eval echo "${T[${L}19]}")${T[${L}12]}" || MENU_SHOW="${T[${L}12]}"
