@@ -276,6 +276,9 @@ input_region
 
 input_tg
 
+# 检测 Disney+ 需要用到 python 依赖
+[ ${STREAM_UNLOCK[1]} = 1 ] && check_python
+
 # 根据解锁模式写入定时任务或systemd
 sh -c "$TASK"
 
@@ -460,7 +463,6 @@ done
 check_system_info
 check_unlock_running
 check_dependencies curl
-check_python
 check_warp
 MODE2=("while true; do" "sleep 1h; done")
 [ -n "$UNLOCK_MODE_NOW" ] && MENU_SHOW="$(eval echo "${T[${L}19]}")${T[${L}12]}" || MENU_SHOW="${T[${L}12]}"
