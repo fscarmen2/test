@@ -277,7 +277,7 @@ input_region
 input_tg
 
 # 检测 Disney+ 需要用到 python 依赖
-[ ${STREAM_UNLOCK[1]} = 1 ] && check_python
+[[ ${STREAM_UNLOCK[1]} = 1 && -z $PYTHON ]] && check_python
 
 # 根据解锁模式写入定时任务或systemd
 sh -c "$TASK"
