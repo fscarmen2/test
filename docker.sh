@@ -63,8 +63,7 @@ wgcf_install(){
 
 	MTU=$((MTU+28-80))
 
-	[ -e wgcf.conf ] && sed -i "s/MTU.*/MTU = $MTU/g" $WGCF_DIR/wgcf.conf
-	sed -i "s/^.*\:\:\/0/#&/g;s/engage.cloudflareclient.com/162.159.193.10/g" $WGCF_DIR/wgcf.conf
+	[ -e $WGCF_DIR/wgcf.conf ] && sed -i "s/MTU.*/MTU = $MTU/g;s/^.*\:\:\/0/#&/g;s/engage.cloudflareclient.com/162.159.193.10/g" $WGCF_DIR/wgcf.conf
 }
 
 container_build(){
