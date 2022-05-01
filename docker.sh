@@ -39,7 +39,8 @@ wgcf_install(){
 	done
 
 	# 生成 Wire-Guard 配置文件 (wgcf.conf)
-	[ -e wgcf-account.toml ] && wgcf generate >/dev/null 2>&1 && mv wgcf-profile.conf $WGCF_DIR/wgcf.conf
+	mkdir -p $WGCF_DIR >/dev/null 2>&1
+	[ -e wgcf-account.toml ] && wgcf generate -p $WGCF_DIR/wgcf.conf >/dev/null 2>&1
 
 	# 反复测试最佳 MTU。 Wireguard Header：IPv4=60 bytes,IPv6=80 bytes，1280 ≤1 MTU ≤ 1420。 ping = 8(ICMP回显示请求和回显应答报文格式长度) + 20(IP首部) 。
 	# 详细说明：<[WireGuard] Header / MTU sizes for Wireguard>：https://lists.zx2c4.com/pipermail/wireguard/2017-December/002201.html
