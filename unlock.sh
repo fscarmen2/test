@@ -145,20 +145,20 @@ check_system_info(){
 		SYS="$a" && [[ -n $SYS ]] && break
 	done
 
-	REGEX=("debian" "ubuntu" "centos|red hat|kernel|oracle linux|alma|rocky" "'amazon linux'")
-	RELEASE=("Debian" "Ubuntu" "CentOS" "CentOS")
-	PACKAGE_UPDATE=("apt -y update" "apt -y update" "yum -y update" "yum -y update")
-	PACKAGE_INSTALL=("apt -y install" "apt -y install" "yum -y install" "yum -y install")
+	REGEX=("debian" "ubuntu" "centos|red hat|kernel|oracle linux|amazon linux|alma|rocky")
+	RELEASE=("Debian" "Ubuntu" "CentOS")
+	PACKAGE_UPDATE=("apt -y update" "apt -y update" "yum -y update")
+	PACKAGE_INSTALL=("apt -y install" "apt -y install" "yum -y install")
 
 	for ((b=0; b<${#REGEX[@]}; b++)); do
-		[[ $(echo "$SYS" | tr '[:upper:]' '[:lower:]') =~ ${REGEX[b]} ]] && SYSTEM="${RELEASE[b]}" && [[ -n $SYSTEM ]] && break
+		[[ $(echo "$SYS" | tr '[:upper:]' '[:lower:]') =~ ${REGEX[b]} ]] && SYSTEM="${RELEASE[b]}" && break
 	done
 	[[ -z $SYSTEM ]] && red " ${T[${L}5]} " && exit 1
 }
 
 # 检查是否有安装任一版本的 python 依赖，如全部没有，则安装 python3
 check_python(){
-	PY=("python3" "python" "python2")
+	PY=("python" "python2")
 	for g in "${PY[@]}"; do type -p $g >/dev/null 2>&1 && PYTHON=$g && break; done
 	[ -z "$PYTHON" ] && PYTHON=python3 && check_dependencies $PYTHON
 }
