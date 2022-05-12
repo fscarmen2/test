@@ -259,7 +259,7 @@ install(){
 
 	# 安装 wireguard-go
 	[[ ! -e /usr/local/bin/wireguard-go ]] && sudo curl -o /usr/local/bin/wireguard-go_darwin_"$ARCHITECTURE".tar.gz https://raw.githubusercontents.com/fscarmen/warp/main/wireguard-go/wireguard-go_darwin_"$ARCHITECTURE".tar.gz &&
-	tar xzf /usr/local/bin/wireguard-go_darwin_"$ARCHITECTURE".tar.gz -C /usr/local/bin/ && rm -f /usr/local/bin/wireguard-go_darwin_"$ARCHITECTURE".tar.gz
+	sudo tar xzf /usr/local/bin/wireguard-go_darwin_"$ARCHITECTURE".tar.gz -C /usr/local/bin/ && rm -f /usr/local/bin/wireguard-go_darwin_"$ARCHITECTURE".tar.gz
 
 	# 添加执行权限
 	sudo chmod +x /usr/local/bin/wireguard-go /usr/local/bin/wgcf
@@ -267,7 +267,7 @@ install(){
 	# 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息，为避免文件已存在导致出错，先尝试删掉原文件)
 	rm -f wgcf-account.toml
 	until [[ -e wgcf-account.toml ]] >/dev/null 2>&1; do
-		wgcf register --accept-tos >/dev/null 2>&1 && break
+		wgcf register --accept-tos && break
 	done
 
 	# 如有 WARP+ 账户，修改 license 并升级
