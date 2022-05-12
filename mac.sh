@@ -267,7 +267,7 @@ install(){
 	# 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息，为避免文件已存在导致出错，先尝试删掉原文件)
 	rm -f wgcf-account.toml
 	until [[ -e wgcf-account.toml ]] >/dev/null 2>&1; do
-		wgcf register --accept-tos && break
+		sudo wgcf register --accept-tos && break
 	done
 
 	# 如有 WARP+ 账户，修改 license 并升级
@@ -275,7 +275,7 @@ install(){
 	( wgcf update --name "$NAME" | sudo tee /etc/wireguard/info.log >/dev/null 2>&1 || red " \n${T[${L}14]}\n " )
 
 	# 生成 Wire-Guard 配置文件 (wgcf-profile.conf)
-	wgcf generate >/dev/null 2>&1
+	sudo wgcf generate >/dev/null 2>&1
 
 	# 如有 Teams，改为 Teams 账户信息
 	[[ $CONFIRM = [Yy] ]] && echo "$TEAMS" | sudo tee /etc/wireguard/info.log >/dev/null 2>&1 &&
