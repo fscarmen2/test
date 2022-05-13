@@ -273,7 +273,7 @@ install(){
 	# 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息，为避免文件已存在导致出错，先尝试删掉原文件)
 	rm -f wgcf-account.toml
 	until [[ -e wgcf-account.toml ]] >/dev/null 2>&1; do
-		sudo wgcf register --accept-tos && break
+		sudo wgcf register --accept-tos >/dev/null 2>&1 && break
 	done
 
 	# 如有 WARP+ 账户，修改 license 并升级
