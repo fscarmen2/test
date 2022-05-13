@@ -318,8 +318,8 @@ T[E154]="\n 1. WGCF WARP account\n 2. WARP Linux Client account\n 3. WireProxy a
 T[C154]="\n 1. WGCF WARP 账户\n 2. WARP Linux Client 账户\n 3. WireProxy 账户\n"
 T[E155]="WGCF WARP has not been installed yet."
 T[C155]="WGCF WARP 还未安装"
-T[E156]=""
-T[C156]=""
+T[E156]="wgcf download failed, script aborted. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]"
+T[C156]="wgcf 下载失败，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E157]="WireProxy has not been installed yet."
 T[C157]="WireProxy 还未安装"
 T[E158]="WireProxy is disconnected. It could be connect again by [warp y]"
@@ -1207,14 +1207,15 @@ install(){
 	start=$(date +%s)
 
 	# 注册 WARP 账户 (将生成 wgcf-account.toml 文件保存账户信息)
-	# 判断 wgcf 的最新版本,如因 github 接口问题未能获取，默认 v2.2.13
+	# 判断 wgcf 的最新版本,如因 github 接口问题未能获取，默认 v2.2.14
 	{	
 	latest=$(wget --no-check-certificate -qO- -T1 -t1 $CDN "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/[ \"v,]//g')
-	latest=${latest:-'2.2.13'}
+	latest=${latest:-'2.2.14'}
 
 	# 安装 wgcf，尽量下载官方的最新版本，如官方 wgcf 下载不成功，将使用 githubusercontents 的 CDN，以更好的支持双栈。并添加执行权限
 	wget --no-check-certificate -T1 -t1 $CDN -O /usr/bin/wgcf https://github.com/ViRb3/wgcf/releases/download/v"$latest"/wgcf_"$latest"_linux_$ARCHITECTURE ||
 	wget --no-check-certificate $CDN -O /usr/bin/wgcf https://raw.githubusercontents.com/fscarmen/warp/main/wgcf/wgcf_"$latest"_linux_$ARCHITECTURE
+	[ ! -e /usr/bin/wgcf ] && red " ${T[${L}156]} " && exit 1
 	chmod +x /usr/bin/wgcf
 
 	# 如安装 WireProxy ，尽量下载官方的最新版本，如官方 WireProxy 下载不成功，将使用 githubusercontents 的 CDN，以更好的支持双栈。并添加执行权限
