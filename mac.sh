@@ -36,10 +36,10 @@ T[E13]="Update WARP+ account..."
 T[C13]="升级 WARP+ 账户中……"
 T[E14]="The upgrade failed, WARP+ account error or more than 5 devices have been activated. Free WARP account to continu."
 T[C14]="升级失败，WARP+ 账户错误或者已激活超过5台设备，自动更换免费 WARP 账户继续"
-T[E15]="Congratulations! WARP\$TYPE is turned on. Spend time:\$(( end - start )) seconds.\\\n The script runs today: \${TODAY}. Total:\${TOTAL}"
-T[C15]="恭喜！WARP\$TYPE 已开启，总耗时:\$(( end - start ))秒， 脚本当天运行次数:\${TODAY}，累计运行次数：\${TOTAL}"
-T[E16]="Congratulations! WARP is turned on. Spend time:\$(( end - start )) seconds.\\\n The script runs on today: \${TODAY}. Total:\${TOTAL}"
-T[C16]="恭喜！WARP 已开启，总耗时:\$(( end - start ))秒， 脚本当天运行次数:\${TODAY}，累计运行次数：\${TOTAL}"
+T[E15]="Congratulations! WARP\$TYPE is turned on. Spend time:\$(( end - start )) seconds.\\\n The script runs today: \${TODAY}. Total: \${TOTAL}"
+T[C15]="恭喜！WARP\$TYPE 已开启，总耗时:\$(( end - start ))秒， 脚本当天运行次数: \${TODAY}，累计运行次数：\${TOTAL}"
+T[E16]="Congratulations! WARP is turned on. Spend time:\$(( end - start )) seconds.\\\n The script runs on today: \${TODAY}. Total: \${TOTAL}"
+T[C16]="恭喜！WARP 已开启，总耗时:\$(( end - start ))秒， 脚本当天运行次数: \${TODAY}，累计运行次数: \${TOTAL}"
 T[E17]="Device name：\$(grep -s 'Device name' /etc/wireguard/info.log | awk '{ print \$NF }')\\\n Quota：\$(grep -s Quota /etc/wireguard/info.log | awk '{ print \$(NF-1), \$NF }')"
 T[C17]="设备名:\$(grep -s 'Device name' /etc/wireguard/info.log | awk '{ print \$NF }')\\\n 剩余流量:\$(grep -s Quota /etc/wireguard/info.log | awk '{ print \$(NF-1), \$NF }')"
 T[E18]="Run again with warp [option] [lisence], such as"
@@ -112,6 +112,10 @@ T[E51]="License should be 26 characters, please re-enter WARP+ License. Otherwis
 T[C51]="License 应为26位字符，请重新输入 WARP+ License，没有可回车继续\(剩余\${i}次\):"
 T[E52]="There have been more than \${j} failures. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C52]="失败已超过\${j}次，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
+T[E53]="wgcf download failed, script aborted. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]"
+T[C53]="wgcf 下载失败，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
+T[E54]="wireguard-go download failed, script aborted. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]"
+T[C54]="wireguard-go 下载失败，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
 
 # 自定义字体彩色，read 函数，友道翻译函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -255,12 +259,14 @@ install(){
 	green "\n ${T[${L}11]}\n "
 	latest=$(curl -fsSL "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/[ \"v,]//g')
 	latest=${latest:-'2.2.14'}
-	[[ ! -e /usr/local/bin/wgcf ]] && sudo curl -o /usr/local/bin/wgcf https://raw.githubusercontents.com/fscarmen/warp/main/wgcf/wgcf_"$latest"_darwin_"$ARCHITECTURE"
-
-	# 安装 wireguard-go
-	[[ ! -e /usr/local/bin/wireguard-go ]] && sudo curl -o /usr/local/bin/wireguard-go_darwin_"$ARCHITECTURE".tar.gz https://raw.githubusercontents.com/fscarmen/warp/main/wireguard-go/wireguard-go_darwin_"$ARCHITECTURE".tar.gz &&
+	[ ! -e /usr/local/bin/wgcf ] && sudo curl -o /usr/local/bin/wgcf https://raw.githubusercontents.com/fscarmen/warp/main/wgcf/wgcf_"$latest"_darwin_"$ARCHITECTURE"
+	[ ! -e /usr/local/bin/wgcf ] && red "\n ${T[${L}53]}\n " && exit 1
+	
+	# 安装 wireguard-go，如没有正确下载，脚本退出
+	[ ! -e /usr/local/bin/wireguard-go ] && sudo curl -o /usr/local/bin/wireguard-go_darwin_"$ARCHITECTURE".tar.gz https://raw.githubusercontents.com/fscarmen/warp/main/wireguard-go/wireguard-go_darwin_"$ARCHITECTURE".tar.gz
+	[ ! -e /usr/local/bin/wireguard-go_darwin_"$ARCHITECTURE".tar.gz ] && red "\n ${T[${L}54]}\n " && exit 1
 	sudo tar xzf /usr/local/bin/wireguard-go_darwin_"$ARCHITECTURE".tar.gz -C /usr/local/bin/ && rm -f /usr/local/bin/wireguard-go_darwin_"$ARCHITECTURE".tar.gz
-
+	
 	# 添加执行权限
 	sudo chmod +x /usr/local/bin/wireguard-go /usr/local/bin/wgcf
 
