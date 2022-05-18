@@ -1584,12 +1584,8 @@ proxy(){
 		else 	${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} lsb-release
 			[[ $SYSTEM = Debian && ! $(type -P gpg 2>/dev/null) ]] && ${PACKAGE_INSTALL[int]} gnupg
 			[[ $SYSTEM = Debian && ! $(apt list 2>/dev/null | grep apt-transport-https ) =~ installed ]] && ${PACKAGE_INSTALL[int]} apt-transport-https
-			if	[[ $(echo $SYS | sed "s/[^0-9.]//g" | cut -d. -f1) != 18 ]]; then
-				curl https://pkg.cloudflareclient.com/pubkey.gpg | apt-key add -
-				echo "deb http://pkg.cloudflareclient.com/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/cloudflare-client.list
-			# Ubuntu 18.04 (Bionic)，需要欺骗系统为 20.04 (Focal)，以安装 Client
-			else	curl https://pkg.cloudflare.com/cloudflare-main.gpg -o /usr/share/keyrings/cloudflare-main.gpg
-				echo 'deb [signed-by=/usr/share/keyrings/cloudflare-main.gpg] https://pkg.cloudflare.com/ focal main' | tee /etc/apt/sources.list.d/cloudflare-main.list
+			[[ $SYSTEM = Ubuntu ]] && curl https://pkg.cloudflareclient.com/pubkey.gpg | gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg &&
+			echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $(cat /etc/os-release | grep -i VERSION_CODENAME | sed s/.*=//g) main' | sudo tee /etc/apt/sources.list.d/cloudflare-client.list
 			fi
 			${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
 		fi
