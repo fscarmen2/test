@@ -318,8 +318,8 @@ T[E154]="\n 1. WGCF WARP account\n 2. WARP Linux Client account\n 3. WireProxy a
 T[C154]="\n 1. WGCF WARP 账户\n 2. WARP Linux Client 账户\n 3. WireProxy 账户\n"
 T[E155]="WGCF WARP has not been installed yet."
 T[C155]="WGCF WARP 还未安装"
-T[E156]="wgcf download failed, script aborted. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]"
-T[C156]="wgcf 下载失败，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
+T[E156]=""
+T[C156]=""
 T[E157]="WireProxy has not been installed yet."
 T[C157]="WireProxy 还未安装"
 T[E158]="WireProxy is disconnected. It could be connect again by [warp y]"
@@ -1215,7 +1215,6 @@ install(){
 	# 安装 wgcf，尽量下载官方的最新版本，如官方 wgcf 下载不成功，将使用 githubusercontents 的 CDN，以更好的支持双栈。并添加执行权限
 	wget --no-check-certificate -T1 -t1 $CDN -O /usr/bin/wgcf https://github.com/ViRb3/wgcf/releases/download/v"$latest"/wgcf_"$latest"_linux_$ARCHITECTURE ||
 	wget --no-check-certificate $CDN -O /usr/bin/wgcf https://raw.githubusercontents.com/fscarmen/warp/main/wgcf/wgcf_"$latest"_linux_$ARCHITECTURE
-	[ ! -e /usr/bin/wgcf ] && red " ${T[${L}156]} " && exit 1
 	chmod +x /usr/bin/wgcf
 
 	# 如安装 WireProxy ，尽量下载官方的最新版本，如官方 WireProxy 下载不成功，将使用 githubusercontents 的 CDN，以更好的支持双栈。并添加执行权限
@@ -1281,16 +1280,14 @@ install(){
 	green " \n${T[${L}32]}\n "
 	
 	Debian(){
-		# 更新源
-		${PACKAGE_UPDATE[int]}
-
 		# 添加 backports 源,之后才能安装 wireguard-tools 
 		if [[ $(echo $SYS | sed "s/[^0-9.]//g" | cut -d. -f1) = 9 ]]; then
+			${PACKAGE_UPDATE[int]}
 			apt -y upgrade
 			echo "deb http://deb.debian.org/debian/ unstable main" > /etc/apt/sources.list.d/unstable-wireguard.list
 			echo -e "Package: *\nPin: release a=unstable\nPin-Priority: 150\n" > /etc/apt/preferences.d/limit-unstable
-			else ${PACKAGE_INSTALL[int]} lsb-release
-			echo "deb http://deb.debian.org/debian $(lsb_release -sc)-backports main" > /etc/apt/sources.list.d/backports.list
+		else
+			echo "deb http://deb.debian.org/debian $(cat /etc/os-release | grep -i VERSION_CODENAME | sed s/.*=//g)-backports main" > /etc/apt/sources.list.d/backports.list
 		fi	
 		# 再次更新源
 		${PACKAGE_UPDATE[int]}
