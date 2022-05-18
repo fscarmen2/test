@@ -1282,7 +1282,6 @@ install(){
 	Debian(){
 		# 添加 backports 源,之后才能安装 wireguard-tools 
 		if [[ $(echo $SYS | sed "s/[^0-9.]//g" | cut -d. -f1) = 9 ]]; then
-			${PACKAGE_UPDATE[int]}
 			apt -y upgrade
 			echo "deb http://deb.debian.org/debian/ unstable main" > /etc/apt/sources.list.d/unstable-wireguard.list
 			echo -e "Package: *\nPin: release a=unstable\nPin-Priority: 150\n" > /etc/apt/preferences.d/limit-unstable
