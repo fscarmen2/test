@@ -1586,7 +1586,6 @@ proxy(){
 			[[ $SYSTEM = Debian && ! $(apt list 2>/dev/null | grep apt-transport-https ) =~ installed ]] && ${PACKAGE_INSTALL[int]} apt-transport-https
 			[[ $SYSTEM = Ubuntu ]] && curl https://pkg.cloudflareclient.com/pubkey.gpg | gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg &&
 			echo 'deb [arch=amd64 signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $(cat /etc/os-release | grep -i VERSION_CODENAME | sed s/.*=//g) main' | sudo tee /etc/apt/sources.list.d/cloudflare-client.list
-			fi
 			${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
 		fi
 		[[ $(systemctl is-active warp-svc) != active ]] && ( systemctl start warp-svc; sleep 2 )
