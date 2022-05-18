@@ -1581,6 +1581,8 @@ proxy(){
 			else	${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
 			fi
 		else
+			[[ $SYSTEM = Debian && ! $(type -P gpg 2>/dev/null) ]] && ${PACKAGE_INSTALL[int]} gnupg
+			[[ $SYSTEM = Debian && ! $(apt list 2>/dev/null | grep apt-transport-https ) =~ installed ]] && ${PACKAGE_INSTALL[int]} apt-transport-https
 			# 如为 Ubuntu 22.04(jammy) 由于官方库暂未支持，故欺骗为20.04(focal)
 			CODENAME=$(cat /etc/os-release | grep -i VERSION_CODENAME | sed s/.*=//g | sed "s/jammy/focal/")
 			curl https://pkg.cloudflareclient.com/pubkey.gpg | gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
