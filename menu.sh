@@ -1561,7 +1561,24 @@ proxy(){
 	start=$(date +%s)
 	mkdir -p /etc/wireguard/ >/dev/null 2>&1
 	if [[ $CLIENT = 0 ]]; then green " ${T[${L}83]} "
-		if [[ $SYSTEM = CentOS ]]; then
+		Debian(){
+			${PACKAGE_UPDATE[int]}
+			${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} lsb-release
+			! $(type -P gpg 2>/dev/null) && ${PACKAGE_INSTALL[int]} gnupg
+			[[ ! $(apt list 2>/dev/null | grep apt-transport-https ) =~ installed ]] && ${PACKAGE_INSTALL[int]} apt-transport-https
+			${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
+			}
+
+		Ubuntu(){ 	
+			${PACKAGE_UPDATE[int]}
+			# 如为 Ubuntu 22.04(jammy) 由于官方库暂未支持，故欺骗为20.04(focal)
+			CODENAME=$(cat /etc/os-release | grep -i VERSION_CODENAME | sed s/.*=//g | sed "s/jammy/focal/")
+			curl https://pkg.cloudflareclient.com/pubkey.gpg | gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
+			echo "deb [arch=amd64 signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $CODENAME main" | tee /etc/apt/sources.list.d/cloudflare-client.list
+			${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
+			}
+
+		CentOS(){
 			rpm -ivh http://pkg.cloudflareclient.com/cloudflare-release-el8.rpm >/dev/null 2>&1
 			#  CentOS 7，需要用 Cloudflare CentOS 8 的库以安装 Client，并在线编译升级 C 运行库 Glibc 2.28
 			if	[[ $(expr "$SYS" : '.*\s\([0-9]\{1,\}\)\.*') = 7 && ! $(strings /lib64/libc.so.6 ) =~ GLIBC_2.28 ]]; then
@@ -1580,14 +1597,10 @@ proxy(){
 				cd ../..; rm -rf glibc-2.28*
 			else	${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
 			fi
+			}
 
-		else 	${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} lsb-release
-			[[ $SYSTEM = Debian && ! $(type -P gpg 2>/dev/null) ]] && ${PACKAGE_INSTALL[int]} gnupg
-			[[ $SYSTEM = Debian && ! $(apt list 2>/dev/null | grep apt-transport-https ) =~ installed ]] && ${PACKAGE_INSTALL[int]} apt-transport-https
-			[[ $SYSTEM = Ubuntu ]] && curl https://pkg.cloudflareclient.com/pubkey.gpg | gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg &&
-			echo "deb [arch=amd64 signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $(cat /etc/os-release | grep -i VERSION_CODENAME | sed s/.*=//g) main" | tee /etc/apt/sources.list.d/cloudflare-client.list
-			${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
-		fi
+		$SYSTEM
+
 		[[ $(systemctl is-active warp-svc) != active ]] && ( systemctl start warp-svc; sleep 2 )
 		settings
 
