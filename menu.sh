@@ -1562,9 +1562,10 @@ proxy(){
 	mkdir -p /etc/wireguard/ >/dev/null 2>&1
 	if [[ $CLIENT = 0 ]]; then green " ${T[${L}83]} "
 		if [[ $SYSTEM = CentOS ]]; then
-			rpm -ivh https://pkg.cloudflareclient.com/cloudflare-release-el8.rpm >/dev/null 2>&1
-			#  CentOS 7，需要用 Cloudflare CentOS 8 的库以安装 Client，并在线编译升级 C 运行库 Glibc 2.28
-			if	[[ $(expr "$SYS" : '.*\s\([0-9]\{1,\}\)\.*') = 7 && ! $(strings /lib64/libc.so.6 ) =~ GLIBC_2.28 ]]; then
+			case "$(expr "$SYS" : '.*\s\([0-9]\{1,\}\)\.*')" in
+			7 )	rpm -ivh https://pkg.cloudflareclient.com/cloudflare-release-el8.rpm >/dev/null 2>&1
+				#  CentOS 7，需要用 Cloudflare CentOS 8 的库以安装 Client，并在线编译升级 C 运行库 Glibc 2.28
+				if [[ ! $(strings /lib64/libc.so.6 ) =~ GLIBC_2.28 ]]; then
 				{ wget -O /usr/bin/make https://github.com/fscarmen/warp/releases/download/Glibc/make
 				wget https://github.com/fscarmen/warp/releases/download/Glibc/glibc-2.28.tar.gz
 				tar -xzvf glibc-2.28.tar.gz; }&
@@ -1577,9 +1578,18 @@ proxy(){
 				cd ./glibc-2.28/build
 				../configure --prefix=/usr --disable-profile --enable-add-ons --with-headers=/usr/include --with-binutils=/usr/bin
 				make install
-				cd ../..; rm -rf glibc-2.28*
-			else	${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
-			fi
+				cd ../..
+				rm -rf glibc-2.28*;;
+
+			8 )	rpm -ivh https://pkg.cloudflareclient.com/cloudflare-release-el8.rpm >/dev/null 2>&1
+				${PACKAGE_UPDATE[int]}
+				${PACKAGE_INSTALL[int]} cloudflare-warp;;
+
+			9 )	# CentOS stream 9，截止到 2022年5月20日，官方库仍未支持。在 CloudFlare 官网下载 rpm 文件本地安装
+				wget https://pkg.cloudflareclient.com/uploads/cloudflare_warp_2022_4_235_1_x86_64_aa859896da.rpm
+				yum -y install desktop-file-utils
+				rpm -ivh cloudflare_warp_2022_4_235_1_x86_64_aa859896da.rpm;;
+			esac
 		else
 			[[ $SYSTEM = Debian && ! $(type -P gpg 2>/dev/null) ]] && ${PACKAGE_INSTALL[int]} gnupg
 			[[ $SYSTEM = Debian && ! $(apt list 2>/dev/null | grep apt-transport-https) =~ installed ]] && ${PACKAGE_INSTALL[int]} apt-transport-https
