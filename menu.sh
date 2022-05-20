@@ -1328,7 +1328,6 @@ install(){
 		
 		# CentOS Stream 9 需要安装 resolvconf
 		! type -p resolvconf && wget -P /usr/sbin https://github.com/fscarmen/test/releases/download/resolvconf/resolvconf && chmod +x /usr/sbin/resolvconf
-		mv /etc/resolv.conf{,.bak} && echo "nameserver 8.8.8.8" > /etc/resolv.conf
 		}
 
 	Alpine(){
