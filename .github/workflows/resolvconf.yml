@@ -13,7 +13,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        yum -y install gcc bison make centos-release-scl
+        yum -y install wegt gcc bison make centos-release-scl
         yum -y install devtoolset-8-gcc
         yum -y install devtoolset-8-gcc-c++
         yum -y install devtoolset-8-binutils
