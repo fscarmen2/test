@@ -1325,6 +1325,10 @@ install(){
 		
 		# s390x wireguard-tools 安装
 		[[ $ARCHITECTURE = s390x ]] && ! type -P wg >/etc/null 2>&1 && rpm -i https://mirrors.cloud.tencent.com/epel/8/Everything/s390x/Packages/w/wireguard-tools-1.0.20210914-1.el8.s390x.rpm
+		
+		# CentOS Stream 9 需要安装 resolvconf
+		! type -p resolvconf && wget -P /usr/sbin https://github.com/fscarmen/test/releases/download/resolvconf/resolvconf
+		mv /etc/resolv.conf{,.bak} && echo "nameserver 8.8.8.8" > /etc/resolv.conf
 		}
 
 	Alpine(){
@@ -1585,8 +1589,6 @@ proxy(){
 				${PACKAGE_INSTALL[int]} cloudflare-warp;;
 
 			9 )	# CentOS stream 9，截止到 2022年5月20日，官方库仍未支持。在 CloudFlare 官网下载 rpm 文件本地安装
-				! type -p resolvconf && wget -P /usr/sbin https://github.com/fscarmen/test/releases/download/resolvconf/resolvconf
-				mv /etc/resolv.conf{,.bak} && echo "nameserver 8.8.8.8" > /etc/resolv.conf
 				yum -y install desktop-file-utils
 				CLOUDFLARE_WARP_RPM='cloudflare_warp_2022_4_235_1_x86_64_aa859896da.rpm'
 				wget https://pkg.cloudflareclient.com/uploads/$CLOUDFLARE_WARP_RPM
