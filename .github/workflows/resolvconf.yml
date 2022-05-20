@@ -16,8 +16,8 @@ jobs:
         cd openresolv-openresolv-3.12.0
         ./configure
         make
-        make install
-        cp ./resolvconf /opt/release/
+        sudo make install
+        sudo cp ./resolvconf /opt/release/
 
     - name: Release binaries 
       uses: softprops/action-gh-release@v1
