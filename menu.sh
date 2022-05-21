@@ -1327,7 +1327,7 @@ install(){
 		[[ $ARCHITECTURE = s390x ]] && ! type -P wg >/etc/null 2>&1 && rpm -i https://mirrors.cloud.tencent.com/epel/8/Everything/s390x/Packages/w/wireguard-tools-1.0.20210914-1.el8.s390x.rpm
 		
 		# CentOS Stream 9 需要安装 resolvconf
-		! type -p resolvconf && wget -P /usr/sbin https://github.com/fscarmen/test/releases/download/resolvconf/resolvconf && chmod +x /usr/sbin/resolvconf
+		[[ $SYSTEM = CentOS && "$(expr "$SYS" : '.*\s\([0-9]\{1,\}\)\.*')" = 9 ]] && wget $CDN -P /usr/sbin https://github.com/fscarmen/warp/releases/download/resolvconf/resolvconf && chmod +x /usr/sbin/resolvconf
 		}
 
 	Alpine(){
