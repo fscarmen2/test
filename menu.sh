@@ -1563,17 +1563,20 @@ proxy(){
 	input_license
 	[[ $LUBAN != 1 ]] && input_port
 	start=$(date +%s)
+	VERSION_ID=$(grep -i VERSION_ID /etc/os-release | cut -d \" -f2 | sed "s/22.04/20.04/g")
 	mkdir -p /etc/wireguard/ >/dev/null 2>&1
 	if [[ $CLIENT = 0 ]]; then green " ${T[${L}83]} "
 		if [[ $SYSTEM = CentOS ]]; then
+			wget https://github.com/fscarmen/warp/raw/main/Client/Client_CentOS_8.rpm
 			case "$(expr "$SYS" : '.*\s\([0-9]\{1,\}\)\.*')" in
-			7 )	rpm -ivh https://pkg.cloudflareclient.com/cloudflare-release-el8.rpm >/dev/null 2>&1
+			7 )	#rpm -ivh https://pkg.cloudflareclient.com/cloudflare-release-el8.rpm >/dev/null 2>&1
 				#  CentOS 7，需要用 Cloudflare CentOS 8 的库以安装 Client，并在线编译升级 C 运行库 Glibc 2.28
 				{ wget -O /usr/bin/make https://github.com/fscarmen/warp/releases/download/Glibc/make
 				wget https://github.com/fscarmen/warp/releases/download/Glibc/glibc-2.28.tar.gz
 				tar -xzvf glibc-2.28.tar.gz; }&
-				sed -i "s/\$releasever/8/g" /etc/yum.repos.d/cloudflare.repo
-				${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
+				#sed -i "s/\$releasever/8/g" /etc/yum.repos.d/cloudflare.repo
+				#${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
+				rpm -ivh Client_CentOS_8.rpm
 				${PACKAGE_INSTALL[int]} gcc bison make centos-release-scl
 				${PACKAGE_INSTALL[int]} devtoolset-8-gcc devtoolset-8-gcc-c++ devtoolset-8-binutils
 				source /opt/rh/devtoolset-8/enable
@@ -1584,25 +1587,31 @@ proxy(){
 				cd ../..
 				rm -rf glibc-2.28*;;
 
-			8 )	rpm -ivh https://pkg.cloudflareclient.com/cloudflare-release-el8.rpm >/dev/null 2>&1
-				${PACKAGE_UPDATE[int]}
-				${PACKAGE_INSTALL[int]} cloudflare-warp;;
+			8 )	#rpm -ivh Client_CentOS_8.rpm
+				#${PACKAGE_UPDATE[int]}
+				#${PACKAGE_INSTALL[int]} cloudflare-warp;;
+				rpm -ivh Client_CentOS_8.rpm
 
 			9 )	# CentOS stream 9，截止到 2022年5月20日，官方库仍未支持。在 CloudFlare 官网下载 rpm 文件本地安装
-				yum -y install desktop-file-utils
-				CLOUDFLARE_WARP_RPM='cloudflare_warp_2022_4_235_1_x86_64_aa859896da.rpm'
-				wget https://pkg.cloudflareclient.com/uploads/$CLOUDFLARE_WARP_RPM
-				rpm -ivh $CLOUDFLARE_WARP_RPM
-				rm -f $CLOUDFLARE_WARP_RPM;;
+				${PACKAGE_INSTALL[int]} install desktop-file-utils
+				#CLOUDFLARE_WARP_RPM='cloudflare_warp_2022_4_235_1_x86_64_aa859896da.rpm'
+				#wget https://pkg.cloudflareclient.com/uploads/$CLOUDFLARE_WARP_RPM
+				#rpm -ivh $CLOUDFLARE_WARP_RPM
+				#rm -f $CLOUDFLARE_WARP_RPM
+				rpm -ivh Client_CentOS_8.rpm;;
 			esac
+			rm -f Client_CentOS_8.rpm
 		else
+			{ wget https://github.com/fscarmen/warp/releases/download/CloudFlare_Client_v2022.4.235/Client_$SYSTEM_${VERSION_ID}.deb }&
 			[[ $SYSTEM = Debian && ! $(type -P gpg 2>/dev/null) ]] && ${PACKAGE_INSTALL[int]} gnupg
 			[[ $SYSTEM = Debian && ! $(apt list 2>/dev/null | grep apt-transport-https) =~ installed ]] && ${PACKAGE_INSTALL[int]} apt-transport-https
 			# 如为 Ubuntu 22.04(jammy) 由于官方库暂未支持，故欺骗为20.04(focal)
-			CODENAME=$(cat /etc/os-release | grep -i VERSION_CODENAME | sed s/.*=//g | sed "s/jammy/focal/")
-			curl https://pkg.cloudflareclient.com/pubkey.gpg | gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
-			echo "deb [arch=amd64 signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $CODENAME main" | tee /etc/apt/sources.list.d/cloudflare-client.list
-			${PACKAGE_UPDATE[int]}; ${PACKAGE_INSTALL[int]} cloudflare-warp
+#			CODENAME=$(cat /etc/os-release | grep -i VERSION_CODENAME | sed s/.*=//g | sed "s/jammy/focal/")
+#			curl https://pkg.cloudflareclient.com/pubkey.gpg | gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
+#			echo "deb [arch=amd64 signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $CODENAME main" | tee /etc/apt/sources.list.d/cloudflare-client.list
+			wait
+			dpkg -i Client_$SYSTEM_${VERSION_ID}.deb
+			rm -f Client_$SYSTEM_${VERSION_ID}.deb
 		fi
 		[[ $(systemctl is-active warp-svc) != active ]] && ( systemctl start warp-svc; sleep 2 )
 		settings
