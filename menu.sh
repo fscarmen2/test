@@ -1602,7 +1602,7 @@ proxy(){
 			esac
 			rm -f Client_CentOS_8.rpm
 		else
-			{ wget https://github.com/fscarmen/warp/raw/main/Client/Client_${SYSTEM}_${VERSION_ID}.deb; }&
+			{ wget --no-check-certificate $CDN https://github.com/fscarmen/warp/raw/main/Client/Client_${SYSTEM}_${VERSION_ID}.deb; }&
 			#[[ $SYSTEM = Debian && ! $(type -P gpg 2>/dev/null) ]] && ${PACKAGE_INSTALL[int]} gnupg
 			[[ $SYSTEM = Debian && ! $(apt list 2>/dev/null | grep apt-transport-https) =~ installed ]] && ${PACKAGE_INSTALL[int]} apt-transport-https
 			# 如为 Ubuntu 22.04(jammy) 由于官方库暂未支持，故欺骗为20.04(focal)
