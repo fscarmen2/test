@@ -1610,7 +1610,9 @@ proxy(){
 #			curl https://pkg.cloudflareclient.com/pubkey.gpg | gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
 #			echo "deb [arch=amd64 signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $CODENAME main" | tee /etc/apt/sources.list.d/cloudflare-client.list
 			wait
-			${PACKAGE_INSTALL[int]} desktop-file-utils gnupg2 libjansson4 libnftables1 nftables
+			dpkg -i Client_${SYSTEM}_${VERSION_ID}.deb >/dev/null 2>&1
+#			${PACKAGE_INSTALL[int]} desktop-file-utils gnupg2 libjansson4 libnftables1 nftables
+			${PACKAGE_INSTALL[int]} -f
 			dpkg -i Client_${SYSTEM}_${VERSION_ID}.deb
 			rm -f Client_${SYSTEM}_${VERSION_ID}.deb
 		fi
