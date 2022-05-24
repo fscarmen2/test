@@ -1590,7 +1590,7 @@ proxy(){
 			8 )	#rpm -ivh Client_CentOS_8.rpm
 				#${PACKAGE_UPDATE[int]}
 				#${PACKAGE_INSTALL[int]} cloudflare-warp;;
-				rpm -ivh Client_CentOS_8.rpm
+				rpm -ivh Client_CentOS_8.rpm;;
 
 			9 )	# CentOS stream 9，截止到 2022年5月20日，官方库仍未支持。在 CloudFlare 官网下载 rpm 文件本地安装
 				${PACKAGE_INSTALL[int]} install desktop-file-utils
@@ -1602,7 +1602,7 @@ proxy(){
 			esac
 			rm -f Client_CentOS_8.rpm
 		else
-			{ wget https://github.com/fscarmen/warp/releases/download/CloudFlare_Client_v2022.4.235/Client_$SYSTEM_${VERSION_ID}.deb }&
+			{ wget https://github.com/fscarmen/warp/raw/main/Client/Client_${SYSTEM}_${VERSION_ID}.deb; }&
 			[[ $SYSTEM = Debian && ! $(type -P gpg 2>/dev/null) ]] && ${PACKAGE_INSTALL[int]} gnupg
 			[[ $SYSTEM = Debian && ! $(apt list 2>/dev/null | grep apt-transport-https) =~ installed ]] && ${PACKAGE_INSTALL[int]} apt-transport-https
 			# 如为 Ubuntu 22.04(jammy) 由于官方库暂未支持，故欺骗为20.04(focal)
@@ -1610,8 +1610,8 @@ proxy(){
 #			curl https://pkg.cloudflareclient.com/pubkey.gpg | gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
 #			echo "deb [arch=amd64 signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $CODENAME main" | tee /etc/apt/sources.list.d/cloudflare-client.list
 			wait
-			dpkg -i Client_$SYSTEM_${VERSION_ID}.deb
-			rm -f Client_$SYSTEM_${VERSION_ID}.deb
+			dpkg -i Client_${SYSTEM}_${VERSION_ID}.deb
+			rm -f Client_${SYSTEM}_${VERSION_ID}.deb
 		fi
 		[[ $(systemctl is-active warp-svc) != active ]] && ( systemctl start warp-svc; sleep 2 )
 		settings
