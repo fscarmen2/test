@@ -127,8 +127,8 @@ TODAY=$(expr "$COUNT" : '.*\s\([0-9]\{1,\}\)\s/.*') && TOTAL=$(expr "$COUNT" : '
 # 选择语言，先判断 /etc/wireguard/language 里的语言选择，没有的话再让用户选择，默认英语
 select_language(){
 	case $(cat /etc/wireguard/language 2>&1) in
-	E ) L=(${E[@]});;	C ) L=(${C[@]});;
-	* ) L=(${E[@]}) && [[ -z $OPTION ]] && yellow " ${L[0]} " && reading " ${L[3]} " LANGUAGE 
+	E ) L=("${E[@]}");;	C ) L=("${C[@]}");;
+	* ) L=("${E[@]}") && [[ -z $OPTION ]] && yellow " ${L[0]} " && reading " ${L[3]} " LANGUAGE 
 	[[ $LANGUAGE = 2 ]] && L=C;;
 	esac
 }
