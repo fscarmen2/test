@@ -2,14 +2,14 @@
 export LANG=en_US.UTF-8
 
 # 当前脚本版本号和新增功能
-VERSION=2.38
+VERSION=2.39
 
 declare -A T
 
 T[E0]="\n Language:\n  1.English (default) \n  2.简体中文\n"
 T[C0]="${T[E0]}"
-T[E1]="1. Fully support Ubuntu 22.04 and CentOS Stream 9 LTS; 2. Optimize Debian to speed up installation."
-T[C1]="1. 全面支持 Ubuntu 22.04 和 CentOS Stream 9 LTS; 2. 优化 Debian 以提升安装速度"
+T[E1]="Automatically sync the latest official versions of wgcf, CloudFlare client, wireguard-go and wireproxy every day, allowing users to have the best performance with every installation."
+T[C1]="每天自动同步官方版本最新版本的 wgcf、 CloudFlare client、wireguard-go 和 wireproxy，让用户每次安装都能获得最佳性能"
 T[E2]="The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C2]="必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E3]="The TUN module is not loaded. You should turn it on in the control panel. Ask the supplier for more help. Feedback: [https://github.com/fscarmen/warp/issues]"
