@@ -1584,7 +1584,7 @@ proxy(){
 				cd ../..
 				rm -rf glibc-2.28*;;
 
-			8|9 )	! type -p desktop-file-install && ${PACKAGE_INSTALL[int]} install desktop-file-utils
+			8|9 )	! type -p desktop-file-install && ${PACKAGE_INSTALL[int]} desktop-file-utils
 				rpm -ivh Client_CentOS_8.rpm;;
 			esac
 			rm -f Client_CentOS_8.rpm
