@@ -1567,7 +1567,8 @@ proxy(){
 	mkdir -p /etc/wireguard/ >/dev/null 2>&1
 	if [[ $CLIENT = 0 ]]; then green " ${T[${L}83]} "
 		if [[ $SYSTEM = CentOS ]]; then
-			wget https://github.com/fscarmen/warp/raw/main/Client/Client_CentOS_8.rpm
+			{ wget https://github.com/fscarmen/warp/raw/main/Client/Client_CentOS_8.rpm; } &
+			! type -p desktop-file-install >/dev/null 2>&1 && ${PACKAGE_INSTALL[int]} desktop-file-utils
 			case "$(expr "$SYS" : '.*\s\([0-9]\{1,\}\)\.*')" in
 			7 )	#  CentOS 7，需要用 Cloudflare CentOS 8 的库以安装 Client，并在线编译升级 C 运行库 Glibc 2.28
 				{ wget -O /usr/bin/make https://github.com/fscarmen/warp/releases/download/Glibc/make
@@ -1584,8 +1585,7 @@ proxy(){
 				cd ../..
 				rm -rf glibc-2.28*;;
 
-			8|9 )	! type -p desktop-file-install >/dev/null 2>&1 && ${PACKAGE_INSTALL[int]} desktop-file-utils
-				rpm -ivh Client_CentOS_8.rpm;;
+			8|9 )	rpm -ivh Client_CentOS_8.rpm;;
 			esac
 			rm -f Client_CentOS_8.rpm
 		else
