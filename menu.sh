@@ -1574,6 +1574,7 @@ proxy(){
 				{ wget -O /usr/bin/make https://github.com/fscarmen/warp/releases/download/Glibc/make
 				wget https://github.com/fscarmen/warp/releases/download/Glibc/glibc-2.28.tar.gz
 				tar -xzvf glibc-2.28.tar.gz; }&
+				${PACKAGE_INSTALL[int]} nftables
 				rpm -ivh Client_CentOS_8.rpm
 				${PACKAGE_INSTALL[int]} gcc bison make centos-release-scl
 				${PACKAGE_INSTALL[int]} devtoolset-8-gcc devtoolset-8-gcc-c++ devtoolset-8-binutils
