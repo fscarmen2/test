@@ -392,8 +392,8 @@ statistics_of_run-times
 select_language
 
 case "$OPTION" in
-e ) L=E; check_operating_system; install;;
-c ) L=C; check_operating_system; install;;
+e ) L=("${E[@]}"); check_operating_system; install;;
+c ) L=("${C[@]}"); check_operating_system; install;;
 u ) uninstall;;
 v ) ver;;
 a ) update;;
