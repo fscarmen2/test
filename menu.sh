@@ -1574,6 +1574,7 @@ proxy(){
 				${PACKAGE_INSTALL[int]} nftables
 				rpm -ivh Client_CentOS_8.rpm
 				if [[ ! $(strings /lib64/libc.so.6) =~ 'GLIBC_2.28' ]]; then
+					CLIBC=1
 					wget -O /usr/bin/make https://github.com/fscarmen/warp/releases/download/Glibc/make
 					wget https://github.com/fscarmen/warp/releases/download/Glibc/glibc-2.28.tar.gz
 					tar -xzvf glibc-2.28.tar.gz
@@ -1587,12 +1588,6 @@ proxy(){
 					cd ../..
 					rm -rf glibc-2.28*
 				fi
-				
-				# 此处为处理 Running transaction test 不动和文字乱码问题
-				export LANG="en_US.UTF-8";export LANGUAGE="en_US.UTF-8"
-				rm -rf /var/lib/rpm/__db*
-				yum clean all
-				rpm -v rebuilddb;;
 
 			8|9 )	rpm -ivh Client_CentOS_8.rpm;;
 			esac
@@ -1614,6 +1609,14 @@ proxy(){
 	elif [[ $CLIENT = 2 && $(warp-cli --accept-tos status 2>/dev/null) =~ 'Registration missing' ]]; then settings
 
 	else red " ${T[${L}85]} " 
+	fi
+
+	# 此处为处理 Running transaction test 不动和文字乱码问题
+	if [ $CLIBC = 1 ]; then
+		export LANG="en_US.UTF-8";export LANGUAGE="en_US.UTF-8"
+		rm -rf /var/lib/rpm/__db*
+		yum clean all
+		rpm -v rebuilddb;;	
 	fi
 
 	# 创建再次执行的软链接快捷方式，再次运行可以用 warp 指令,设置默认语言
