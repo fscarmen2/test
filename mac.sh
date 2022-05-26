@@ -110,6 +110,8 @@ E[51]="License should be 26 characters, please re-enter WARP+ License. Otherwise
 C[51]="License 应为26位字符，请重新输入 WARP+ License，没有可回车继续\(剩余\${i}次\):"
 E[52]="There have been more than \${j} failures. The script is aborted. Feedback: [https://github.com/fscarmen/warp/issues]"
 C[52]="失败已超过\${j}次，脚本中止，问题反馈:[https://github.com/fscarmen/warp/issues]"
+E[53]="The current Teams account is unavailable, automatically switch back to the free account"
+C[53]="当前 Teams 账户不可用，自动切换回免费账户"
 
 # 自定义字体彩色，read 函数，友道翻译函数
 red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
@@ -129,15 +131,15 @@ select_language(){
 	case $(cat /etc/wireguard/language 2>&1) in
 	E ) L=("${E[@]}");;	C ) L=("${C[@]}");;
 	* ) L=("${E[@]}") && [[ -z $OPTION ]] && yellow " ${L[0]} " && reading " ${L[3]} " LANGUAGE 
-	[[ $LANGUAGE = 2 ]] && L=C;;
+	[[ $LANGUAGE = 2 ]] && L=("${C[@]}");;
 	esac
 }
 
 # 帮助说明
-help(){	yellow " ${T[${L}20]} "; }
+help(){	yellow " ${L[20]} "; }
 
 check_operating_system(){
-	sw_vesrs 2>/dev/null | grep -qvi macos && red " ${T[${L}5]} " && exit 1
+	sw_vesrs 2>/dev/null | grep -qvi macos && red " ${L[5]} " && exit 1
 	ARCHITECTURE=$(uname -m | sed s/x86_64/amd64/)
 }
 
@@ -171,28 +173,28 @@ ip6_info(){
 # 由于warp bug，有时候获取不了ip地址，加入刷网络脚本手动运行，并在定时任务加设置 VPS 重启后自动运行,i=当前尝试次数，j=要尝试的次数
 net(){
 	unset IP4 IP6 WAN4 WAN6 COUNTRY4 COUNTRY6 ASNORG4 ASNORG6 WARPSTATUS4 WARPSTATUS6
-	[[ ! $(type -P wg-quick) || ! -e /etc/wireguard/wgcf.conf ]] && red " ${T[${L}23]} " && exit 1
+	[[ ! $(type -P wg-quick) || ! -e /etc/wireguard/wgcf.conf ]] && red " ${L[23]} " && exit 1
 	i=1;j=5
-	yellow " $(eval echo "${T[${L}24]}")\n $(eval echo "${T[${L}25]}") "
+	yellow " $(eval echo "${L[24]}")\n $(eval echo "${L[25]}") "
 	sudo wg-quick up wgcf >/dev/null 2>&1
 	ip4_info; ip6_info
 	until [[ $TRACE4$TRACE6 =~ on|plus ]]
 		do	(( i++ )) || true
-			yellow " $(eval echo "${T[${L}25]}") "
+			yellow " $(eval echo "${L[25]}") "
 			sudo wg-quick down wgcf >/dev/null 2>&1
 			sudo wg-quick up wgcf >/dev/null 2>&1
 			ip4_info; ip6_info
 			if [[ $i = "$j" ]]; then
 				if [[ $LICENSETYPE = 2 ]]; then 
-				unset LICENSETYPE && i=0 && green " ${T[${L}129]} " &&
+				unset LICENSETYPE && i=0 && green " ${L[53]} " &&
 				cp -f /etc/wireguard/wgcf-profile.conf /etc/wireguard/wgcf.conf
 				else
 				wg-quick down wgcf >/dev/null 2>&1
-				red " $(eval echo "${T[${L}52]}") " && exit 1
+				red " $(eval echo "${L[52]}") " && exit 1
 				fi
 			fi
         	done
-	green " ${T[${L}26]} "
+	green " ${L[26]} "
 	[[ $L = C ]] && COUNTRY4=$(translate "$COUNTRY4")
 	[[ $L = C ]] && COUNTRY6=$(translate "$COUNTRY6")
 	[[ $OPTION = [on] ]] && green " IPv4:$WAN4 $WARPSTATUS4 $COUNTRY4 $ASNORG4\n IPv6:$WAN6 $WARPSTATUS6 $COUNTRY6 $ASNORG6 "
@@ -200,8 +202,8 @@ net(){
 
 # WARP 开关，先检查是否已安装，再根据当前状态转向相反状态
 onoff(){ 
-	! type -p wg-quick >/dev/null 2>&1 && red " ${T[${L}21]} " && exit 1
-	[[ -n $(sudo wg 2>/dev/null) ]] && (wg-quick down wgcf >/dev/null 2>&1; green " ${T[${L}22]} ") || net
+	! type -p wg-quick >/dev/null 2>&1 && red " ${L[21]} " && exit 1
+	[[ -n $(sudo wg 2>/dev/null) ]] && (wg-quick down wgcf >/dev/null 2>&1; green " ${L[22]} ") || net
 }
 
 # 同步脚本至最新版本
@@ -209,7 +211,7 @@ ver(){
 	sudo wget -N -P /etc/wireguard https://raw.githubusercontents.com/fscarmen/warp/main/pc/mac.sh
 	sudo chmod +x /etc/wireguard/mac.sh
 	sudo ln -sf /etc/wireguard/mac.sh /usr/local/bin/warp
-	green " ${T[${L}28]}:$(grep ^VERSION /etc/wireguard/mac.sh | sed "s/.*=//g")  ${T[${L}29]}：$(grep "T\[${L}1]" /etc/wireguard/mac.sh | cut -d \" -f2) " || red " ${T[${L}30]} "
+	green " ${L[28]}:$(grep ^VERSION /etc/wireguard/mac.sh | sed "s/.*=//g")  ${L[29]}：$(grep "T\[${L}1]" /etc/wireguard/mac.sh | cut -d \" -f2) " || red " ${L[30]} "
 	exit
 }
 
@@ -222,7 +224,7 @@ uninstall(){
 	# 显示卸载结果
 	ip4_info; [[ $L = C && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4")
 	ip6_info; [[ $L = C && -n "$COUNTRY6" ]] && COUNTRY6=$(translate "$COUNTRY6")
-	green " ${T[${L}4]}\n IPv4：$WAN4 $COUNTRY4 $ASNORG4\n IPv6：$WAN6 $COUNTRY6 $ASNORG6 "
+	green " ${L[4]}\n IPv4：$WAN4 $COUNTRY4 $ASNORG4\n IPv6：$WAN6 $COUNTRY6 $ASNORG6 "
 }
 
 install(){
@@ -232,25 +234,25 @@ install(){
 	sudo mkdir -p /etc/wireguard/ >/dev/null 2>&1
 
 	# 询问是否有 WARP+ 或 Teams 账户
-	[[ -z $LICENSETYPE ]] && yellow " ${T[${L}49]}" && reading " ${T[${L}3]} " LICENSETYPE
+	[[ -z $LICENSETYPE ]] && yellow " ${L[49]}" && reading " ${L[3]} " LICENSETYPE
 	case $LICENSETYPE in
 	1 ) input_license;;	
 	2 ) input_url;;
 	esac
 
-	[[ -n $LICENSE && -z $NAME ]] && reading " ${T[${L}9]} " NAME
+	[[ -n $LICENSE && -z $NAME ]] && reading " ${L[9]} " NAME
 	[[ -n $NAME ]] && NAME="${NAME//[[:space:]]/_}" || NAME=${NAME:-'WARP'}
 
 	# 脚本开始时间
 	start=$(date +%s)
 
 	# 安装 brew 和 wireguard-tools
-	green "\n ${T[${L}10]}\n "
+	green "\n ${L[10]}\n "
 	! type -p brew >/dev/null 2>&1 && /bin/zsh -c "$(curl -fsSL https://gitee.com/cunkai/HomebrewCN/raw/master/Homebrew.sh)"
 	! type -p wg >/dev/null 2>&1 && brew install wireguard-tools
 
 	# 判断 wgcf 的最新版本,如因 github 接口问题未能获取，默认 v2.2.14
-	green "\n ${T[${L}11]}\n "
+	green "\n ${L[11]}\n "
 	latest=$(curl -fsSL "https://api.github.com/repos/ViRb3/wgcf/releases/latest" | grep "tag_name" | head -n 1 | cut -d : -f2 | sed 's/[ \"v,]//g')
 	latest=${latest:-'2.2.14'}
 	[[ ! -e /usr/local/bin/wgcf ]] && sudo curl -o /usr/local/bin/wgcf https://raw.githubusercontents.com/fscarmen/warp/main/wgcf/wgcf_"$latest"_darwin_"$ARCHITECTURE"
@@ -269,8 +271,8 @@ install(){
 	done
 
 	# 如有 WARP+ 账户，修改 license 并升级
-	[[ -n $LICENSE ]] && yellow " \n${T[${L}13]}\n " && sudo sed -i '' "s/license_key.*/license_key = \"$LICENSE\"/g" wgcf-account.toml &&
-	( wgcf update --name "$NAME" | sudo tee /etc/wireguard/info.log >/dev/null 2>&1 || red " \n${T[${L}14]}\n " )
+	[[ -n $LICENSE ]] && yellow " \n${L[13]}\n " && sudo sed -i '' "s/license_key.*/license_key = \"$LICENSE\"/g" wgcf-account.toml &&
+	( wgcf update --name "$NAME" | sudo tee /etc/wireguard/info.log >/dev/null 2>&1 || red " \n${L[14]}\n " )
 
 	# 生成 Wire-Guard 配置文件 (wgcf-profile.conf)
 	sudo wgcf generate >/dev/null 2>&1
@@ -286,12 +288,12 @@ install(){
 	sudo cp -f wgcf-profile.conf /etc/wireguard/wgcf.conf
 	sudo mv -f wgcf-account.toml wgcf-profile.conf /etc/wireguard >/dev/null 2>&1
 	sudo mv -f /usr/local/bin/mac.sh /etc/wireguard >/dev/null 2>&1
-	sudo ln -sf /etc/wireguard/mac.sh /usr/local/bin/warp && green " ${T[${L}27]} "
+	sudo ln -sf /etc/wireguard/mac.sh /usr/local/bin/warp && green " ${L[27]} "
 	sudo chmod +x /usr/local/bin/warp
 	echo "$L" | sudo tee /etc/wireguard/language >/dev/null 2>&1
 
 	# 自动刷直至成功（ warp bug，有时候获取不了ip地址）
-	green "\n ${T[${L}12]}\n "
+	green "\n ${L[12]}\n "
 	unset IP4 IP6 WAN4 WAN6 COUNTRY4 COUNTRY6 ASNORG4 ASNORG6 TRACE4 TRACE6 PLUS4 PLUS6 WARPSTATUS4 WARPSTATUS6
 	net
 
@@ -301,11 +303,11 @@ install(){
 	green " IPv4：$WAN4 $WARPSTATUS4 $COUNTRY4  $ASNORG4 "
 	green " IPv6：$WAN6 $WARPSTATUS6 $COUNTRY6  $ASNORG6 "
 	grep -sq 'Device name' /etc/wireguard/info.log 2>/dev/null && TYPE='+' || TYPE=' Teams'
-	[[ $TRACE4$TRACE6 =~ plus ]] && green " $(eval echo "${T[${L}15]}") " && grep -sq 'Device name' /etc/wireguard/info.log && green " $(eval echo "${T[${L}17]}") "
-	[[ $TRACE4$TRACE6 =~ on ]] && green " $(eval echo "${T[${L}16]}") "
+	[[ $TRACE4$TRACE6 =~ plus ]] && green " $(eval echo "${L[15]}") " && grep -sq 'Device name' /etc/wireguard/info.log && green " $(eval echo "${L[17]}") "
+	[[ $TRACE4$TRACE6 =~ on ]] && green " $(eval echo "${L[16]}") "
 	red "\n==============================================================\n"
-	yellow " ${T[${L}18]}\n " && help
-	[[ $TRACE4$TRACE6 = offoff ]] && red " ${T[${L}19]} "
+	yellow " ${L[18]}\n " && help
+	[[ $TRACE4$TRACE6 = offoff ]] && red " ${L[19]} "
 
 	# 删除临时文件
 	rm -f mac.sh wgcf-account.toml wgcf-profile.conf
@@ -313,54 +315,54 @@ install(){
 
 # 输入 WARP+ 账户（如有），限制位数为空或者26位以防输入错误
 input_license(){
-	[[ -z $LICENSE ]] && reading " ${T[${L}50]} " LICENSE
+	[[ -z $LICENSE ]] && reading " ${L[50]} " LICENSE
 	i=5
 	until [[ -z $LICENSE || $LICENSE =~ ^[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}$ ]]
 		do	(( i-- )) || true
-			[[ $i = 0 ]] && red " ${T[${L}29]} " && exit 1 || reading " $(eval echo "${T[${L}51]}") " LICENSE
+			[[ $i = 0 ]] && red " ${L[29]} " && exit 1 || reading " $(eval echo "${L[51]}") " LICENSE
 	done
-	[[ -n $LICENSE && -z $NAME ]] && reading " ${T[${L}43]} " NAME
+	[[ -n $LICENSE && -z $NAME ]] && reading " ${L[43]} " NAME
 	[[ -n $NAME ]] && NAME="${NAME//[[:space:]]/_}" || NAME=${NAME:-'WARP'}
 }
 
 # 升级 WARP+ 账户（如有），限制位数为空或者26位以防输入错误，WARP interface 可以自定义设备名(不允许字符串间有空格，如遇到将会以_代替)
 update_license(){
-	[[ -z $LICENSE ]] && reading " ${T[${L}41]} " LICENSE
+	[[ -z $LICENSE ]] && reading " ${L[41]} " LICENSE
 	i=5
 	until [[ $LICENSE =~ ^[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}-[A-Z0-9a-z]{8}$ ]]
 		do	(( i-- )) || true
-			[[ $i = 0 ]] && red " ${T[${L}7]} " && exit 1 || reading " $(eval echo "${T[${L}42]}") " LICENSE
+			[[ $i = 0 ]] && red " ${L[7]} " && exit 1 || reading " $(eval echo "${L[42]}") " LICENSE
 	done
-	[[ -n $LICENSE && -z $NAME ]] && reading " ${T[${L}43]} " NAME
+	[[ -n $LICENSE && -z $NAME ]] && reading " ${L[43]} " NAME
 	[[ -n $NAME ]] && NAME="${NAME//[[:space:]]/_}" || NAME=${NAME:-'WARP'}
 }
 
 # 输入 Teams 账户 URL（如有）
 input_url(){
-	[[ -z $URL ]] && reading " ${T[${L}44]} " URL
+	[[ -z $URL ]] && reading " ${L[44]} " URL
 	URL=${URL:-'https://gist.githubusercontent.com/fscarmen/56aaf02d743551737c9973b8be7a3496/raw/61bf63e68e4e91152545679b8f11c72cac215128/2021.12.21'}
 	TEAMS=$(curl -sSL "$URL" | sed "s/\"/\&quot;/g")
 	PRIVATEKEY=$(expr "$TEAMS" : '.*private_key&quot;>\([^<]*\).*')
 	PUBLICKEY=$(expr "$TEAMS" : '.*public_key&quot;:&quot;\([^&]*\).*')
 	ADDRESS4=$(expr "$TEAMS" : '.*v4&quot;:&quot;\(172[^&]*\).*')
 	ADDRESS6=$(expr "$TEAMS" : '.*v6&quot;:&quot;\([^[&]*\).*')
-	[[ $PRIVATEKEY =~ ^[A-Z0-9a-z/+]{43}=$ ]] && MATCH1=${T[${L}45]} || MATCH1=${T[${L}46]}
-	[[ $PUBLICKEY =~ ^[A-Z0-9a-z/+]{43}=$ ]] && MATCH2=${T[${L}45]} || MATCH2=${T[${L}46]}
-	[[ $ADDRESS4 =~ ^172.16.[01].[0-9]{1,3}$ ]] && MATCH3=${T[${L}45]} || MATCH3=${T[${L}46]}
-	[[ $ADDRESS6 =~ ^fd01(:[0-9a-f]{0,4}){7}$ ]] && MATCH4=${T[${L}45]} || MATCH4=${T[${L}46]}
-	yellow " $(eval echo "${T[${L}47]}") " && reading " ${T[${L}48]} " CONFIRM
+	[[ $PRIVATEKEY =~ ^[A-Z0-9a-z/+]{43}=$ ]] && MATCH1=${L[45]} || MATCH1=${L[46]}
+	[[ $PUBLICKEY =~ ^[A-Z0-9a-z/+]{43}=$ ]] && MATCH2=${L[45]} || MATCH2=${L[46]}
+	[[ $ADDRESS4 =~ ^172.16.[01].[0-9]{1,3}$ ]] && MATCH3=${L[45]} || MATCH3=${L[46]}
+	[[ $ADDRESS6 =~ ^fd01(:[0-9a-f]{0,4}){7}$ ]] && MATCH4=${L[45]} || MATCH4=${L[46]}
+	yellow " $(eval echo "${L[47]}") " && reading " ${L[48]} " CONFIRM
 }
 
 update(){
 	# 不符合条件的脚本退出
-	! type -p wg-quick >/dev/null 2>&1 && red " ${T[${L}21]} " && exit 1
-	[[ ! -e /etc/wireguard/wgcf-account.toml ]] && red " ${T[${L}32]} " && exit 1
-	[[ ! -e /etc/wireguard/wgcf.conf ]] && red " ${T[${L}33]} " && exit 1
-	ip4_info; [[ $TRACE4 =~ plus ]] && red " ${T[${L}31]} " && exit 1
-	ip6_info; [[ $TRACE6 =~ plus ]] && red " ${T[${L}31]} " && exit 1
+	! type -p wg-quick >/dev/null 2>&1 && red " ${L[21]} " && exit 1
+	[[ ! -e /etc/wireguard/wgcf-account.toml ]] && red " ${L[32]} " && exit 1
+	[[ ! -e /etc/wireguard/wgcf.conf ]] && red " ${L[33]} " && exit 1
+	ip4_info; [[ $TRACE4 =~ plus ]] && red " ${L[31]} " && exit 1
+	ip6_info; [[ $TRACE6 =~ plus ]] && red " ${L[31]} " && exit 1
 
 	# 选择账户升级的类型
-	[[ -z $LICENSETYPE ]] && yellow " ${T[${L}34]}" && reading " ${T[${L}3]} " LICENSETYPE
+	[[ -z $LICENSETYPE ]] && yellow " ${L[34]}" && reading " ${L[3]} " LICENSETYPE
 	case $LICENSETYPE in
 	1 ) update_license
 	cd /etc/wireguard || exit
@@ -371,15 +373,15 @@ update(){
 	wg-quick down wgcf >/dev/null 2>&1
 	net
 	[[ $(curl -ks4 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g") = plus || $(curl -ks6 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g") = plus ]] &&
-	green " ${T[${L}35]}\n ${T[${L}36]}：$(grep 'Device name' /etc/wireguard/info.log | awk '{ print $NF }')\n ${T[${L}37]}：$(grep Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }')" ) || red " ${T[${L}38]} ";;
+	green " ${L[35]}\n ${L[36]}：$(grep 'Device name' /etc/wireguard/info.log | awk '{ print $NF }')\n ${L[37]}：$(grep Quota /etc/wireguard/info.log | awk '{ print $(NF-1), $NF }')" ) || red " ${L[38]} ";;
 
 	2 ) input_url
 	[[ $CONFIRM = [Yy] ]] && (echo "$TEAMS" | sudo tee /etc/wireguard/info.log >/dev/null 2>&1
 	sudo sed -i '' "s#PrivateKey.*#PrivateKey = $PRIVATEKEY#g;s#Address.*32#Address = ${ADDRESS4}/32#g;s#Address.*128#Address = ${ADDRESS6}/128#g;s#PublicKey.*#PublicKey = $PUBLICKEY#g" /etc/wireguard/wgcf.conf
 	wg-quick down wgcf >/dev/null 2>&1; net
-	[[ $(curl -ks4 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g") = plus || $(curl -ks6 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g") = plus ]] && green " ${T[${L}39]} ");;
+	[[ $(curl -ks4 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g") = plus || $(curl -ks6 https://www.cloudflare.com/cdn-cgi/trace | grep warp | sed "s/warp=//g") = plus ]] && green " ${L[39]} ");;
 
-	* ) red " ${T[${L}40]} [1-2] "; sleep 1; update
+	* ) red " ${L[40]} [1-2] "; sleep 1; update
 	esac
 }
 
