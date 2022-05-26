@@ -129,7 +129,7 @@ TODAY=$(expr "$COUNT" : '.*\s\([0-9]\{1,\}\)\s/.*') && TOTAL=$(expr "$COUNT" : '
 # 选择语言，先判断 /etc/wireguard/language 里的语言选择，没有的话再让用户选择，默认英语
 select_language(){
 	case $(cat /etc/wireguard/language 2>&1) in
-	E ) L=("${E[@]}");;	C ) L=("${C[@]}");;
+	e ) L=("${E[@]}");;	c ) L=("${C[@]}");;
 	* ) L=("${E[@]}") && [[ -z $OPTION ]] && yellow " ${L[0]} " && reading " ${L[3]} " LANGUAGE 
 	[[ $LANGUAGE = 2 ]] && L=("${C[@]}");;
 	esac
@@ -195,8 +195,8 @@ net(){
 			fi
         	done
 	green " ${L[26]} "
-	[[ $LANGUAGE = 2 ]] && COUNTRY4=$(translate "$COUNTRY4")
-	[[ $LANGUAGE = 2 ]] && COUNTRY6=$(translate "$COUNTRY6")
+	[[ $OPTION = c ]] && COUNTRY4=$(translate "$COUNTRY4")
+	[[ $OPTION = c ]] && COUNTRY6=$(translate "$COUNTRY6")
 	[[ $OPTION = [on] ]] && green " IPv4:$WAN4 $WARPSTATUS4 $COUNTRY4 $ASNORG4\n IPv6:$WAN6 $WARPSTATUS6 $COUNTRY6 $ASNORG6 "
 }
 
@@ -222,8 +222,8 @@ uninstall(){
 	type -p wg >/dev/null 2>&1 && brew uninstall wireguard-tools
 	sudo rm -rf /usr/local/bin/wgcf /etc/wireguard /usr/local/bin/wireguard-go
 	# 显示卸载结果
-	ip4_info; [[ $LANGUAGE = 2 && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4")
-	ip6_info; [[ $LANGUAGE = 2 && -n "$COUNTRY6" ]] && COUNTRY6=$(translate "$COUNTRY6")
+	ip4_info; [[ $OPTION = c && -n "$COUNTRY4" ]] && COUNTRY4=$(translate "$COUNTRY4")
+	ip6_info; [[ $OPTION = c && -n "$COUNTRY6" ]] && COUNTRY6=$(translate "$COUNTRY6")
 	green " ${L[4]}\n IPv4：$WAN4 $COUNTRY4 $ASNORG4\n IPv6：$WAN6 $COUNTRY6 $ASNORG6 "
 }
 
@@ -290,7 +290,7 @@ install(){
 	sudo mv -f /usr/local/bin/mac.sh /etc/wireguard >/dev/null 2>&1
 	sudo ln -sf /etc/wireguard/mac.sh /usr/local/bin/warp && green " ${L[27]} "
 	sudo chmod +x /usr/local/bin/warp
-	[[ $LANGUAGE = 2 ]] && echo "C" | sudo tee /etc/wireguard/language >/dev/null 2>&1 || echo "E" | sudo tee /etc/wireguard/language >/dev/null 2>&1
+	echo "$OPTION" | sudo tee /etc/wireguard/language >/dev/null 2>&1
 
 	# 自动刷直至成功（ warp bug，有时候获取不了ip地址）
 	green "\n ${L[12]}\n "
