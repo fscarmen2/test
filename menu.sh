@@ -8,8 +8,8 @@ declare -A T
 
 T[E0]="\n Language:\n  1.English (default) \n  2.简体中文\n"
 T[C0]="${T[E0]}"
-T[E1]="Automatically sync the latest official versions of wgcf, CloudFlare client, wireguard-go and wireproxy every day, allowing users to have the best performance with every installation."
-T[C1]="每天自动同步官方版本最新版本的 wgcf、 CloudFlare client、wireguard-go 和 wireproxy，让用户每次安装都能获得最佳性能"
+T[E1]="1.Automatically sync the latest official versions of wgcf, CloudFlare client, wireguard-go and wireproxy every day, allowing users to have the best performance with every installation; 2.Change the installation method of CloudFlare client, from APT/YUM repository to Package repository repository."
+T[C1]="1.每天自动同步官方版本最新版本的 wgcf、 CloudFlare client、wireguard-go 和 wireproxy，让用户每次安装都能获得最佳性能; 2.更换 CloudFlare client 的安装方式，从 APT/YUM库 改到 Package 库"
 T[E2]="The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp/issues]"
 T[C2]="必须以root方式运行脚本，可以输入 sudo -i 后重新下载运行，问题反馈:[https://github.com/fscarmen/warp/issues]"
 T[E3]="The TUN module is not loaded. You should turn it on in the control panel. Ask the supplier for more help. Feedback: [https://github.com/fscarmen/warp/issues]"
@@ -1516,7 +1516,7 @@ proxy(){
 			warp-cli --accept-tos set-mode warp >/dev/null 2>&1
 			warp-cli --accept-tos connect >/dev/null 2>&1
 			warp-cli --accept-tos enable-always-on >/dev/null 2>&1
-			sleep 8
+			sleep 5
 			ip -4 rule add from 172.16.0.2 lookup 51820
 			ip -4 route add default dev CloudflareWARP table 51820
 			ip -4 rule add table main suppress_prefixlength 0
@@ -1531,7 +1531,7 @@ proxy(){
 				sleep 2
 				warp-cli --accept-tos connect >/dev/null 2>&1
 				warp-cli --accept-tos enable-always-on >/dev/null 2>&1
-				sleep 8
+				sleep 5
 				ip -4 rule add from 172.16.0.2 lookup 51820
 				ip -4 route add default dev CloudflareWARP table 51820
 				ip -4 rule add table main suppress_prefixlength 0
@@ -1571,20 +1571,21 @@ proxy(){
 			! type -p desktop-file-install >/dev/null 2>&1 && ${PACKAGE_INSTALL[int]} desktop-file-utils
 			case "$(expr "$SYS" : '.*\s\([0-9]\{1,\}\)\.*')" in
 			7 )	#  CentOS 7，需要用 Cloudflare CentOS 8 的库以安装 Client，并在线编译升级 C 运行库 Glibc 2.28
-				{ wget -O /usr/bin/make https://github.com/fscarmen/warp/releases/download/Glibc/make
-				wget https://github.com/fscarmen/warp/releases/download/Glibc/glibc-2.28.tar.gz
-				tar -xzvf glibc-2.28.tar.gz; }&
-				${PACKAGE_INSTALL[int]} nftables
 				rpm -ivh Client_CentOS_8.rpm
-				${PACKAGE_INSTALL[int]} gcc bison make centos-release-scl
-				${PACKAGE_INSTALL[int]} devtoolset-8-gcc devtoolset-8-gcc-c++ devtoolset-8-binutils
-				source /opt/rh/devtoolset-8/enable
-				wait
-				cd ./glibc-2.28/build
-				../configure --prefix=/usr --disable-profile --enable-add-ons --with-headers=/usr/include --with-binutils=/usr/bin
-				make install
-				cd ../..
-				rm -rf glibc-2.28*;;
+				if [[ ! $(strings /lib64/libc.so.6) =~ 'GLIBC_2.28' ]]; then
+					wget -O /usr/bin/make https://github.com/fscarmen/warp/releases/download/Glibc/make
+					wget https://github.com/fscarmen/warp/releases/download/Glibc/glibc-2.28.tar.gz
+					tar -xzvf glibc-2.28.tar.gz
+					${PACKAGE_INSTALL[int]} gcc bison make centos-release-scl
+					${PACKAGE_INSTALL[int]} devtoolset-8-gcc devtoolset-8-gcc-c++ devtoolset-8-binutils
+					source /opt/rh/devtoolset-8/enable
+					wait
+					cd ./glibc-2.28/build
+					../configure --prefix=/usr --disable-profile --enable-add-ons --with-headers=/usr/include --with-binutils=/usr/bin
+					make install
+					cd ../..
+					rm -rf glibc-2.28*
+				fi;;
 
 			8|9 )	rpm -ivh Client_CentOS_8.rpm;;
 			esac
@@ -1600,7 +1601,7 @@ proxy(){
 			rm -f Client_${SYSTEM}_${VERSION_ID}.deb
 		fi
 		[[ $(systemctl is-active warp-svc) != active ]] && ( systemctl start warp-svc; sleep 2 )
-		settings
+		sleep 1 && settings
 
 	elif [[ $CLIENT = 2 && $(warp-cli --accept-tos status 2>/dev/null) =~ 'Registration missing' ]]; then settings
 
