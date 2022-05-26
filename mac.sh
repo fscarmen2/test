@@ -195,8 +195,8 @@ net(){
 			fi
         	done
 	green " ${L[26]} "
-	[[ $OPTION = c ]] && COUNTRY4=$(translate "$COUNTRY4")
-	[[ $OPTION = c ]] && COUNTRY6=$(translate "$COUNTRY6")
+	[[ $(cat /etc/wireguard/language 2>&1) = c ]] && COUNTRY4=$(translate "$COUNTRY4")
+	[[ $(cat /etc/wireguard/language 2>&1) = c ]] && COUNTRY6=$(translate "$COUNTRY6")
 	[[ $OPTION = [on] ]] && green " IPv4:$WAN4 $WARPSTATUS4 $COUNTRY4 $ASNORG4\n IPv6:$WAN6 $WARPSTATUS6 $COUNTRY6 $ASNORG6 "
 }
 
