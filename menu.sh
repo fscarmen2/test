@@ -1571,6 +1571,7 @@ proxy(){
 			! type -p desktop-file-install >/dev/null 2>&1 && ${PACKAGE_INSTALL[int]} desktop-file-utils
 			case "$(expr "$SYS" : '.*\s\([0-9]\{1,\}\)\.*')" in
 			7 )	#  CentOS 7，需要用 Cloudflare CentOS 8 的库以安装 Client，并在线编译升级 C 运行库 Glibc 2.28
+				${PACKAGE_INSTALL[int]} nftables
 				rpm -ivh Client_CentOS_8.rpm
 				if [[ ! $(strings /lib64/libc.so.6) =~ 'GLIBC_2.28' ]]; then
 					wget -O /usr/bin/make https://github.com/fscarmen/warp/releases/download/Glibc/make
