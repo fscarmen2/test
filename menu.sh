@@ -1600,9 +1600,10 @@ proxy(){
 			${PACKAGE_INSTALL[int]} -f
 			dpkg -i Client_${SYSTEM}_${VERSION_ID}.deb
 			rm -f Client_${SYSTEM}_${VERSION_ID}.deb
+			sleep 1
 		fi
 		[[ $(systemctl is-active warp-svc) != active ]] && ( systemctl start warp-svc; sleep 2 )
-		sleep 1 && settings
+		settings
 
 	elif [[ $CLIENT = 2 && $(warp-cli --accept-tos status 2>/dev/null) =~ 'Registration missing' ]]; then settings
 
