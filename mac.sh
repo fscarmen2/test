@@ -5,7 +5,7 @@
 VERSION=1.00
 
 E[0]="\n Language:\n  1.English (default) \n  2.简体中文\n"
-C[0]="${T[E0]}"
+C[0]="${E[0]}"
 E[1]="First publication on a global scale: WARP one-click script on macOS. A VPN that fast,modern,secure by WireGuard tunnel and WARP service"
 C[1]="全网首发: macOS 一键脚本， 一个为免费、快速、安全的基于 WireGuard 隧道，WARP 服务的 VPN"
 E[2]="The script must be run as root, you can enter sudo -i and then download and run again. Feedback: [https://github.com/fscarmen/warp/issues]"
