@@ -1587,7 +1587,7 @@ proxy(){
 					make install
 					cd ../..
 					rm -rf glibc-2.28*
-				fi
+				fi;;
 
 			8|9 )	rpm -ivh Client_CentOS_8.rpm;;
 			esac
@@ -1616,7 +1616,7 @@ proxy(){
 		export LANG="en_US.UTF-8";export LANGUAGE="en_US.UTF-8"
 		rm -rf /var/lib/rpm/__db*
 		yum clean all
-		rpm -v rebuilddb;;	
+		rpm -v rebuilddb
 	fi
 
 	# 创建再次执行的软链接快捷方式，再次运行可以用 warp 指令,设置默认语言
