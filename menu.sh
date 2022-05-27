@@ -1611,7 +1611,7 @@ proxy(){
 	else red " ${T[${L}85]} " 
 	fi
 
-	# 此处为处理 CentOS 7 安装 Glibc 2.28 之后 Running transaction test 不动和文字乱码问题
+	# 此处为处理 CentOS 7 安装 Glibc 2.28 之后 Running transaction test 不动的问题
 	if [ $GLIBC = 1 ]; then
 		export LANG="en_US.UTF-8";export LANGUAGE="en_US.UTF-8"
 		rm -rf /var/lib/rpm/__db*
