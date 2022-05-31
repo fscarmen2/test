@@ -208,7 +208,7 @@ onoff(){
 
 # 同步脚本至最新版本
 ver(){
-	sudo curl -o /etc/wireguard/mac.sh https://raw.githubusercontents.com/fscarmen/test/main/mac.sh
+	sudo curl -o /etc/wireguard/mac.sh https://raw.githubusercontent.com/fscarmen/test/main/mac.sh
 	sudo chmod +x /etc/wireguard/mac.sh
 	sudo ln -sf /etc/wireguard/mac.sh /usr/local/bin/warp
 	green " ${L[28]}:$(grep ^VERSION /etc/wireguard/mac.sh | sed "s/.*=//g")  ${L[29]}：$(grep "${T}[1]" /etc/wireguard/mac.sh | cut -d \" -f2) " || red " ${L[30]} "
