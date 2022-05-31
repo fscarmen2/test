@@ -211,7 +211,7 @@ ver(){
 	sudo curl -o /etc/wireguard/mac.sh https://raw.githubusercontent.com/fscarmen/test/main/mac.sh
 	sudo chmod +x /etc/wireguard/mac.sh
 	sudo ln -sf /etc/wireguard/mac.sh /usr/local/bin/warp
-	green " ${L[28]}:$(grep ^VERSION /etc/wireguard/mac.sh | sed "s/.*=//g")  ${L[29]}：$(grep "${T}[1]" /etc/wireguard/mac.sh | cut -d \" -f2) " || red " ${L[30]} "
+	green " ${L[28]}:$(grep ^VERSION /etc/wireguard/mac.sh | sed "s/.*=//g")  ${L[29]}：$(grep "$T\[1]" /etc/wireguard/mac.sh | cut -d \" -f2) " || red " ${L[30]} "
 	exit
 }
 
@@ -395,7 +395,7 @@ case "$OPTION" in
 e ) L=("${E[@]}"); check_operating_system; install;;
 c ) L=("${C[@]}"); check_operating_system; install;;
 u ) uninstall;;
-v ) select_language; ver;;
+v ) T=$(cat /etc/wireguard/language | tr '[:lower:]' '[:upper:]'); ver;;
 a ) update;;
 n ) net;;
 o ) onoff;;
