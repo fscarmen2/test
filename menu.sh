@@ -943,8 +943,8 @@ EOF
 
 	# 判断处理器架构
 	case $(uname -m) in
-	aarch64 ) ARCHITECTURE=arm64;;
-	x86_64 ) ARCHITECTURE=amd64; AMD64_ONLY="${T[${L}156]}";;
+	aarch64 ) ARCHITECTURE=arm64; AMD64_ONLY="${T[${L}156]}";;
+	x86_64 ) ARCHITECTURE=amd64;;
 	s390x ) ARCHITECTURE=s390x; AMD64_ONLY="${T[${L}156]}";;
 	* ) red " $(eval echo "${T[${L}134]}") " && exit 1;;
 	esac
