@@ -1,4 +1,4 @@
-project_name: Build vmessping
+project_name: Build VMessPing
 before:
   hooks:
     - go mod tidy -v
