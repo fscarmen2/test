@@ -21,7 +21,7 @@ jobs:
 
       - name: Git clone VMessPing
         run: |
-          git clone https://github.com/v2fly/vmessping.git
+          git clone https://github.com/v2fly/vmessping.git ${{ env.workdir }}
           cp ./.github/vmessping-releaser.yml ${{ env.workdir }}/.goreleaser.yml
 
       - name: Set up GoReleaser
