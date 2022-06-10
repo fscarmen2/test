@@ -926,7 +926,7 @@ EOF
 	bash /usr/bin/tun.sh
 	TUN=$(cat /dev/net/tun 2>&1 | tr '[:upper:]' '[:lower:]')
 		if [[ ! $TUN =~ 'in bad state' ]] && [[ ! $TUN =~ '处于错误状态' ]] && [[ ! $TUN =~ 'Die Dateizugriffsnummer ist in schlechter Verfassung' ]]; then
-			rm -f /usr/bin//tun.sh && red " ${T[${L}3]} " && exit 1
+			rm -f /usr/bin/tun.sh && red " ${T[${L}3]} " && exit 1
 		else echo "@reboot root bash /usr/bin/tun.sh" >> /etc/crontab
 		fi
 	fi
