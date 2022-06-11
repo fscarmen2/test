@@ -10,7 +10,7 @@ check_dependencies(){ for c in $@; do
 type -p $c >/dev/null 2>&1 || (yellow " 安装 $c 中…… " && ${PACKAGE_INSTALL[b]} "$c") || (yellow " 先升级软件库才能继续安装 \$c，时间较长，请耐心等待…… " && ${PACKAGE_UPDATE[b]} && ${PACKAGE_INSTALL[b]} "$c")
 ! type -p $c >/dev/null 2>&1 && yellow " 安装 \$c 失败，脚本中止，问题反馈:[https://github.com/fscarmen/tools/issues] " && exit 1; done; }
 
-ARCHITECTURE="$(uname -m)"
+ARCHITECTURE="$(arch)"
 case $ARCHITECTURE in
 x86_64 )  FILE=besttrace;;
 aarch64 ) FILE=besttracearm;;
