@@ -58,5 +58,5 @@ green "\n 检测中，请稍等片刻。\n"
 [[ ! -e "$FILE" ]] && curl -sO https://cdn.jsdelivr.net/gh/fscarmen/tools/besttrace/$FILE
 chmod +x "$FILE" >/dev/null 2>&1
 sudo ./"$FILE" "$ip" -g cn > $TEMP_FILE
-green "$(cat $TEMP_FILE | sed "s/.*AS[0-9]*//g" | sed "/\*$/d;/^$/d;1d" | uniq | awk '{printf("%d,%s\n"),NR,$0}')"
+green "$(cat $TEMP_FILE | sed "s/.*\*\(.*局域网\)/\1/g" | sed "s/.*AS[0-9]*//g" | sed "/\*$/d;/^$/d;1d" | uniq | awk '{printf("%d.%s\n"),NR,$0}')"
 rm -f $TEMP_FILE $FILE
