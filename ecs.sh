@@ -1614,7 +1614,7 @@ print_end_time() {
     echo " 时间          : $date_time"
 }
 
-check_return{
+check_return() {
   [[ ! -e return.sh ]] && curl -qO https://raw.githubusercontent.com/spiritLHLS/ecs/main/return.sh
   chmod +x return.sh >/dev/null 2>&1
 
