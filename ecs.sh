@@ -1628,7 +1628,7 @@ check_return() {
   [[ ! -e return.sh ]] && curl -qO https://raw.githubusercontent.com/spiritLHLS/ecs/main/return.sh
   chmod +x return.sh >/dev/null 2>&1
 
-  _green "依次测试电信，联通，移动经过的地区及线路，核心程序来由: ipip.net ，请知悉!\n" > $TEMP_FILE
+  _green "依次测试电信，联通，移动经过的地区及线路，核心程序来由: ipip.net ，请知悉!" > $TEMP_FILE
   
   for ((a=0;a<${#test_area[@]};a++)); do
     _yellow "\n${test_area[a]} ${test_ip[a]}\n" >> $TEMP_FILE
