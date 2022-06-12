@@ -1152,19 +1152,23 @@ function GameTest_Steam() {
 trap _exit INT QUIT TERM
 
 _red() {
-    printf '\033[0;31;31m%b\033[0m' "$1"
+#    printf '\033[0;31;31m%b\033[0m' "$1"
+    echo -e "\033[31m\033[01m$@\033[0m"
 }
 
 _green() {
-    printf '\033[0;31;32m%b\033[0m' "$1"
+#    printf '\033[0;31;32m%b\033[0m' "$1"
+    echo -e "\033[32m\033[01m$@\033[0m"
 }
 
 _yellow() {
-    printf '\033[0;31;33m%b\033[0m' "$1"
+#    printf '\033[0;31;33m%b\033[0m' "$1"
+    echo -e "\033[33m\033[01m$@\033[0m"
 }
 
 _blue() {
-    printf '\033[0;31;36m%b\033[0m' "$1"
+#    printf '\033[0;31;36m%b\033[0m' "$1"
+    echo -e "\033[36m\033[01m$@\033[0m"
 }
 
 _exists() {
@@ -1624,10 +1628,10 @@ check_return() {
   [[ ! -e return.sh ]] && curl -qO https://raw.githubusercontent.com/spiritLHLS/ecs/main/return.sh
   chmod +x return.sh >/dev/null 2>&1
 
-  _green "依次测试电信，联通，移动经过的地区及线路，核心程序来由: ipip.net ，请知悉!" > $TEMP_FILE
-  echo -e "\n"
+  _green "依次测试电信，联通，移动经过的地区及线路，核心程序来由: ipip.net ，请知悉!\n" > $TEMP_FILE
+  
   for ((a=0;a<${#test_area[@]};a++)); do
-    _yellow "${test_area[a]} ${test_ip[a]}" >> $TEMP_FILE
+    _yellow "\n${test_area[a]} ${test_ip[a]}\n" >> $TEMP_FILE
     ./return.sh ${test_ip[a]} >> $TEMP_FILE
   done
 }
