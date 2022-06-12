@@ -1811,7 +1811,7 @@ menu_setting(){
 	fi
 	
 	[[ -e /etc/dnsmasq.d/warp.conf ]] && IPTABLE_INSTALLED="${T[${L}92]}"
-	[[ -n $(wg 2>/dev/null) ]] && OPTION4="${T[${L}71]}" || OPTION4="${T[${L}77]}"
+	[[ -n $(wg 2>/dev/null) ]] && OPTION4="${T[${L}77]}" || OPTION4="${T[${L}71]}"
 	
 	OPTION5="$CLIENT_INSTALLED$AMD64_ONLY${T[${L}82]}"; OPTION6="${T[${L}123]}"; OPTION7="${T[${L}72]}"; OPTION8="${T[${L}74]}"; OPTION9="${T[${L}73]}"; OPTION10="${T[${L}75]}";
 	OPTION11="${T[${L}80]}"; OPTION12="$IPTABLE_INSTALLED${T[${L}138]}"; OPTION13="$WIREPROXY_INSTALLED${T[${L}148]}"; OPTION14="$CLIENT_INSTALLED$AMD64_ONLY${T[${L}168]}"; OPTION0="${T[${L}76]}"
