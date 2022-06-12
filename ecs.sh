@@ -79,8 +79,9 @@ checkspeedtest() {
 }
 
 
-red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
-green(){ echo -e "\033[32m\033[01m$1\033[0m"; }
+#red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
+#yellow(){ echo -e "\033[33m\033[01m$@\033[0m"; }
+#green(){ echo -e "\033[32m\033[01m$1\033[0m"; }
 test_area=("广州电信" "广州联通" "广州移动")
 test_ip=("58.60.188.222" "210.21.196.6" "120.196.165.2")
 TEMP_FILE='ip.test'
@@ -1625,7 +1626,7 @@ check_return() {
 
   green "依次测试电信，联通，移动经过的地区及线路，核心程序来由: ipip.net ，请知悉！" >> $TEMP_FILE
   for ((a=0;a<${#test_area[@]};a++)); do
-    yellow "\n\n${test_area[a]} ${test_ip[a]}" >> $TEMP_FILE
+    echo -n -e "${Font_Green}${test_area[a]} ${test_ip[a]}${Font_Suffix}" >> $TEMP_FILE
     ./return.sh ${test_ip[a]} >> $TEMP_FILE
   done
 }
