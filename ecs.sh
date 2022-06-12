@@ -1617,7 +1617,7 @@ print_end_time() {
 }
 
 backtrace() {
-  curl https://raw.githubusercontent.com/zhanghanyun/backtrace/main/install.sh -sSf | sh > $TEMP_FILE2
+  curl https://raw.githubusercontent.com/zhanghanyun/backtrace/main/install.sh -sSf | sh > $TEMP_FILE2 2>&1
 }
 
 check_return() {
