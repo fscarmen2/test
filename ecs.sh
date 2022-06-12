@@ -1624,7 +1624,8 @@ check_return() {
   [[ ! -e return.sh ]] && curl -qO https://raw.githubusercontent.com/spiritLHLS/ecs/main/return.sh
   chmod +x return.sh >/dev/null 2>&1
 
-  _green "依次测试电信，联通，移动经过的地区及线路，核心程序来由: ipip.net ，请知悉!" >> $TEMP_FILE
+  _green "依次测试电信，联通，移动经过的地区及线路，核心程序来由: ipip.net ，请知悉!" > $TEMP_FILE
+  echo -e "\n"
   for ((a=0;a<${#test_area[@]};a++)); do
     _yellow "${test_area[a]} ${test_ip[a]}" >> $TEMP_FILE
     ./return.sh ${test_ip[a]} >> $TEMP_FILE
@@ -1675,14 +1676,14 @@ echo ""
 echo ""
 ./dp
 echo "解锁油管，奈菲，迪士尼以上面为准，下面这三测的不准"
-echo "\n---------------流媒体解锁--感谢RegionRestrictionCheck开源-------------"
+echo -e "\n---------------流媒体解锁--感谢RegionRestrictionCheck开源-------------"
 echo " 以下为IPV4网络测试"
 Global_UnlockTest 4
 echo " 以下为IPV6网络测试"
 Global_UnlockTest 6
-echo "\n-----------------三网回程--感谢zhanghanyun/backtrace开源--------------"
+echo -e "\n-----------------三网回程--感谢zhanghanyun/backtrace开源--------------"
 cat $TEMP_FILE2
-echo "\n--------------------回程路由--感谢fscarmen开源------------------------"
+echo -e "\n--------------------回程路由--感谢fscarmen开源------------------------"
 cat $TEMP_FILE
 next
 print_end_time
