@@ -1,0 +1,49 @@
+name: Proxies
+
+on:
+  workflow_dispatch:
+#  schedule:
+#    - cron: '3 2 * * *'
+
+jobs:
+  build:
+    name: Proxy Pool
+    runs-on: ubuntu-latest
+    env:
+      USERNAME: ${{ secrets.GH_USERNAME }}
+      EMAIL: ${{ secrets.GH_EMAIL }}
+      MONTH: '05'
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Download, Check and Renew
+        if: always()
+        run: |
+          sudo apt -y install dos2unix
+          wget -O ./vmessping_linux_amd64.tar.gz https://github.com/fscarmen/tools/releases/download/VMessPing/vmessping_linux_amd64.tar.gz
+          tar -xzvf vmessping_linux_amd64.tar.gz        
+          for m in $(seq -w 14 15); do
+            wget -N https://github.com/pojiezhiyuanjun/freev2/raw/master/06$m.zip
+            unzip 06$m.zip "*.txt" -d ./
+            cat 节点.txt >> temp1
+            rm -f 节点.txt 06$m.zip
+          done
+          
+          dos2unix temp1
+          sort -u temp1 | grep 'vmess://' > temp2
+          CHECK=($(cat temp2))
+          k=0
+          for j in ${CHECK[@]}; do
+            ./vmessping -allow-insecure -c 1 -o 1 $j && $((k++)) && echo $j | tee -a ${GITHUB_WORKSPACE}/proxy
+          done
+          
+          rm -f temp{1,2} vmessping*
+          echo "NUM=$k" >> $GITHUB_ENV
+          
+      - name: Upload to REPO
+        run: |
+          git config --global user.email "${{ env.EMAIL }}"
+          git config --global user.name "${{ env.USERNAME }}"
+          git add .
+          git commit -m "Update ${{ env.NUM }} proxies on $(date "+%Y/%m/%d %H:%M:%S")"
+          git push
