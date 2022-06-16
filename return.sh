@@ -5,6 +5,7 @@ red(){ echo -e "\033[31m\033[01m$1\033[0m"; }
 yellow(){ echo -e "\033[33m\033[01m$1\033[0m"; }
 green(){ echo -e "\033[32m\033[01m$1\033[0m"; }
 reading(){ read -rp "$(green "$1")" "$2"; }
+translate(){ [[ -n "$1" ]] && curl -ksm8 "http://fanyi.youdao.com/translate?&doctype=json&type=AUTO&i=${1//[[:space:]]/}" | cut -d \" -f18 2>/dev/null; }
 
 check_dependencies(){ for c in $@; do
 type -p $c >/dev/null 2>&1 || (yellow " 安装 $c 中…… " && ${PACKAGE_INSTALL[b]} "$c") || (yellow " 先升级软件库才能继续安装 \$c，时间较长，请耐心等待…… " && ${PACKAGE_UPDATE[b]} && ${PACKAGE_INSTALL[b]} "$c")
@@ -55,19 +56,27 @@ ip=$1
 green "\n 本脚说明：测 VPS ——> 对端 经过的地区及线路，填本地IP就是测回程，核心程序来由: https://www.ipip.net/ ，请知悉！"
 [[ -z "$ip" || $ip = '[DESTINATION_IP]' ]] && reading "\n 请输入目的地 IP: " ip
 green "\n 检测中，请稍等片刻。\n"
-{ 
-  IP_4=$(curl -s4m5 https:/ip.gs/json) &&
-  IPV4=$(echo $IP_4 | awk -F [\",] '{print $4}') &&
-    PE_4=$(curl -s4m5 ping.pe/$IPV4) &&
-  COOKIE_4=$(echo $PE_4 | sed "s/.*document.cookie=\"\([^;]\{1,\}\).*/\1/g") &&
-  TYPE_4=$(curl -s4m5 --header "cookie: $COOKIE_4" ping.pe/$IPV4 | grep "id='page-div'" | sed "s/.*\[\(.*\)\].*/\1/g" | sed "s/.*orange'>\([^<]\{1,\}\).*/\1/g" | sed "s/hosting/数据中心/g;s/residential/家庭宽带/g")
-  
-  IP_6=$(curl -s6m5 https:/ip.gs/json) &&
-  IPV6=$(echo $IP_6 | awk -F [\",] '{print $4}') &&
-  PE_6=$(curl -s6m5 ping.pe/[$IPV6]) &&
-  COOKIE_6=$(echo $PE_6 | sed "s/.*document.cookie=\"\([^;]\{1,\}\).*/\1/g") &&
-  TYPE_6=$(curl -s6m5 --header "cookie: $COOKIE_6" ping.pe/[$IPV6] | grep "id='page-div'" | sed "s/.*\[\(.*\)\].*/\1/g" | sed "s/.*orange'>\([^<]\{1,\}\).*/\1/g" | sed "s/hosting/数据中心/g;s/residential/家庭宽带/g")
-}&
+
+IP_4=$(curl -s4m5 https:/ip.gs/json) &&
+WAN_4=$(expr "$IP_4" : '.*ip\":\"\([^"]*\).*') &&
+COUNTRY_4E=$(expr "$IP_4" : '.*country\":\"\([^"]*\).*') &&
+COUNTRY_4=$(translate "$COUNTRY_4E") &&
+ASNORG_4=$(expr "$IP_4" : '.*asn_org\":\"\([^"]*\).*') &&
+PE_4=$(curl -s4m5 ping.pe/$IPV4) &&
+COOKIE_4=$(echo $PE_4 | sed "s/.*document.cookie=\"\([^;]\{1,\}\).*/\1/g") &&
+TYPE_4=$(curl -s4m5 --header "cookie: $COOKIE_4" ping.pe/$IPV4 | grep "id='page-div'" | sed "s/.*\[\(.*\)\].*/\1/g" | sed "s/.*orange'>\([^<]\{1,\}\).*/\1/g" | sed "s/hosting/数据中心/g;s/residential/家庭宽带/g") &&
+green " IPv4: $WAN_4\t 地区: $COUNTRY_4\t ASN: $ASNORG_4\t 类型: $TYPE_4\n"
+
+IP_6=$(curl -s6m5 https:/ip.gs/json) &&
+WAN_6=$(expr "$IP_6" : '.*ip\":\"\([^"]*\).*') &&
+COUNTRY_6E=$(expr "$IP_6" : '.*country\":\"\([^"]*\).*') &&
+COUNTRY_6=$(translate "$COUNTRY_6E") &&
+ASNORG_6=$(expr "$IP_6" : '.*asn_org\":\"\([^"]*\).*') &&
+IPV6=$(echo $IP_6 | awk -F [\",] '{print $4}') &&
+PE_6=$(curl -s6m5 ping6.ping.pe/$IPV6) &&
+COOKIE_6=$(echo $PE_6 | sed "s/.*document.cookie=\"\([^;]\{1,\}\).*/\1/g") &&
+TYPE_6=$(curl -s6m5 --header "cookie: $COOKIE_6" ping6.ping.pe/$IPV6 | grep "id='page-div'" | sed "s/.*\[\(.*\)\].*/\1/g" | sed "s/.*orange'>\([^<]\{1,\}\).*/\1/g" | sed "s/hosting/数据中心/g;s/residential/家庭宽带/g") &&
+green " IPv6: $WAN_6\t 地区: $COUNTRY_6\t ASN: $ASNORG_6\t 类型: $TYPE_6\n"
 
 [[ ! -e "$FILE" ]] && curl -sO https://cdn.jsdelivr.net/gh/fscarmen/tools/besttrace/$FILE
 chmod +x "$FILE" >/dev/null 2>&1
