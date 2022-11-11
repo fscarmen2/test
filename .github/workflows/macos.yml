@@ -13,9 +13,7 @@ jobs:
     steps:
       - name: Setup WARP
         run: |
-          sudo mkdir homebrew
-          sudo curl -L https://github.com/Homebrew/brew/tarball/master | tar xz --strip 1 -C homebrew
-          sudo brew install wireguard-tools
+          brew install wireguard-tools
           echo "[Interface]
           PrivateKey = cKE7LmCF61IhqqABGhvJ44jWXp8fKymcMAEVAzbDF2k=
           Address = 172.16.0.2/32
