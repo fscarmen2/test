@@ -14,7 +14,8 @@ jobs:
       - name: Setup WARP
         run: |
           Start-Process msiexec.exe -ArgumentList '/q', '/I', 'wireguard-amd64-0.1.0.msi' -Wait -NoNewWindow -PassThru | Out-Null
-          Start-Process 'C:\Program Files\WireGuard\wireguard.exe' -ArgumentList '/uninstallmanagerservice' -Wait -NoNewWindow -PassThru | Out-Null          echo "[Interface]
+          Start-Process 'C:\Program Files\WireGuard\wireguard.exe' -ArgumentList '/uninstallmanagerservice' -Wait -NoNewWindow -PassThru | Out-Null
+          echo "[Interface]
           PrivateKey = cKE7LmCF61IhqqABGhvJ44jWXp8fKymcMAEVAzbDF2k=
           Address = 172.16.0.2/32
           Address = fd01:5ca1:ab1e:823e:e094:eb1c:ff87:1fab/128
