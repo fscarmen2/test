@@ -13,6 +13,7 @@ jobs:
     steps:
       - name: Setup WARP
         run: |
+          sudo mkdir -p /etc/wireguard
           brew install wireguard-tools
           echo "[Interface]
           PrivateKey = cKE7LmCF61IhqqABGhvJ44jWXp8fKymcMAEVAzbDF2k=
