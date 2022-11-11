@@ -28,3 +28,4 @@ jobs:
           Endpoint = 162.159.193.10:2408" | sudo tee /etc/wireguard/wgcf.conf
           sudo wg-quick up wgcf
           sudo curl -s4m8 https://ip.gs/json
+          sudo uname -a
