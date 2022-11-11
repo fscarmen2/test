@@ -15,7 +15,7 @@ jobs:
         run: |
           sudo chown -R `whoami` /usr/local/Homebrew/
           sudo chown -R $(whoami) $(brew --prefix)/*
-          sudo mkdir /usr/local/Frameworks
+          sudo mkdir -p /usr/local/Frameworks
           sudo chown -R `whoami` /usr/local/Frameworks/
           sudo brew install wireguard-tools
           echo "[Interface]
