@@ -1,0 +1,29 @@
+name: WARP on windows
+
+on:
+  workflow_dispatch:
+
+jobs:
+  WireGuard-go:
+
+    name: WARP on Windows
+    
+    runs-on: windows-latest
+
+    steps:
+      - name: Setup WARP
+        run: |
+          choco install wireguard-tools
+          echo "[Interface]
+          PrivateKey = cKE7LmCF61IhqqABGhvJ44jWXp8fKymcMAEVAzbDF2k=
+          Address = 172.16.0.2/32
+          Address = fd01:5ca1:ab1e:823e:e094:eb1c:ff87:1fab/128
+          DNS = 8.8.8.8,8.8.4.4
+          MTU = 1280
+          [Peer]
+          PublicKey = bmXOC+F1FxEMF9dyiK2H5/1SUtzH0JuVo51h2wPfgyo=
+          AllowedIPs = 0.0.0.0/0
+          AllowedIPs = ::/0
+          Endpoint = 162.159.193.10:2408" > /etc/wireguard/wgcf.conf
+          wg-quick up wgcf
+          curl -s4m8 https://ip.gs/json
