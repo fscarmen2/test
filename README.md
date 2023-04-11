@@ -7,14 +7,13 @@ Nezha server over Argo tunnel
 
 # 目录
 
-## [项目特点](README.md#项目特点)
-## [部署](README.md#部署)
-  - [准备需要用的变量](README.md#准备需要用的变量)
-  - [PaaS 部署实例](README.md#PaaS-部署实例)
-  - [VPS 部署实例](README.md#VPS-部署实例)
-  - [客户端接入](README.md#客户端接入)
-## [鸣谢下列作者的文章和项目](README.md#鸣谢下列作者的文章和项目)
-## [免责声明](README.md#免责声明)
+- [项目特点](README.md#项目特点)
+- [准备需要用的变量](README.md#准备需要用的变量)
+- [PaaS 部署实例](README.md#PaaS-部署实例)
+- [VPS 部署实例](README.md#VPS-部署实例)
+- [客户端接入](README.md#客户端接入)
+- [鸣谢下列作者的文章和项目](README.md#鸣谢下列作者的文章和项目)
+- [免责声明](README.md#免责声明)
 
 * * *
 
@@ -30,8 +29,7 @@ Nezha server over Argo tunnel
 * 服务端和客户端均需要多安装依赖 --- Argo 隧道的两端均需要安装 Cloudflared 用于接入服务，所以如果客服端有公网入口的话，优先使用官方原版
 * 暂时只支持 amd64 架构 --- 受限于官方 Cloudflared cloudflared，暂时只支持 amd64，后续看看如何处理
 
-## 部署:
-### 准备需要用的变量
+## 准备需要用的变量
 * 通过 Cloudflare Json 生成网轻松获取 Argo 隧道信息: https://fscarmen.cloudflare.now.cc
 
 <img width="1040" alt="image" src="https://user-images.githubusercontent.com/92626977/231084930-02e3c2de-c52b-420d-b39c-9f135d040b3b.png">
@@ -50,7 +48,7 @@ Nezha server over Argo tunnel
 
 <img width="1122" alt="image" src="https://user-images.githubusercontent.com/92626977/231086319-1b625dc6-713b-4a62-80b1-cc5b2b7ef3ca.png">
 
-### PaaS 部署实例
+## PaaS 部署实例
 镜像 `fscarmen/argo-nezha:latest`
 
 用到的变量 
@@ -65,7 +63,7 @@ Nezha server over Argo tunnel
   | SSH_DOMAIN   | 否 | ssh 用的 argo 域名 |
   | SSH_PASSWORD | 否 | ssh 的密码，只有在设置 SSH_JSON 后才生效，默认值 password |
 
-1. Koyeb
+1.Koyeb
 
 <img width="927" alt="image" src="https://user-images.githubusercontent.com/92626977/231088411-fbac3e6e-a8a6-4661-bcf8-7c777aa8ffeb.png">
 <img width="750" alt="image" src="https://user-images.githubusercontent.com/92626977/231088973-7134aefd-4c80-4559-8e40-17c3be11d27d.png">
@@ -74,7 +72,7 @@ Nezha server over Argo tunnel
 <img width="500" alt="image" src="https://user-images.githubusercontent.com/92626977/231094144-df6715bc-c611-47ce-a529-03c43f38102e.png">
 
 
-### VPS 部署实例
+## VPS 部署实例
 ```
 docker run -dit \
            --name nezha_dashboard \
@@ -96,31 +94,6 @@ wget -O cloudflared https://github.com/cloudflare/cloudflared/releases/latest/do
 ./cloudflared access tcp --hostname <DATA_DOMAIN，即是数据传输的域名> --listener 127.0.0.1:5555 >/dev/null 2>&1 &
 curl -L https://raw.githubusercontent.com/naiba/nezha/master/script/install.sh -o nezha.sh && chmod +x nezha.sh && ./nezha.sh install_agent 127.0.0.1 5555 <nezha_key>
 ```
-
-
-1. 获取面板,客户端与服务端的通信，ssh（可选）用的Argo 隧道 Json，可以通过 Cloudflare Json 生成网轻松获取: https://fscarmen.cloudflare.now.cc
-
-<img width="688" alt="image" src="https://user-images.githubusercontent.com/62703343/224388718-6adf22d0-01d3-46a0-8063-bc0a2210795f.png">
-
-2. 根据面板 argo 域名，获取 Github 的 Client ID 和密钥，详细可以参数官方教程: https://nezha.wiki/guide/dashboard.html#%E8%8E%B7%E5%8F%96-github-jihulab-%E7%9A%84-client-id-%E5%92%8C%E5%AF%86%E9%92%A5
-
-* 申请: https://github.com/settings/developers
-
-<img width="688" alt="image" src="https://user-images.githubusercontent.com/92626977/230728087-6c9029e6-4b84-4d69-9a16-f0b67e19e128.png">
-
-3. 根据平台的规则，填好环境变量(variables)部署即可
-
-* 部署 PaaS 用到的变量 
-  | 变量名        | 是否必须  | 备注 |
-  | ------------ | ------   | ---- |
-  | ADMIN        | 是 | github 的用户名，用于面板管理授权 |
-  | CLIENTID     | 是 | 在 github 上申请 |
-  | CLIENTSECRET | 是 | 在 github 上申请 |
-  | ARGO_JSON    | 是 | 从 https://fscarmen.cloudflare.now.cc 获取的 Argo Json |
-  | DATA_DOMAIN  | 是 | 客户端与服务端的通信 argo 域名 |
-  | WEB_DOMAIN   | 是 | 面板 argo 域名 |
-  | SSH_DOMAIN   | 否 | ssh 用的 argo 域名 |
-  | SSH_PASSWORD | 否 | ssh 的密码，只有在设置 SSH_JSON 后才生效，默认值 password |
 
 ## 鸣谢下列作者的文章和项目:
 * 哪吒官网: https://nezha.wiki/ , TG 群： https://t.me/nezhamonitoring
