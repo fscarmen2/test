@@ -9,10 +9,10 @@ Nezha server over Argo tunnel
 
 ## [项目特点](README.md#项目特点)
 ## [部署](README.md#部署)
-  - [1.准备需要用的变量](1.准备需要用的变量)
-  - [2.PaaS 部署实例](2.PaaS-部署实例)
-  - [3.VPS 部署实例](3.VPS-部署实例)
-  - [4.客户端接入](4.客户端接入)
+  - [1.准备需要用的变量](README.md#1准备需要用的变量)
+  - [2.PaaS 部署实例](README.md#2PaaS-部署实例)
+  - [3.VPS 部署实例](README.md#3VPS-部署实例)
+  - [4.客户端接入](README.md#4客户端接入)
 ## [鸣谢下列作者的文章和项目](README.md#鸣谢下列作者的文章和项目)
 ## [免责声明](README.md#免责声明)
 
