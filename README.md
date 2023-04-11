@@ -94,6 +94,7 @@ wget -O cloudflared https://github.com/cloudflare/cloudflared/releases/latest/do
 ./cloudflared access tcp --hostname <DATA_DOMAIN，即是数据传输的域名> --listener 127.0.0.1:5555 >/dev/null 2>&1 &
 curl -L https://raw.githubusercontent.com/naiba/nezha/master/script/install.sh -o nezha.sh && chmod +x nezha.sh && ./nezha.sh install_agent 127.0.0.1 5555 <nezha_key>
 ```
+<img width="452" alt="image" src="https://user-images.githubusercontent.com/92626977/231101568-3135d90a-27df-4f9e-a346-f542de88aa02.png">
 
 ## 鸣谢下列作者的文章和项目:
 * 哪吒官网: https://nezha.wiki/ , TG 群： https://t.me/nezhamonitoring
