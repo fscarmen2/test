@@ -13,7 +13,7 @@ Nezha server over Argo tunnel
 - [VPS 部署实例](README.md#VPS-部署实例)
 - [客户端接入](README.md#客户端接入)
 - [SSH 接入](README.md#ssh-接入)
-- [手动还完备份](手动还完备份)
+- [手动还完备份](README.md#手动还完备份)
 - [鸣谢下列作者的文章和项目](README.md#鸣谢下列作者的文章和项目)
 - [免责声明](README.md#免责声明)
 
