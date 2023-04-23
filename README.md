@@ -169,7 +169,7 @@ curl -L https://raw.githubusercontent.com/naiba/nezha/master/script/install.sh -
 <img width="955" alt="image" src="https://user-images.githubusercontent.com/92626977/233350802-754624e0-8456-4353-8577-1f5385fb8723.png">
 
 
-## 手动还完备份
+## 自动还完备份
 * 把需要还完的文件名改到 github 备份库里的 `README.md`，定时服务会每分钟检测更新，并把上次同步的文件名记录在本地 `/dbfile` 处以与在线的文件内容作比对
 
 下图为以还原文件名为 `dashboard-2023-04-23-13:08:37.tar.gz` 作示例
