@@ -1,19 +1,15 @@
 {
-  // 日志，只显示错误信息
   "log": {
     "level": "warn",
     "timestamp": false
   },
-
   "experimental": {
     "cache_file": {
-        "enabled": true,
-        "path": "cache.db",
-        "store_fakeip": true
+      "enabled": true,
+      "path": "cache.db",
+      "store_fakeip": true
     }
   },
-
-  // 入站启用 tun
   "inbounds": [
     {
       "type": "tun",
@@ -28,8 +24,6 @@
       "sniff_override_destination": false
     }
   ],
-
-  // DNS设置
   "dns": {
     "servers": [
       {
@@ -78,7 +72,6 @@
         "server": "dns_proxy"
       },
       {
-        "rule_set": "BlockHttpDNS",
         "rule_set": "geosite-category-ads-all",
         "domain_suffix": [
           ".mcdn.bilivideo.cn",
@@ -104,7 +97,7 @@
         "query_type": [
           "CNAME"
         ],
-          "server": "dns_proxy"
+        "server": "dns_proxy"
       },
       {
         "query_type": [
@@ -125,135 +118,13 @@
       "inet6_range": "fc00::/18"
     }
   },
-
-  "outbounds":[
-    {
-      "type":"vless",
-      "tag":"NODE_NAME vless-reality-vision",
-      "server":"SERVER_IP",
-      "server_port":REALITY_PORT,
-      "uuid":"UUID",
-      "flow":"",
-      "packet_encoding":"xudp",
-      "tls":{
-          "enabled":true,
-          "server_name":"TLS_SERVER",
-          "utls":{
-              "enabled":true,
-              "fingerprint":"chrome"
-          },
-          "reality":{
-              "enabled":true,
-              "public_key":"REALITY_PUBLIC",
-              "short_id":""
-          }
-      },
-      "multiplex":{
-          "enabled":true,
-          "protocol":"h2mux",
-          "max_connections":16,
-          "padding": true
-      }
-    },
-    {
-      "type": "vless",
-      "tag": "NODE_NAME-Vl",
-      "server":"SERVER",
-      "server_port":443,
-      "uuid":"UUID",
-      "tls": {
-        "enabled":true,
-        "server_name":"ARGO_DOMAIN",
-        "utls": {
-          "enabled":true,
-          "fingerprint":"chrome"
-        }
-      },
-      "transport": {
-        "type":"ws",
-        "path":"/WS_PATH-vl",
-        "headers": {
-          "Host": "ARGO_DOMAIN"
-        },
-        "max_early_data":2408,
-        "early_data_header_name":"Sec-WebSocket-Protocol"
-      },
-      "multiplex": {
-        "enabled":true,
-        "protocol":"h2mux",
-        "max_streams":16,
-        "padding": true
-      }
-    },
-    {
-      "type": "vmess",
-      "tag": "NODE_NAME-Vm",
-      "server":"SERVER",
-      "server_port":443,
-      "uuid":"UUID",
-      "tls": {
-        "enabled":true,
-        "server_name":"ARGO_DOMAIN",
-        "utls": {
-          "enabled":true,
-          "fingerprint":"chrome"
-        }
-      },
-      "transport": {
-        "type":"ws",
-        "path":"/WS_PATH-vm",
-        "headers": {
-          "Host": "ARGO_DOMAIN"
-        },
-        "max_early_data":2408,
-        "early_data_header_name":"Sec-WebSocket-Protocol"
-      },
-      "multiplex": {
-        "enabled":true,
-        "protocol":"h2mux",
-        "max_streams":16,
-        "padding": true
-      }
-    },
-    {
-      "type":"trojan",
-      "tag":"NODE_NAME-Tr",
-      "server": "SERVER",
-      "server_port": 443,
-      "password": "UUID",
-      "tls": {
-        "enabled":true,
-        "server_name":"ARGO_DOMAIN",
-        "utls": {
-          "enabled":true,
-          "fingerprint":"chrome"
-        }
-      },
-      "transport": {
-          "type":"ws",
-          "path":"/WS_PATH-tr",
-          "headers": {
-            "Host": "ARGO_DOMAIN"
-          },
-          "max_early_data":2408,
-          "early_data_header_name":"Sec-WebSocket-Protocol"
-        },
-      "multiplex": {
-        "enabled":true,
-        "protocol":"h2mux",
-        "max_connections": 16,
-        "padding": true
-      }
-    },
-    // 代理组选择
+  "outbounds": [
+    "<NODE_REPLACE>",
     {
       "type": "selector",
       "tag": "✈️ Proxy",
       "outbounds": [
-        "NODE_NAME vless-reality-vision",
-        "NODE_NAME-Vl",
-        "NODE_NAME-Vm",
-        "NODE_NAME-Tr",
+        "<NODE_REPLACE>",
         "direct"
       ]
     },
@@ -261,10 +132,7 @@
       "type": "selector",
       "tag": "📱 Telegram",
       "outbounds": [
-        "NODE_NAME vless-reality-vision",
-        "NODE_NAME-Vl",
-        "NODE_NAME-Vm",
-        "NODE_NAME-Tr",
+        "<NODE_REPLACE>",
         "direct"
       ]
     },
@@ -272,10 +140,7 @@
       "type": "selector",
       "tag": "▶️ YouTube",
       "outbounds": [
-        "NODE_NAME vless-reality-vision",
-        "NODE_NAME-Vl",
-        "NODE_NAME-Vm",
-        "NODE_NAME-Tr",
+        "<NODE_REPLACE>",
         "direct"
       ]
     },
@@ -283,10 +148,7 @@
       "type": "selector",
       "tag": "🤖 OpenAI",
       "outbounds": [
-        "NODE_NAME vless-reality-vision",
-        "NODE_NAME-Vl",
-        "NODE_NAME-Vm",
-        "NODE_NAME-Tr",
+        "<NODE_REPLACE>",
         "direct"
       ]
     },
@@ -323,7 +185,6 @@
       "type": "dns"
     }
   ],
-
   "route": {
     "rule_set": [
       {
