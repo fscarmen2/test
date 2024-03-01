@@ -124,32 +124,32 @@
       "type": "selector",
       "tag": "✈️ Proxy",
       "outbounds": [
-        "<NODE_REPLACE>",
-        "direct"
+        "🎯 direct",
+        "<NODE_REPLACE>"
       ]
     },
     {
       "type": "selector",
       "tag": "📱 Telegram",
       "outbounds": [
-        "<NODE_REPLACE>",
-        "direct"
+        "🎯 direct",
+        "<NODE_REPLACE>"
       ]
     },
     {
       "type": "selector",
       "tag": "▶️ YouTube",
       "outbounds": [
-        "<NODE_REPLACE>",
-        "direct"
+        "🎯 direct",
+        "<NODE_REPLACE>"
       ]
     },
     {
       "type": "selector",
       "tag": "🤖 OpenAI",
       "outbounds": [
-        "<NODE_REPLACE>",
-        "direct"
+        "🎯 direct",
+        "<NODE_REPLACE>"
       ]
     },
     {
