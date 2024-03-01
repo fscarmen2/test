@@ -126,14 +126,14 @@
     {
       "type":"vless",
       "tag":"NODE_NAME vless-reality-vision",
-      "server":"${SERVER_IP}",
+      "server":"SERVER_IP",
       "server_port":REALITY_PORT,
-      "uuid":"${UUID}",
+      "uuid":"UUID",
       "flow":"",
       "packet_encoding":"xudp",
       "tls":{
           "enabled":true,
-          "server_name":"${TLS_SERVER}",
+          "server_name":"TLS_SERVER",
           "utls":{
               "enabled":true,
               "fingerprint":"chrome"
@@ -154,12 +154,12 @@
     {
       "type": "vless",
       "tag": "NODE_NAME-Vl",
-      "server":"${SERVER}",
+      "server":"SERVER",
       "server_port":443,
-      "uuid":"${UUID}",
+      "uuid":"UUID",
       "tls": {
         "enabled":true,
-        "server_name":"${ARGO_DOMAIN}",
+        "server_name":"ARGO_DOMAIN",
         "utls": {
           "enabled":true,
           "fingerprint":"chrome"
@@ -167,9 +167,9 @@
       },
       "transport": {
         "type":"ws",
-        "path":"/${WS_PATH}-vl",
+        "path":"/WS_PATH-vl",
         "headers": {
-          "Host": "${ARGO_DOMAIN}"
+          "Host": "ARGO_DOMAIN"
         },
         "max_early_data":2408,
         "early_data_header_name":"Sec-WebSocket-Protocol"
@@ -184,12 +184,12 @@
     {
       "type": "vmess",
       "tag": "NODE_NAME-Vm",
-      "server":"${SERVER}",
+      "server":"SERVER",
       "server_port":443,
-      "uuid":"${UUID}",
+      "uuid":"UUID",
       "tls": {
         "enabled":true,
-        "server_name":"${ARGO_DOMAIN}",
+        "server_name":"ARGO_DOMAIN",
         "utls": {
           "enabled":true,
           "fingerprint":"chrome"
@@ -197,9 +197,9 @@
       },
       "transport": {
         "type":"ws",
-        "path":"/${WS_PATH}-vm",
+        "path":"/WS_PATH-vm",
         "headers": {
-          "Host": "${ARGO_DOMAIN}"
+          "Host": "ARGO_DOMAIN"
         },
         "max_early_data":2408,
         "early_data_header_name":"Sec-WebSocket-Protocol"
@@ -214,12 +214,12 @@
     {
       "type":"trojan",
       "tag":"NODE_NAME-Tr",
-      "server": "${SERVER}",
+      "server": "SERVER",
       "server_port": 443,
-      "password": "${UUID}",
+      "password": "UUID",
       "tls": {
         "enabled":true,
-        "server_name":"${ARGO_DOMAIN}",
+        "server_name":"ARGO_DOMAIN",
         "utls": {
           "enabled":true,
           "fingerprint":"chrome"
@@ -227,9 +227,9 @@
       },
       "transport": {
           "type":"ws",
-          "path":"/${WS_PATH}-tr",
+          "path":"/WS_PATH-tr",
           "headers": {
-            "Host": "${ARGO_DOMAIN}"
+            "Host": "ARGO_DOMAIN"
           },
           "max_early_data":2408,
           "early_data_header_name":"Sec-WebSocket-Protocol"
@@ -264,7 +264,7 @@
     },
     {
       "type": "selector",
-      "tag": "▶️ YouTube",
+      "tag": "🖥 YouTube",
       "outbounds": [
         "NODE_NAME vless-reality-vision",
         "NODE_NAME-Vl",
@@ -509,7 +509,7 @@
       },
       {
         "rule_set": "geosite-youtube",
-        "outbound": "▶️ YouTube"
+        "outbound": "🖥 YouTube"
       },
       {
         "rule_set": "geosite-openai@ads",
