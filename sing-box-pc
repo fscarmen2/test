@@ -115,33 +115,33 @@
         }
     },
     "outbounds":[
-        "<INBOUND REPLACE>",
+        "<INBOUND_REPLACE>",
         {
             "type":"selector",
             "tag":"✈️ Proxy",
             "outbounds":[
-                "<NODE REPLACE>"
+                "<NODE_REPLACE>"
             ]
         },
         {
             "type":"selector",
             "tag":"📱 Telegram",
             "outbounds":[
-                "<NODE REPLACE>"
+                "<NODE_REPLACE>"
             ]
         },
         {
             "type":"selector",
             "tag":"▶️ YouTube",
             "outbounds":[
-                "<NODE REPLACE>"
+                "<NODE_REPLACE>"
             ]
         },
         {
             "type":"selector",
             "tag":"🤖 OpenAI",
             "outbounds":[
-                "<NODE REPLACE>"
+                "<NODE_REPLACE>"
             ]
         },
         {
