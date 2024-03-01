@@ -120,6 +120,7 @@
       "type": "selector",
       "tag": "✈️ Proxy",
       "outbounds": [
+        "🎯 direct",
         "<NODE_REPLACE>"
       ]
     },
@@ -127,6 +128,7 @@
       "type": "selector",
       "tag": "📱 Telegram",
       "outbounds": [
+        "🎯 direct",
         "<NODE_REPLACE>"
       ]
     },
@@ -134,6 +136,7 @@
       "type": "selector",
       "tag": "▶️ YouTube",
       "outbounds": [
+        "🎯 direct",
         "<NODE_REPLACE>"
       ]
     },
@@ -141,6 +144,7 @@
       "type": "selector",
       "tag": "🤖 OpenAI",
       "outbounds": [
+        "🎯 direct",
         "<NODE_REPLACE>"
       ]
     },
