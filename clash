@@ -56,14 +56,14 @@ proxy-groups:
   - { name: ♻️ 自动选择, type: url-test, url: http://www.gstatic.com/generate_204, interval: 300, tolerance: 50, proxies: [], <<: *u }
   - { name: ▶️ YouTube, type: select, proxies: ['🚀 节点选择','♻️ 自动选择'], <<: *u }
   - { name: 📲 电报信息, type: select, proxies: ['🚀 节点选择'], <<: *u }
-  - { name: 🌼 ChatGPT, type: select, proxies: [], <<: *u, filter: "(?i)^(?!.*(?:🇭🇰|港|hk|hongkong)).*" }
+  - { name: 🤖 ChatGPT, type: select, proxies: [], <<: *u, filter: "(?i)^(?!.*(?:🇭🇰|港|hk|hongkong)).*" }
   - { name: 🛑 全球拦截, type: select, proxies: [REJECT,DIRECT] }
   - { name: 🐟 漏网之鱼, type: select, proxies: ['🚀 节点选择',DIRECT,'♻️ 自动选择'], <<: *u }
 
 rules:
   # - AND,(AND,(DST-PORT,443),(NETWORK,UDP)),(GEOSITE,geolocation-!cn),REJECT # quic
   - GEOSITE,youtube,▶️ YouTube
-  - OR,((DOMAIN,gemini.google.com),(DOMAIN,bard.google.com),(GEOSITE,openai)),🌼 ChatGPT
+  - OR,((DOMAIN,gemini.google.com),(DOMAIN,bard.google.com),(GEOSITE,openai)),🤖 ChatGPT
   - RULE-SET,applications,DIRECT
   - DOMAIN,clash.razord.top,DIRECT
   - DOMAIN,yacd.haishan.me,DIRECT
