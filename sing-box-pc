@@ -1,5 +1,4 @@
 {
-  // 日志，只显示错误信息
   "log": {
     "level": "warn",
     "timestamp": false
@@ -13,7 +12,6 @@
     }
   },
 
-  // 入站启用 mixed
   "inbounds": [
     {
       "type":"mixed",
@@ -25,7 +23,6 @@
     }
   ],
 
-  // DNS设置
   "dns": {
     "servers": [
       {
@@ -249,8 +246,7 @@
         "NODE_NAME vless-reality-vision",
         "NODE_NAME-Vl",
         "NODE_NAME-Vm",
-        "NODE_NAME-Tr",
-        "direct"
+        "NODE_NAME-Tr"
       ]
     },
     {
@@ -260,8 +256,7 @@
         "NODE_NAME vless-reality-vision",
         "NODE_NAME-Vl",
         "NODE_NAME-Vm",
-        "NODE_NAME-Tr",
-        "direct"
+        "NODE_NAME-Tr"
       ]
     },
     {
@@ -271,8 +266,7 @@
         "NODE_NAME vless-reality-vision",
         "NODE_NAME-Vl",
         "NODE_NAME-Vm",
-        "NODE_NAME-Tr",
-        "direct"
+        "NODE_NAME-Tr"
       ]
     },
     {
@@ -282,8 +276,7 @@
         "NODE_NAME vless-reality-vision",
         "NODE_NAME-Vl",
         "NODE_NAME-Vm",
-        "NODE_NAME-Tr",
-        "direct"
+        "NODE_NAME-Tr"
       ]
     },
     {
