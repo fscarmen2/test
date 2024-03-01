@@ -264,7 +264,7 @@
     },
     {
       "type": "selector",
-      "tag": "🖥 YouTube",
+      "tag": "▶️ YouTube",
       "outbounds": [
         "NODE_NAME vless-reality-vision",
         "NODE_NAME-Vl",
@@ -509,7 +509,7 @@
       },
       {
         "rule_set": "geosite-youtube",
-        "outbound": "🖥 YouTube"
+        "outbound": "▶️ YouTube"
       },
       {
         "rule_set": "geosite-openai@ads",
