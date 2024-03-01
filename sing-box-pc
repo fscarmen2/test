@@ -249,7 +249,8 @@
         "NODE_NAME vless-reality-vision",
         "NODE_NAME-Vl",
         "NODE_NAME-Vm",
-        "NODE_NAME-Tr"
+        "NODE_NAME-Tr",
+        "direct"
       ]
     },
     {
@@ -259,7 +260,8 @@
         "NODE_NAME vless-reality-vision",
         "NODE_NAME-Vl",
         "NODE_NAME-Vm",
-        "NODE_NAME-Tr"
+        "NODE_NAME-Tr",
+        "direct"
       ]
     },
     {
@@ -269,7 +271,8 @@
         "NODE_NAME vless-reality-vision",
         "NODE_NAME-Vl",
         "NODE_NAME-Vm",
-        "NODE_NAME-Tr"
+        "NODE_NAME-Tr",
+        "direct"
       ]
     },
     {
@@ -279,7 +282,8 @@
         "NODE_NAME vless-reality-vision",
         "NODE_NAME-Vl",
         "NODE_NAME-Vm",
-        "NODE_NAME-Tr"
+        "NODE_NAME-Tr",
+        "direct"
       ]
     },
     {
